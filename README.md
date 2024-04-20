@@ -10,26 +10,26 @@ npm install --save @onflow/fcl @onflow/types
 
 ```
 <script lang="ts">
-	import * as fcl from '@onflow/fcl';
-	import * as types from '@onflow/types';
+  import * as fcl from '@onflow/fcl';
+  import * as types from '@onflow/types';
 
-	fcl.config({
-		'accessNode.api': 'https://rest-testnet.onflow.org',
-		'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
-		'app.detail.title': 'Sample App',
-		'app.detail.icon': 'https://fcl-discovery.onflow.org/images/blocto.png',
-		'0xCOF': '0x9e447fb949c3f1b6' // The account address where the smart contract lives
-	});
+  fcl.config({
+    'accessNode.api': 'https://rest-testnet.onflow.org',
+    'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
+    'app.detail.title': 'Sample App',
+    'app.detail.icon': 'https://fcl-discovery.onflow.org/images/blocto.png',
+    '0xCOF': '0x9e447fb949c3f1b6' // The account address where the smart contract lives
+  });
 
-	const handleOnClick = async () => {
-		fcl.authenticate();
-	};
+  const handleOnClick = async () => {
+    fcl.authenticate();
+  };
 </script>
 ```
 
-That's it! Super simple and you can see below when you pushed the button
+#### That's it! Super simple and you can see below when you pushed the button
 
-<img width="1117" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/aaad67cc-e29c-48be-ad7b-7c622b067275">
+<img width="1218" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/24f42cbf-41fd-406c-ad06-a64d0d016d44">
 
 
 ## Creating a project
