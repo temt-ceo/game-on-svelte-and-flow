@@ -29,6 +29,9 @@ npm install --save @onflow/fcl @onflow/types
 
 That's it! Super simple and you can see below when you pushed the button
 
+<img width="1117" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/aaad67cc-e29c-48be-ad7b-7c622b067275">
+
+
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
