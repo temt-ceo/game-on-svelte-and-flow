@@ -1,6 +1,33 @@
-# create-svelte
+# How to develop a game using GraphQL and Svelte
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+1. Install @onflow/fcl and @onflow/types.
+
+```
+npm install --save @onflow/fcl @onflow/types
+```
+
+2. Write below codes inside Svelte code.
+
+```
+<script lang="ts">
+	import * as fcl from '@onflow/fcl';
+	import * as types from '@onflow/types';
+
+	fcl.config({
+		'accessNode.api': 'https://rest-testnet.onflow.org',
+		'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
+		'app.detail.title': 'Sample App',
+		'app.detail.icon': 'https://fcl-discovery.onflow.org/images/blocto.png',
+		'0xCOF': '0x9e447fb949c3f1b6' // The account address where the smart contract lives
+	});
+
+	const handleOnClick = async () => {
+		fcl.authenticate();
+	};
+</script>
+```
+
+That's it! Super simple and you can see below when you pushed the button
 
 ## Creating a project
 
