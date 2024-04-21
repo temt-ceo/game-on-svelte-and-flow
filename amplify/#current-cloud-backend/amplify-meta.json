@@ -40,7 +40,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-gameonsvelteandflow-dev-103037-deployment/amplify-cfn-templates/auth/gameonsvelteandflowdf10797f-cloudformation-template.json",
         "logicalId": "authgameonsvelteandflowdf10797f"
       },
-      "lastPushTimeStamp": "2024-04-21T01:54:36.579Z",
+      "lastPushTimeStamp": "2024-04-21T04:42:48.785Z",
       "output": {
         "UserPoolId": "ap-northeast-1_RshJiG7uc",
         "AppClientIDWeb": "3tm0sbofmltvqrbg49stagcrm9",
@@ -57,34 +57,29 @@
     "gameonsvelteandflow": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "gameonsvelteandflowdf10797f",
-          "attributes": [
-            "UserPoolId"
-          ]
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authgameonsvelteandflowdf10797f"
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 365,
+              "apiKeyExpirationDate": "2025-04-21T04:05:54.236Z",
+              "description": "game-on-svelte-and-flow"
             }
           },
           "additionalAuthenticationProviders": []
         },
         "GraphQLAPIIdOutput": "x4xvkaoohzevblnwtabml4fgee",
-        "GraphQLAPIEndpointOutput": "https://j7ykrkzlhfbbthxr23ab4bv6r4.appsync-api.ap-northeast-1.amazonaws.com/graphql"
+        "GraphQLAPIEndpointOutput": "https://j7ykrkzlhfbbthxr23ab4bv6r4.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-5bh43ypsind5hphyetlz3qfqlm"
       },
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-gameonsvelteandflow-dev-103037-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apigameonsvelteandflow"
       },
-      "lastPushTimeStamp": "2024-04-21T01:54:36.579Z",
-      "lastPushDirHash": "5HocfeJj+++bwbeTYHu5qORMGUU="
+      "lastPushTimeStamp": "2024-04-21T04:43:01.633Z",
+      "lastPushDirHash": "wQkhPW6Qq34plovjAGsMzijGj4k="
     }
   }
 }

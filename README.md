@@ -25,6 +25,8 @@ npm install --save @onflow/fcl @onflow/types
     fcl.authenticate();
   };
 </script>
+
+<button on:click={handleOnClick}>SignIn to Wallet</button>
 ```
 
 #### That's it! Super simple and you can see the below when you pushed the button

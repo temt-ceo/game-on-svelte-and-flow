@@ -4,8 +4,12 @@
     "apiName": "gameonsvelteandflow",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authgameonsvelteandflowdf10797f"
-    }
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2025-04-21T04:05:54.236Z",
+      "keyDescription": "game-on-svelte-and-flow"
+    },
+    "conflictResolution": {},
+    "additionalAuthTypes": []
   }
 }

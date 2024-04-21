@@ -1,4 +1,4 @@
-type GameServerProcess @model {
+type GameServerProcess @auth(rules: [{ allow: public, operations: [create, read] }]) @model {
 	id: ID!
 	type: String!
 	message: String!
@@ -7,5 +7,6 @@ type GameServerProcess @model {
 
 type Subscription {
 	onCreateByPlayerid(playerId: String!): GameServerProcess
+		@aws_api_key
 		@aws_subscribe(mutations: ["createGameServerProcess"])
 }

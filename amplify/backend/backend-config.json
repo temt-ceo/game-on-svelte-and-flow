@@ -1,23 +1,17 @@
 {
   "api": {
     "gameonsvelteandflow": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "gameonsvelteandflowdf10797f"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authgameonsvelteandflowdf10797f"
-            }
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2025-04-21T04:05:54.236Z",
+              "apiKeyExpirationDays": 365,
+              "description": "game-on-svelte-and-flow"
+            },
+            "authenticationType": "API_KEY"
           }
         }
       },

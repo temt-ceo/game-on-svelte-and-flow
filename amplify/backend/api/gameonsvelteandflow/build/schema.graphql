@@ -8,7 +8,7 @@ type GameServerProcess {
 }
 
 type Subscription {
-  onCreateByPlayerid(playerId: String!): GameServerProcess @aws_subscribe(mutations: ["createGameServerProcess"])
+  onCreateByPlayerid(playerId: String!): GameServerProcess @aws_api_key @aws_subscribe(mutations: ["createGameServerProcess"])
   onCreateGameServerProcess(filter: ModelSubscriptionGameServerProcessFilterInput): GameServerProcess @aws_subscribe(mutations: ["createGameServerProcess"])
   onUpdateGameServerProcess(filter: ModelSubscriptionGameServerProcessFilterInput): GameServerProcess @aws_subscribe(mutations: ["updateGameServerProcess"])
   onDeleteGameServerProcess(filter: ModelSubscriptionGameServerProcessFilterInput): GameServerProcess @aws_subscribe(mutations: ["deleteGameServerProcess"])

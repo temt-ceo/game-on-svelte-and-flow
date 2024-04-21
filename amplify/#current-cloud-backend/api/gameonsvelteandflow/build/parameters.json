@@ -2,12 +2,6 @@
     "AppSyncApiName": "gameonsvelteandflow",
     "DynamoDBBillingMode": "PAY_PER_REQUEST",
     "DynamoDBEnableServerSideEncryption": false,
-    "AuthCognitoUserPoolId": {
-        "Fn::GetAtt": [
-            "authgameonsvelteandflowdf10797f",
-            "Outputs.UserPoolId"
-        ]
-    },
     "S3DeploymentBucket": "amplify-gameonsvelteandflow-dev-103037-deployment",
-    "S3DeploymentRootKey": "amplify-appsync-files/4d0f7b119eaf5d94d923184c136b4c0505b8179a"
+    "S3DeploymentRootKey": "amplify-appsync-files/cfd2124e260f9cbaabd32bcafff55ff9522e26fd"
 }

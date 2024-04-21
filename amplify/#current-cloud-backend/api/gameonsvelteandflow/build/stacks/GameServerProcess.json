@@ -352,6 +352,36 @@
         "GameServerProcessIAMRoleE2D36F12"
       ]
     },
+    "QuerygetGameServerProcessauth0FunctionQuerygetGameServerProcessauth0FunctionAppSyncFunction97D8351F": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "Name": "QuerygetGameServerProcessauth0Function",
+        "FunctionVersion": "2018-05-29",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Query.getGameServerProcess.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
+    },
     "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2": {
       "Type": "AWS::AppSync::FunctionConfiguration",
       "Properties": {
@@ -446,6 +476,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "QuerygetGameServerProcessauth0FunctionQuerygetGameServerProcessauth0FunctionAppSyncFunction97D8351F",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -470,7 +506,7 @@
               {
                 "Ref": "GameServerProcessTable"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
@@ -541,6 +577,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "QuerygetGameServerProcessauth0FunctionQuerygetGameServerProcessauth0FunctionAppSyncFunction97D8351F",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -565,7 +607,7 @@
               {
                 "Ref": "GameServerProcessTable"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
@@ -596,6 +638,36 @@
                 "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
               },
               "/resolvers/Mutation.createGameServerProcess.init.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
+    },
+    "MutationcreateGameServerProcessauth0FunctionMutationcreateGameServerProcessauth0FunctionAppSyncFunction7E42F142": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "Name": "MutationcreateGameServerProcessauth0Function",
+        "FunctionVersion": "2018-05-29",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.createGameServerProcess.auth.1.req.vtl"
             ]
           ]
         },
@@ -672,6 +744,12 @@
             },
             {
               "Fn::GetAtt": [
+                "MutationcreateGameServerProcessauth0FunctionMutationcreateGameServerProcessauth0FunctionAppSyncFunction7E42F142",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -696,7 +774,7 @@
               {
                 "Ref": "GameServerProcessTable"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
@@ -732,6 +810,57 @@
         },
         "ResponseMappingTemplate": "$util.toJson({})"
       }
+    },
+    "MutationupdateGameServerProcessauth0FunctionMutationupdateGameServerProcessauth0FunctionAppSyncFunctionBCF1D266": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "GameServerProcessDataSource",
+            "Name"
+          ]
+        },
+        "Name": "MutationupdateGameServerProcessauth0Function",
+        "FunctionVersion": "2018-05-29",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateGameServerProcess.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateGameServerProcess.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "GameServerProcessDataSource"
+      ]
     },
     "MutationUpdateGameServerProcessDataResolverFnMutationUpdateGameServerProcessDataResolverFnAppSyncFunction6BBAFE9E": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -803,6 +932,12 @@
             },
             {
               "Fn::GetAtt": [
+                "MutationupdateGameServerProcessauth0FunctionMutationupdateGameServerProcessauth0FunctionAppSyncFunctionBCF1D266",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -827,12 +962,63 @@
               {
                 "Ref": "GameServerProcessTable"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
       }
+    },
+    "MutationdeleteGameServerProcessauth0FunctionMutationdeleteGameServerProcessauth0FunctionAppSyncFunctionCA21955E": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "GameServerProcessDataSource",
+            "Name"
+          ]
+        },
+        "Name": "MutationdeleteGameServerProcessauth0Function",
+        "FunctionVersion": "2018-05-29",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteGameServerProcess.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteGameServerProcess.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "GameServerProcessDataSource"
+      ]
     },
     "MutationDeleteGameServerProcessDataResolverFnMutationDeleteGameServerProcessDataResolverFnAppSyncFunctionC64599C6": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -898,6 +1084,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "MutationdeleteGameServerProcessauth0FunctionMutationdeleteGameServerProcessauth0FunctionAppSyncFunctionCA21955E",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -922,11 +1114,41 @@
               {
                 "Ref": "GameServerProcessTable"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononCreateGameServerProcessauth0FunctionSubscriptiononCreateGameServerProcessauth0FunctionAppSyncFunctionB6AB7824": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "Name": "SubscriptiononCreateGameServerProcessauth0Function",
+        "FunctionVersion": "2018-05-29",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onCreateGameServerProcess.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptionOnCreateGameServerProcessDataResolverFnSubscriptionOnCreateGameServerProcessDataResolverFnAppSyncFunction4EDC6461": {
@@ -987,6 +1209,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "SubscriptiononCreateGameServerProcessauth0FunctionSubscriptiononCreateGameServerProcessauth0FunctionAppSyncFunctionB6AB7824",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
                 "FunctionId"
               ]
@@ -1007,7 +1235,7 @@
               {
                 "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
@@ -1025,6 +1253,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "SubscriptiononCreateGameServerProcessauth0FunctionSubscriptiononCreateGameServerProcessauth0FunctionAppSyncFunctionB6AB7824",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
@@ -1047,7 +1281,7 @@
               {
                 "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
@@ -1065,6 +1299,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "SubscriptiononCreateGameServerProcessauth0FunctionSubscriptiononCreateGameServerProcessauth0FunctionAppSyncFunctionB6AB7824",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "QuerygetGameServerProcesspostAuth0FunctionQuerygetGameServerProcesspostAuth0FunctionAppSyncFunctionDF05EEE2",
@@ -1087,7 +1327,7 @@
               {
                 "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
               },
-              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+              "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"identityPoolId\", \"ap-northeast-1:a88f1323-fc66-4724-9c4b-6c2a0a1a43a8\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
             ]
           ]
         },
