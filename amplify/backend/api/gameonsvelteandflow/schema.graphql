@@ -1,0 +1,11 @@
+type GameServerProcess @model {
+	id: ID!
+	type: String!
+	message: String!
+	playerId: String!
+}
+
+type Subscription {
+	onCreateByPlayerid(playerId: String!): GameServerProcess
+		@aws_subscribe(mutations: ["createGameServerProcess"])
+}
