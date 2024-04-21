@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-gameonsvelteandflow-dev-9f10f-authRole",
+      "UnauthRoleArn": "arn:aws:iam::827938411447:role/amplify-gameonsvelteandflow-dev-9f10f-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::827938411447:role/amplify-gameonsvelteandflow-dev-9f10f-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-gameonsvelteandflow-dev-9f10f-deployment",
+      "UnauthRoleName": "amplify-gameonsvelteandflow-dev-9f10f-unauthRole",
+      "StackName": "amplify-gameonsvelteandflow-dev-9f10f",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:827938411447:stack/amplify-gameonsvelteandflow-dev-9f10f/e135e540-ffa0-11ee-8493-0a1c5ca3a75b",
+      "AmplifyAppId": "dp3rfd35hpimd"
+    },
+    "categories": {
+      "api": {
+        "gameonsvelteandflow": {}
+      }
+    }
+  }
+}

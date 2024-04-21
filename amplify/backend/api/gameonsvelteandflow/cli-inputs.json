@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "gameonsvelteandflow",
+    "serviceName": "AppSync",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2025-04-21T05:36:50.046Z",
+      "keyDescription": "game-on-svelte-and-flow"
+    }
+  }
+}
