@@ -1,6 +1,0 @@
-{
-  "AppSyncApiName": "gameonsvelteandflow",
-  "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2024-04-21T04:05:57.646Z"
-}

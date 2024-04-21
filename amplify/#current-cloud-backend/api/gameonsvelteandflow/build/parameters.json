@@ -1,7 +1,0 @@
-{
-    "AppSyncApiName": "gameonsvelteandflow",
-    "DynamoDBBillingMode": "PAY_PER_REQUEST",
-    "DynamoDBEnableServerSideEncryption": false,
-    "S3DeploymentBucket": "amplify-gameonsvelteandflow-dev-103037-deployment",
-    "S3DeploymentRootKey": "amplify-appsync-files/cfd2124e260f9cbaabd32bcafff55ff9522e26fd"
-}
