@@ -1,11 +1,5 @@
 {
   "AppSyncApiName": "gameonsvelteandflow",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false,
-  "AuthCognitoUserPoolId": {
-    "Fn::GetAtt": [
-      "authgameonsvelteandflowdf10797f",
-      "Outputs.UserPoolId"
-    ]
-  }
+  "DynamoDBEnableServerSideEncryption": false
 }

@@ -1,54 +1,22 @@
 {
   "api": {
     "gameonsvelteandflow": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "gameonsvelteandflowdf10797f"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authgameonsvelteandflowdf10797f"
-            }
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2025-04-21T05:36:50.046Z",
+              "apiKeyExpirationDays": 365,
+              "description": "game-on-svelte-and-flow"
+            },
+            "authenticationType": "API_KEY"
           }
         }
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync"
-    }
-  },
-  "auth": {
-    "gameonsvelteandflowdf10797f": {
-      "customAuth": false,
-      "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "Cognito"
     }
   }
 }
