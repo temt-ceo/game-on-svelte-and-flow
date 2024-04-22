@@ -1,8 +1,8 @@
 import type { DrinkType } from '../../types';
 // import type { DrinkType, IngredientType } from '../../types';
-// import { Amplify } from 'aws-amplify';
-// import { generateClient } from 'aws-amplify/api';
-// import awsconfig from '../../amplifyconfiguration.json';
+import { Amplify } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
+import awsconfig from '../../amplifyconfiguration.json';
 // import { createGameServerProcess } from '../../graphql/mutations';
 // import * as fcl from '@onflow/fcl';
 // import * as types from '@onflow/types';
@@ -35,8 +35,8 @@ export async function load({ fetch }) {
 		thumbUrl: result.drinks[0].strDrinkThumb
 	};
 
-	// Amplify.configure(awsconfig);
-	// const client = generateClient();
+	Amplify.configure(awsconfig);
+	const client = generateClient();
 
 	// const funcPlayerMatching = async () => {
 	// 	client.graphql({
@@ -50,9 +50,9 @@ export async function load({ fetch }) {
 	// };
 
 	return {
-		props: drinkProp
+		props: drinkProp,
 		// fcl: fcl,
-		// client: client,
+		client: client
 		// walletUser: null
 		// funcPlayerMatching: funcPlayerMatching,
 		// funcSignInWallet: funcSignInWallet
