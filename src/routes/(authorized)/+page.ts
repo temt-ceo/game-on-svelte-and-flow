@@ -1,19 +1,7 @@
 import type { DrinkType } from '../../types';
-// import type { DrinkType, IngredientType } from '../../types';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/api';
 import awsconfig from '../../amplifyconfiguration.json';
-// import { createGameServerProcess } from '../../graphql/mutations';
-// import * as fcl from '@onflow/fcl';
-// import * as types from '@onflow/types';
-
-// fcl.config({
-// 	'accessNode.api': 'https://rest-testnet.onflow.org',
-// 	'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
-// 	'app.detail.title': 'Sample App',
-// 	'app.detail.icon': 'https://fcl-discovery.onflow.org/images/blocto.png',
-// 	'0xCOF': '0x9e447fb949c3f1b6' // The account address where the smart contract lives
-// });
 
 /** @type {import('./$types').Load} */
 export async function load({ fetch }) {
@@ -38,23 +26,11 @@ export async function load({ fetch }) {
 	Amplify.configure(awsconfig);
 	const client = generateClient();
 
-	// const funcPlayerMatching = async () => {
-	// 	client.graphql({
-	// 		query: createGameServerProcess,
-	// 		variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
-	// 	});
-	// };
-
-	// const funcSignInWallet = async () => {
-	// 	fcl.authenticate();
-	// };
-
 	return {
 		props: drinkProp,
-		// fcl: fcl,
-		client: client
-		// walletUser: null
-		// funcPlayerMatching: funcPlayerMatching,
-		// funcSignInWallet: funcSignInWallet
+		client: client,
+		walletUser: null,
+		funcPlayerMatching: null,
+		funcSignInWallet: null
 	};
 }
