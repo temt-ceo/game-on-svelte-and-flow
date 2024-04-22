@@ -1,23 +1,24 @@
 <script lang="ts">
-	import Ingredient from './ingredient.svelte';
-	import type { DrinkType } from '../../types';
+	// import Ingredient from './ingredient.svelte';
+	// import type { DrinkType } from '../../types';
 
-	export let data;
+	// export let data;
 
-	let drinkState: DrinkType = data.props;
+	// let drinkState: DrinkType = data.props;
 
-	const handleOnClick2 = async () => {
-		const result = await (await fetch(`/api/`)).json();
-		drinkState = result;
-	};
+	// const handleOnClick2 = async () => {
+	// 	const result = await (await fetch(`/api/`)).json();
+	// 	drinkState = result;
+	// };
 </script>
 
 <div class="wrapper">
-	<button on:click={data.funcPlayerMatching}>AppSync Test</button>
+	<!-- <button on:click={data.funcPlayerMatching}>AppSync Test</button>
 	<button on:click={handleOnClick2}>Get a drink</button>
 	<button on:click={data.funcSignInWallet}>Login Wallet</button>
 	<h2>{drinkState.name}</h2>
 	<img class="drink-thumb" src={drinkState.thumbUrl} alt="drink thuumb" />
+	<img class="card-thumb" src="/image/unit/card_1.jpeg" alt="drink thuumb" />
 	<p>{drinkState.instructions}</p>
 
 	<p>
@@ -25,7 +26,7 @@
 		{#each drinkState.ingredients as ingredient}
 			<Ingredient {ingredient} />
 		{/each}
-	</p>
+	</p> -->
 </div>
 
 <style>
@@ -38,6 +39,11 @@
 
 	.drink-thumb {
 		width: 300px;
+		border-radius: 1rem;
+	}
+
+	.card-thumb {
+		width: 100px;
 		border-radius: 1rem;
 	}
 
