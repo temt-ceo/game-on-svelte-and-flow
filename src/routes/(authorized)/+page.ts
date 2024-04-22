@@ -16,46 +16,44 @@ fcl.config({
 
 /** @type {import('./$types').Load} */
 export async function load({ fetch }) {
-	try {
-		const result: any = await (
-			await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-		).json();
+	const result: any = await (
+		await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
+	).json();
 
-		const ingredients: any = [...Array(15)]
-			.map((_value, i) => ({
-				name: result.drinks[0][`strIngredient${i + 1}`],
-				amount: result.drinks[0][`strMeasure${i + 1}`]
-			}))
-			.filter((ingredient) => ingredient.name);
+	const ingredients: any = [...Array(15)]
+		.map((_value, i) => ({
+			name: result.drinks[0][`strIngredient${i + 1}`],
+			amount: result.drinks[0][`strMeasure${i + 1}`]
+		}))
+		.filter((ingredient) => ingredient.name);
 
-		const drinkProp: DrinkType = {
-			name: result.drinks[0].strDrink,
-			instructions: result.drinks[0].strInstructions,
-			ingredients,
-			thumbUrl: result.drinks[0].strDrinkThumb
-		};
+	const drinkProp: DrinkType = {
+		name: result.drinks[0].strDrink,
+		instructions: result.drinks[0].strInstructions,
+		ingredients,
+		thumbUrl: result.drinks[0].strDrinkThumb
+	};
 
-		Amplify.configure(awsconfig);
-		const client = generateClient();
+	Amplify.configure(awsconfig);
+	const client = generateClient();
 
-		const funcPlayerMatching = async () => {
-			client.graphql({
-				query: createGameServerProcess,
-				variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
-			});
-		};
+	const funcPlayerMatching = async () => {
+		client.graphql({
+			query: createGameServerProcess,
+			variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
+		});
+	};
 
-		const funcSignInWallet = async () => {
-			fcl.authenticate();
-		};
+	const funcSignInWallet = async () => {
+		fcl.authenticate();
+	};
 
-		return {
-			props: drinkProp,
-			fcl: fcl,
-			client: client,
-			walletUser: null,
-			funcPlayerMatching: funcPlayerMatching,
-			funcSignInWallet: funcSignInWallet
-		};
-	} catch (e) {}
+	return {
+		props: drinkProp,
+		fcl: fcl,
+		client: client,
+		walletUser: null,
+		funcPlayerMatching: funcPlayerMatching,
+		funcSignInWallet: funcSignInWallet
+	};
 }
