@@ -2,7 +2,7 @@
 	// import Ingredient from './ingredient.svelte';
 	// import type { DrinkType } from '../../types';
 
-	// export let data;
+	export let data;
 
 	// let drinkState: DrinkType = data.props;
 
