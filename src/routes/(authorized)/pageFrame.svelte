@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade, scale, slide } from 'svelte/transition';
 	import Ingredient from './ingredient.svelte';
 	import type { DrinkType } from '../../types';
 
@@ -23,6 +24,7 @@
 		const trimed = cardData.handCards.splice(parseInt(draggingCardPosition) - 1, 1);
 		cardData.fieldCards.push(trimed[0]);
 		cardData = cardData;
+		isDraggingOverAssigned = false;
 	};
 	const dragOver = (e: DragEvent) => {
 		e.preventDefault();
@@ -48,6 +50,7 @@
 				{#each cardData.handCards as card_id, index}
 					<img
 						on:dragstart={dragHandCard}
+						out:scale
 						id={(index + 1).toString()}
 						class="card-thumb"
 						src="/image/unit/card_{card_id}.jpeg"
@@ -66,7 +69,7 @@
 			class:ring={isDraggingOverAssigned}
 		>
 			{#each cardData.fieldCards as card_id}
-				<img class="card-thumb" src="/image/unit/card_{card_id}.jpeg" alt="drink thuumb" />
+				<img in:slide class="card-thumb" src="/image/unit/card_{card_id}.jpeg" alt="drink thuumb" />
 			{/each}
 		</div>
 	</div>
