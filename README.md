@@ -29,9 +29,9 @@ npm install --save @onflow/fcl @onflow/types
 <button on:click={handleOnClick}>SignIn to Wallet</button>
 ```
 
-#### That's it! Super simple and you can see the below when you pushed the button
-
 <img width="1218" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/24f42cbf-41fd-406c-ad06-a64d0d016d44">
+
+#### That's it! Super simple and you can see the below when you pushed the button
 
 ## Creating a project
 

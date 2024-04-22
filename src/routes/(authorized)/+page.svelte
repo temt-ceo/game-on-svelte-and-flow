@@ -1,7 +1,5 @@
 <script lang="ts">
-	import PageFrame from './pageFrame.svelte';
-	import { onCreateGameServerProcess } from '../../graphql/subscriptions';
-	import type { DrinkType, IngredientType } from '../../types';
+	import GraphQLFrame from './graphQLFrame.svelte';
 	import { createGameServerProcess } from '../../graphql/mutations';
 	import * as fcl from '@onflow/fcl';
 	import * as types from '@onflow/types';
@@ -16,15 +14,7 @@
 
 	export let data;
 
-	/** GraphQL part */
-	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
-		next: (gameProcess) => {
-			console.log(gameProcess);
-		}
-	});
-
 	/** FCL part */
-
 	data.funcPlayerMatching = async () => {
 		data.client.graphql({
 			query: createGameServerProcess,
@@ -54,4 +44,4 @@
 	});
 </script>
 
-<PageFrame {data} />
+<GraphQLFrame {data} />
