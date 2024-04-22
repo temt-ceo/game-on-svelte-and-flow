@@ -1,7 +1,7 @@
 import type { DrinkType } from '../../types';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/api';
-import awsconfig from '../../amplifyconfiguration.json';
+import config from '../../config.json';
 
 /** @type {import('./$types').Load} */
 export async function load({ fetch }) {
@@ -23,7 +23,7 @@ export async function load({ fetch }) {
 		thumbUrl: result.drinks[0].strDrinkThumb
 	};
 
-	Amplify.configure(awsconfig);
+	Amplify.configure(config);
 	const client = generateClient();
 
 	return {

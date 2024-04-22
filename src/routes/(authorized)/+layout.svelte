@@ -1,7 +1,12 @@
 <script lang="ts">
 	import Header from '$lib/header.svelte';
 	import Footer from '$lib/footer.svelte';
+	import { page } from '$app/stores';
 </script>
+
+<svelte:head>
+	<title>{$page.data.title || 'COF Ninja'}</title>
+</svelte:head>
 
 <div class="main">
 	<Header />
