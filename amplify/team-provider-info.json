@@ -16,5 +16,23 @@
         "gameonsvelteandflow": {}
       }
     }
+  },
+  "app": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-gameonsvelteandflow-app-a8301-authRole",
+      "UnauthRoleArn": "arn:aws:iam::827938411447:role/amplify-gameonsvelteandflow-app-a8301-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::827938411447:role/amplify-gameonsvelteandflow-app-a8301-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-gameonsvelteandflow-app-a8301-deployment",
+      "UnauthRoleName": "amplify-gameonsvelteandflow-app-a8301-unauthRole",
+      "StackName": "amplify-gameonsvelteandflow-app-a8301",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:827938411447:stack/amplify-gameonsvelteandflow-app-a8301/d9f546a0-0062-11ef-ade1-06d0481ab2bd",
+      "AmplifyAppId": "d3pgk5nvvk8a66"
+    },
+    "categories": {
+      "api": {
+        "gameonsvelteandflow": {}
+      }
+    }
   }
 }
