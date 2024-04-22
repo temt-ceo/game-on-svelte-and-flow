@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { DrinkType } from '../../types';
+	import Ingredient from './ingredient.svelte';
 	import * as fcl from '@onflow/fcl';
 	import * as types from '@onflow/types';
 	import { onCreateGameServerProcess } from '../../graphql/subscriptions';
@@ -52,9 +53,7 @@
 	<p>
 		Indigredients
 		{#each drinkState.ingredients as ingredient}
-			<p class="ingredient">
-				{ingredient.amount}{ingredient.name}
-			</p>
+			<Ingredient {ingredient} />
 		{/each}
 	</p>
 </div>
@@ -75,9 +74,5 @@
 	p {
 		max-width: 500px;
 		text-align: center;
-	}
-
-	.ingredient {
-		margin: 2px 0;
 	}
 </style>
