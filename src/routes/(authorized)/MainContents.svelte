@@ -47,21 +47,23 @@
 	<div class="main_container">
 		<div class="info-area"></div>
 		<div class="drop-area"></div>
-		<div class="drink-area">
-			<h3>{data.drinkState.name}</h3>
-			<img class="drink-thumb" src={data.drinkState.thumbUrl} alt="drink thuumb" />
-			<p class="drink-instruction">
-				{data.drinkState.instructions.length <= 350
-					? data.drinkState.instructions
-					: data.drinkState.instructions.slice(0, 350) + '...'}
-			</p>
-			<!-- <p>
+		{#if data.drinkState}
+			<div class="drink-area">
+				<h3>{data.drinkState.name}</h3>
+				<img class="drink-thumb" src={data.drinkState.thumbUrl} alt="drink thuumb" />
+				<p class="drink-instruction">
+					{data.drinkState.instructions.length <= 350
+						? data.drinkState.instructions
+						: data.drinkState.instructions.slice(0, 350) + '...'}
+				</p>
+				<!-- <p>
 				Indigredients
 				{#each data.drinkState.ingredients as ingredient}
 					<Ingredient {ingredient} />
 				{/each}
 			</p> -->
-		</div>
+			</div>
+		{/if}
 	</div>
 	<div class="bottom_container">
 		<div id="left">
