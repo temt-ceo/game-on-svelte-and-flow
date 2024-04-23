@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade, scale, slide } from 'svelte/transition';
 	import { Clock } from 'svelte-loading-spinners';
-	import Ingredient from './Ingredient.svelte';
+	import Ingredient from './ingredient.svelte';
 
 	export let data;
 </script>
