@@ -1,5 +1,5 @@
 <script lang="ts">
-	import MainLogic from './mainLogic.svelte';
+	import MainLogic from './MainLogic.svelte';
 
 	export let data;
 </script>
