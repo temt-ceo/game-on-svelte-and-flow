@@ -1,5 +1,5 @@
 <script lang="ts">
-	import GraphQLFrame from './GraphQLFrame.svelte';
+	import GraphQLFrame from './graphQLFrame.svelte';
 	import { createGameServerProcess } from '../../graphql/mutations';
 	import { isRegistered } from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
