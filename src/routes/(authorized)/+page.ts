@@ -27,10 +27,15 @@ export async function load({ fetch }) {
 	const client = generateClient();
 
 	return {
-		props: drinkProp,
+		drinkState: drinkProp,
 		client: client,
 		walletUser: null,
+		showSpinner: false,
 		funcPlayerMatching: null,
-		funcSignInWallet: null
+		funcSignInWallet: null,
+		funcCreatePlayer: null,
+		player: null,
+		isRegistered: null,
+		getPlayerInfo: null
 	};
 }
