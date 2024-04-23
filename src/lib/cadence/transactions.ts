@@ -1,13 +1,29 @@
-export const createPlayer = async function (fcl, address) {
-	const result = await fcl.query({
+export const createPlayer = async function (fcl, playerName) {
+	var transactionId = await fcl.mutate({
 		cadence: `
-    import CodeOfFlow from 0x24466f7fc36e3388
-    pub fun main(address: Address): &CodeOfFlow.Player{CodeOfFlow.IPlayerPublic}? {
-        let account = getAccount(address)
-        return account.getCapability<&CodeOfFlow.Player{CodeOfFlow.IPlayerPublic}>(CodeOfFlow.PlayerPublicPath).borrow()
-    }
+      import FlowToken from 0x1654653399040a61
+      import FungibleToken from 0xf233dcee88fe0abe
+      import CodeOfFlow from 0x24466f7fc36e3388
+
+      transaction(nickname: String) {
+        prepare(signer: AuthAccount) {
+          let FlowTokenReceiver = signer.getCapability<&FlowToken.Vault{FungibleToken.Receiver}>(/public/flowTokenReceiver)
+
+          signer.save(<- CodeOfFlow.createPlayer(nickname: nickname, flow_vault_receiver: FlowTokenReceiver), to: CodeOfFlow.PlayerStoragePath)
+          signer.link<&CodeOfFlow.Player{CodeOfFlow.IPlayerPublic}>(CodeOfFlow.PlayerPublicPath, target: CodeOfFlow.PlayerStoragePath)
+          }
+        execute {
+          log("success")
+        }
+      }
     `,
-		args: (arg, t) => [arg(address, t.Address)]
+		args: function args(arg, t) {
+			return [arg(playerName ? playerName : 'Test Player', t.String)];
+		},
+		proposer: fcl.authz,
+		payer: fcl.authz,
+		authorizations: [fcl.authz],
+		limit: 999
 	});
-	return result;
+	console.log('TransactionId: ' + transactionId);
 };

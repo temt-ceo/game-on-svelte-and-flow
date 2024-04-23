@@ -1,7 +1,8 @@
 <script>
 	export let dialog;
-	export let value = '';
-	export let label = '';
+	export let playerName = '';
+	export let noteText;
+	let label = 'あなたのお名前';
 
 	const id = 'textInput';
 	const name = 'text';
@@ -11,6 +12,14 @@
 <dialog bind:this={dialog} on:close>
 	<div>プレイヤーネームを入力してください。</div>
 	<label for={id}>{label}</label>
-	<input bind:value {placeholder} {id} {name} type="text" />
+	<input bind:value={playerName} {placeholder} {id} {name} type="text" />
 	<slot />
+	<div class="note">{noteText}</div>
 </dialog>
+
+<style>
+	.note {
+		color: orange;
+		font-size: 10px;
+	}
+</style>
