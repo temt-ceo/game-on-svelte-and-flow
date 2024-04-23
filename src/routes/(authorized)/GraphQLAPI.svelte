@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageFrame from './pageFrame.svelte';
+	import WrapperFrame from './WrapperFrame.svelte';
 	import { onCreateGameServerProcess } from '../../graphql/subscriptions';
 
 	export let data;
@@ -12,4 +12,4 @@
 	});
 </script>
 
-<PageFrame {data} />
+<WrapperFrame {data} />
