@@ -1,5 +1,5 @@
 <script lang="ts">
-	import MainContents from './mainContents.svelte';
+	import MainContents from './MainContents.svelte';
 
 	export let data;
 

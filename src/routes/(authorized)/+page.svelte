@@ -1,5 +1,5 @@
 <script lang="ts">
-	import GraphQLFrame from './graphQLFrame.svelte';
+	import GraphQLAPI from './GraphQLAPI.svelte';
 	import { createGameServerProcess } from '../../graphql/mutations';
 	import { isRegistered } from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
@@ -83,7 +83,7 @@
 	{#if data.showSpinner}
 		<Jumper size="50" color="#F03E50" unit="px" duration="1s" />
 	{/if}
-	<GraphQLFrame {data} />
+	<GraphQLAPI {data} />
 </div>
 <Dialog bind:dialog {label} {value} on:close={() => console.log('closed')}>
 	<button on:click={data.funcCreatePlayer}>登録</button>
