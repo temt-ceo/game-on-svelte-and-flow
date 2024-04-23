@@ -16,23 +16,26 @@
 		do you wanna play a blockchain game, COF Ninja? If so, let's press the activate button!
 	{/if}
 	<div class="button_container">
-		<button on:click={data.handleOnGetADrink}>Get a drink</button>
+		<button
+			on:click={() => {
+				location.href = './';
+			}}>Go back</button
+		>
 		{#if data.walletUser?.addr}
 			<img
-				class="menu-button logout"
-				on:click={data.funcSignOutWallet}
-				src="/image/button/logout.png"
-				alt="activate"
-			/>
-			<img
-				class="menu-button edit-deck"
+				class="menu-button"
 				on:click={() => {
 					location.href = './deck-editor';
 				}}
-				src="/image/button/editDeck.png"
+				src="/image/button/sort.png"
 				alt="activate"
 			/>
-			<img on:click={data.funcSignInWallet} src="/image/button/playButton.png" alt="activate" />
+			<img
+				on:click={data.funcSignInWallet}
+				class="menu-button"
+				src="/image/button/save.png"
+				alt="activate"
+			/>
 		{/if}
 		{#if !data.walletUser?.addr}
 			<img
@@ -47,33 +50,36 @@
 	<div class="main_container">
 		<div class="info-area"></div>
 		<div class="drop-area"></div>
-		<div class="drink-area">
-			<h3>{data.drinkState.name}</h3>
-			<img class="drink-thumb" src={data.drinkState.thumbUrl} alt="drink thuumb" />
-			<p class="drink-instruction">
-				{data.drinkState.instructions.length <= 350
-					? data.drinkState.instructions
-					: data.drinkState.instructions.slice(0, 350) + '...'}
-			</p>
-			<!-- <p>
+		{#if data.drinkState}
+			<div class="drink-area">
+				<h3>{data.drinkState.name}</h3>
+				<img class="drink-thumb" src={data.drinkState.thumbUrl} alt="drink thuumb" />
+				<p class="drink-instruction">
+					{data.drinkState.instructions.length <= 350
+						? data.drinkState.instructions
+						: data.drinkState.instructions.slice(0, 350) + '...'}
+				</p>
+				<!-- <p>
 				Indigredients
 				{#each data.drinkState.ingredients as ingredient}
 					<Ingredient {ingredient} />
 				{/each}
 			</p> -->
-		</div>
+			</div>
+		{/if}
 	</div>
 	<div class="bottom_container">
 		<div id="left">
-			<div class="hand_list">
+			<div class="card_list">
 				{#each data.cardData.handCards as card_id, index}
 					<img
 						on:dragstart={data.dragHandCard}
+						on:click={data.showCardInfo}
 						out:scale
-						id={(index + 1).toString()}
+						id={card_id.toString()}
 						class="card-thumb"
 						src="/image/unit/card_{card_id}.jpeg"
-						alt="drink thuumb"
+						alt="card"
 						draggable="true"
 					/>
 				{/each}
@@ -149,11 +155,8 @@
 		width: 100px;
 	}
 
-	.button_container img.logout {
-		width: 60px;
-	}
-	.button_container img.edit-deck {
-		width: 65px;
+	.button_container img.menu-button {
+		width: 70px;
 	}
 
 	.card-thumb {
@@ -182,7 +185,7 @@
 		border: 2px dashed #f00;
 	}
 
-	.hand_list img {
+	.card_list img {
 		cursor: grab;
 	}
 

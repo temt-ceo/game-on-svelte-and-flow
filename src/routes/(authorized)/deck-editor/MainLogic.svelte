@@ -13,6 +13,11 @@
 		data.drinkState = result;
 	};
 
+	data.showCardInfo = (e: Event) => {
+		console.log(888, (e.target as HTMLElement).getAttribute('id'));
+		data.draggingCardPosition = (e.target as HTMLElement).getAttribute('id');
+	};
+
 	data.draggingCardPosition = null;
 	data.dragHandCard = (e: DragEvent) => {
 		data.draggingCardPosition = (e.target as HTMLElement).getAttribute('id');
