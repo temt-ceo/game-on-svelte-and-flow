@@ -17,18 +17,38 @@
 
 	export let data;
 	let dialog;
-	let label = 'あなたのお名前';
-	let value = 'Test Player';
+	let playerName = 'Test Player';
+	let noteText = '';
+	let modalDisabled = false;
+	let intervalRet;
 
 	/** FCL part */
-	data.funcSignInWallet = async () => {
+	// Wallet Signin
+	data.funcSignInWallet = () => {
 		fcl.authenticate();
+	};
+
+	// Wallet Signout
+	data.funcSignOutWallet = () => {
+		fcl.unauthenticate();
+		data.player = null;
+		data.walletUser = null;
 	};
 
 	data.funcCreatePlayer = async () => {
 		data.showSpinner = true;
-		var ret = await createPlayer(fcl, data.walletUser.addr);
+		noteText = 'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。';
+		modalDisabled = true;
+		setTimeout(() => {
+			dialog.close();
+		}, 3000);
+		var ret = await createPlayer(fcl, playerName);
+		console.log(ret);
 		data.showSpinner = false;
+		(intervalRet = setInterval(() => {
+			data.getPlayerInfo();
+		})),
+			3000;
 	};
 
 	data.funcPlayerMatching = async () => {
@@ -55,17 +75,20 @@
 				// } else {
 				//   debugPrint('Not Imporing.');
 				//   setState(() => player = PlayerResource('', '', ''));
+				clearInterval(intervalRet);
 			} else {
+				noteText = '';
 				dialog.showModal();
 			}
+			console.log(data.player, `isRegistered: ${ret}`);
 		}
 	};
 
 	fcl.currentUser.subscribe((user) => {
 		try {
 			data.walletUser = user;
-			if (data.walletUser.addr) {
-				console.log('wallet addr:', data.walletUser.addr);
+			if (data.walletUser?.addr) {
+				console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
 				if (!data.player) {
 					data.getPlayerInfo();
 					//   widget.callback('game-is-ready', player.playerId, null, null, null);
@@ -81,10 +104,20 @@
 
 <div>
 	{#if data.showSpinner}
-		<Jumper size="50" color="#F03E50" unit="px" duration="1s" />
+		<div class="absolute">
+			<Jumper size="50" color="#F03E50" unit="px" duration="1s" />
+		</div>
 	{/if}
 	<GraphQLAPI {data} />
 </div>
-<Dialog bind:dialog {label} {value} on:close={() => console.log('closed')}>
-	<button on:click={data.funcCreatePlayer}>登録</button>
+<Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
+	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
+
+<style>
+	.absolute {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+	}
+</style>
