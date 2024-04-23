@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Header from '$lib/Header.svelte';
-	import Footer from '$lib/Footer.svelte';
+	import Header from '$lib/PageHeader.svelte';
+	import Footer from '$lib/PageFooter.svelte';
 	import { page } from '$app/stores';
 </script>
 
