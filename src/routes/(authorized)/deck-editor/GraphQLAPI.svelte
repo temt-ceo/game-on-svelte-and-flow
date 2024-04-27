@@ -7,7 +7,7 @@
 	/** GraphQL part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
-			console.log(gameProcess);
+			console.log(gameProcess.data);
 		}
 	});
 </script>

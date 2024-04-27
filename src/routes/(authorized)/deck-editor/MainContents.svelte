@@ -24,14 +24,12 @@
 		{#if data.walletUser?.addr}
 			<img
 				class="menu-button"
-				on:click={() => {
-					location.href = './deck-editor';
-				}}
+				on:click={data.sortUserDeck}
 				src="/image/button/sort.png"
 				alt="activate"
 			/>
 			<img
-				on:click={data.funcSignInWallet}
+				on:click={data.funcSaveDeck}
 				class="menu-button"
 				src="/image/button/save.png"
 				alt="activate"
@@ -48,34 +46,6 @@
 	</div>
 
 	<div class="main_container">
-		<div class="drop-area">
-			<div
-				on:dragover={data.dragOver}
-				on:drop={data.dropHandCard}
-				on:dragenter={data.dragEnterHandCard}
-				on:dragleave={data.dragLeaveHandCard}
-				id="right"
-				class:ring={data.isDraggingOverAssigned}
-			>
-				{#each data.cardData.fieldCards as card_id}
-					{#if parseInt(card_id) <= 16}
-						<img
-							in:slide
-							class="card-thumb"
-							src="/image/unit/card_{card_id}.jpeg"
-							alt="drink thuumb"
-						/>
-					{:else}
-						<img
-							in:slide
-							class="card-thumb"
-							src="/image/unit/trigger_{card_id}.jpeg"
-							alt="drink thuumb"
-						/>
-					{/if}
-				{/each}
-			</div>
-		</div>
 		{#if data.drinkState}
 			<div class="drink-area">
 				<h3>{data.drinkState.name}</h3>
@@ -85,24 +55,54 @@
 						? data.drinkState.instructions
 						: data.drinkState.instructions.slice(0, 350) + '...'}
 				</p>
-				<!-- <p>
-				Indigredients
-				{#each data.drinkState.ingredients as ingredient}
-					<Ingredient {ingredient} />
-				{/each}
-			</p> -->
 			</div>
 		{/if}
+		<div class="drop-area">
+			<div
+				on:dragover={data.dragOver}
+				on:drop={data.dropFromCardList}
+				on:dragenter={data.dragEnterFromCardList}
+				on:dragleave={data.dragLeaveFromCardList}
+				id="right"
+				class:ring={data.isDraggingOverFromCardList}
+			>
+				{#each data.userDeck as card_id, index}
+					{#if parseInt(card_id) <= 16}
+						<img
+							on:dragstart={data.dragFromUserDeck}
+							on:click={data.showCardInfo}
+							in:slide
+							id={card_id.toString()}
+							class="card-thumb"
+							src="/image/unit/card_{card_id}.jpeg"
+							alt="drink thuumb"
+							draggable="true"
+						/>
+					{:else}
+						<img
+							on:dragstart={data.dragFromUserDeck}
+							on:click={data.showCardInfo}
+							in:slide
+							id={card_id.toString()}
+							class="card-thumb"
+							src="/image/trigger/card_{card_id}.jpeg"
+							alt="drink thuumb"
+							draggable="true"
+						/>
+					{/if}
+				{/each}
+			</div>
+		</div>
 	</div>
 	<div class="bottom_container">
 		<div class="info-area">
 			{#if data.selectedCard}
 				<div class="image-area">
-					<img
-						src="/image/unit/card_{data.selectedCard.card_id}.jpeg"
-						alt="card"
-						draggable="true"
-					/>
+					{#if parseInt(data.selectedCard.card_id) <= 16}
+						<img src="/image/unit/card_{data.selectedCard.card_id}.jpeg" alt="card" />
+					{:else}
+						<img src="/image/trigger/card_{data.selectedCard.card_id}.jpeg" alt="card" />
+					{/if}
 					<div>
 						<div>{data.selectedCard?.name}</div>
 						{#if data.selectedCard.type == '0'}
@@ -118,15 +118,22 @@
 				</div>
 			{/if}
 		</div>
-		<div id="left">
+		<div
+			on:dragover={data.dragOver}
+			on:drop={data.dropFromUserDeck}
+			on:dragenter={data.dragEnterFromUserDeck}
+			on:dragleave={data.dragLeaveFromUserDeck}
+			class:ring={data.isDraggingOverFromUserDeck}
+			id="left"
+		>
 			<div class="card_list">
-				{#each data.userDeck as card_id, index}
+				{#each data.reserveCardData as card_id, index}
 					{#if parseInt(card_id) <= 16}
 						<img
-							on:dragstart={data.dragHandCard}
+							on:dragstart={data.dragFromCardList}
 							on:click={data.showCardInfo}
 							out:scale
-							id={index.toString()}
+							id={card_id.toString()}
 							class="card-thumb"
 							src="/image/unit/card_{card_id}.jpeg"
 							alt="card"
@@ -134,10 +141,10 @@
 						/>
 					{:else}
 						<img
-							on:dragstart={data.dragHandCard}
+							on:dragstart={data.dragFromCardList}
 							on:click={data.showCardInfo}
 							out:scale
-							id={index.toString()}
+							id={card_id.toString()}
 							class="card-thumb"
 							src="/image/trigger/card_{card_id}.jpeg"
 							alt="card"
@@ -181,6 +188,10 @@
 		width: 90vw;
 	}
 
+	.drop-area img {
+		cursor: grab;
+	}
+
 	.drink-area {
 		width: 10vw;
 	}
@@ -203,7 +214,7 @@
 	}
 
 	.card-thumb {
-		width: 100px;
+		width: 90px;
 		border-radius: 1rem;
 	}
 
@@ -265,20 +276,23 @@
 	}
 	#left,
 	#right {
-		margin: 20px;
+		margin: 8px 20px;
 		border: 2px dashed #fff;
 	}
 	#left {
 		width: 76%;
-		height: 145px;
+		height: 130px;
 		padding: 15px 10px;
 	}
 	#right {
-		width: 96%;
-		height: 330px;
+		width: 900px;
+		height: 390px;
+		margin-left: auto;
+		margin-right: 5%;
 	}
+	#left.ring,
 	#right.ring {
-		border: 2px dashed #f00;
+		border: 2px dashed rgb(58, 19, 231);
 	}
 	.card_list {
 		width: 100%;

@@ -22,7 +22,6 @@ export async function load({ fetch }) {
 		ingredients,
 		thumbUrl: result.drinks[0].strDrinkThumb
 	};
-
 	Amplify.configure(config);
 	const client = generateClient();
 
@@ -35,8 +34,10 @@ export async function load({ fetch }) {
 		funcSignInWallet: null,
 		funcSignOutWallet: null,
 		funcCreatePlayer: null,
+		funcSaveDeck: null,
 		player: null,
 		cardInfo: {},
+		reserveCardData: [],
 		userDeck: [],
 		isRegistered: null,
 		getPlayerInfo: null,

@@ -51,7 +51,26 @@
 			3000;
 	};
 
+	data.funcSaveDeck = async () => {
+		data.showSpinner = true;
+		// Call GraphQL method.
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'save_deck',
+					message: JSON.stringify(data.userDeck),
+					playerId: data.player.playerId
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 8000);
+	};
+
 	data.funcPlayerMatching = async () => {
+		// Call GraphQL method.
 		data.client.graphql({
 			query: createGameServerProcess,
 			variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
@@ -75,12 +94,13 @@
 					data.walletUser.addr,
 					parseInt(data.player.playerId)
 				);
+				const ret2 = data.userDeck.map((data) => parseInt(data));
+				data.userDeck = ret2;
 				clearInterval(intervalRet);
 			} else {
 				noteText = '';
 				dialog.showModal();
 			}
-			console.log(data, `isRegistered: ${ret}`);
 		}
 	};
 
@@ -88,6 +108,12 @@
 		// カード情報取得
 		try {
 			data.cardInfo = await getCardInfo(fcl);
+
+			// Create Card Info Array
+			const cardList = Object.keys(data.cardInfo);
+			for (const id of cardList) {
+				data.reserveCardData.push(data.cardInfo[id].card_id);
+			}
 			// widget.callback('card-info', player.playerId, null, null, objJs);
 		} catch (e) {}
 	};

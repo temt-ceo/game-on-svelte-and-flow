@@ -39,6 +39,5 @@ export const getCardInfo = async function (fcl) {
     `,
 		args: (arg, t) => []
 	});
-	console.log(result);
 	return result;
 };
