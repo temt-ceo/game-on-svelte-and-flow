@@ -1,7 +1,7 @@
 <script lang="ts">
 	import GraphQLAPI from './GraphQLAPI.svelte';
 	import { createGameServerProcess } from '../../graphql/mutations';
-	import { isRegistered } from '$lib/cadence/scripts';
+	import { isRegistered, getPlayerDeck, getCardInfo } from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
 	import * as types from '@onflow/types';
@@ -70,11 +70,11 @@
 					playerName: ret.nickname,
 					playerUUId: ret.uuid
 				};
-				//   userDeck = await promiseToFuture(
-				//       getPlayerDeck(walletUser.addr, int.parse(playerId!)));
-				// } else {
-				//   debugPrint('Not Imporing.');
-				//   setState(() => player = PlayerResource('', '', ''));
+				data.userDeck = await getPlayerDeck(
+					fcl,
+					data.walletUser.addr,
+					parseInt(data.player.playerId)
+				);
 				clearInterval(intervalRet);
 			} else {
 				noteText = '';
@@ -82,6 +82,15 @@
 			}
 			console.log(data.player, `isRegistered: ${ret}`);
 		}
+	};
+
+	const getCardInfos = async () => {
+		// カード情報取得
+		try {
+			data.cardInfo = await getCardInfo(fcl);
+			console.log(data.cardInfo);
+			// widget.callback('card-info', player.playerId, null, null, objJs);
+		} catch (e) {}
 	};
 
 	fcl.currentUser.subscribe((user) => {
@@ -100,6 +109,9 @@
 			);
 		}
 	});
+
+	// カード情報取得
+	getCardInfos();
 </script>
 
 <div>

@@ -36,7 +36,10 @@ export async function load({ fetch }) {
 		funcSignOutWallet: null,
 		funcCreatePlayer: null,
 		player: null,
+		cardInfo: {},
+		userDeck: [],
 		isRegistered: null,
-		getPlayerInfo: null
+		getPlayerInfo: null,
+		getCardInfos: null
 	};
 }

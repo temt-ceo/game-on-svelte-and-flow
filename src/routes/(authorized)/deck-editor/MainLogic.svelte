@@ -14,7 +14,10 @@
 	};
 
 	data.showCardInfo = (e: Event) => {
-		console.log(888, (e.target as HTMLElement).getAttribute('id'));
+		const index = parseInt((e.target as HTMLElement).getAttribute('id'));
+		const card_id = data.userDeck[index];
+		console.log(888, index, card_id);
+		data.selectedCard = data.cardInfo[card_id];
 		data.draggingCardPosition = (e.target as HTMLElement).getAttribute('id');
 	};
 

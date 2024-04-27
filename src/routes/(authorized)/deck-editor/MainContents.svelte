@@ -48,8 +48,34 @@
 	</div>
 
 	<div class="main_container">
-		<div class="info-area"></div>
-		<div class="drop-area"></div>
+		<div class="drop-area">
+			<div
+				on:dragover={data.dragOver}
+				on:drop={data.dropHandCard}
+				on:dragenter={data.dragEnterHandCard}
+				on:dragleave={data.dragLeaveHandCard}
+				id="right"
+				class:ring={data.isDraggingOverAssigned}
+			>
+				{#each data.cardData.fieldCards as card_id}
+					{#if parseInt(card_id) <= 16}
+						<img
+							in:slide
+							class="card-thumb"
+							src="/image/unit/card_{card_id}.jpeg"
+							alt="drink thuumb"
+						/>
+					{:else}
+						<img
+							in:slide
+							class="card-thumb"
+							src="/image/unit/trigger_{card_id}.jpeg"
+							alt="drink thuumb"
+						/>
+					{/if}
+				{/each}
+			</div>
+		</div>
 		{#if data.drinkState}
 			<div class="drink-area">
 				<h3>{data.drinkState.name}</h3>
@@ -69,36 +95,57 @@
 		{/if}
 	</div>
 	<div class="bottom_container">
-		<div id="left">
-			<div class="card_list">
-				{#each data.cardData.handCards as card_id, index}
+		<div class="info-area">
+			{#if data.selectedCard}
+				<div class="image-area">
 					<img
-						on:dragstart={data.dragHandCard}
-						on:click={data.showCardInfo}
-						out:scale
-						id={card_id.toString()}
-						class="card-thumb"
-						src="/image/unit/card_{card_id}.jpeg"
+						src="/image/unit/card_{data.selectedCard.card_id}.jpeg"
 						alt="card"
 						draggable="true"
 					/>
+					<div>
+						<div>{data.selectedCard?.name}</div>
+						{#if data.selectedCard.type == '0'}
+							<div class="cost red">{data.selectedCard.cost}</div>
+						{:else}
+							<div class="cost yellow">{data.selectedCard.cost}</div>
+						{/if}
+					</div>
+				</div>
+				<div class="data-area">
+					<div>[BP: {data.selectedCard.bp}]</div>
+					<div class="skill-description">{data.selectedCard.skill?.description}</div>
+				</div>
+			{/if}
+		</div>
+		<div id="left">
+			<div class="card_list">
+				{#each data.userDeck as card_id, index}
+					{#if parseInt(card_id) <= 16}
+						<img
+							on:dragstart={data.dragHandCard}
+							on:click={data.showCardInfo}
+							out:scale
+							id={index.toString()}
+							class="card-thumb"
+							src="/image/unit/card_{card_id}.jpeg"
+							alt="card"
+							draggable="true"
+						/>
+					{:else}
+						<img
+							on:dragstart={data.dragHandCard}
+							on:click={data.showCardInfo}
+							out:scale
+							id={index.toString()}
+							class="card-thumb"
+							src="/image/trigger/card_{card_id}.jpeg"
+							alt="card"
+							draggable="true"
+						/>
+					{/if}
 				{/each}
 			</div>
-		</div>
-		<div
-			on:dragover={data.dragOver}
-			on:drop={data.dropHandCard}
-			on:dragenter={data.dragEnterHandCard}
-			on:dragleave={data.dragLeaveHandCard}
-			id="right"
-			class:ring={data.isDraggingOverAssigned}
-		>
-			{#each data.cardData.fieldCards as card_id}
-				<img in:slide class="card-thumb" src="/image/unit/card_{card_id}.jpeg" alt="drink thuumb" />
-			{/each}
-		</div>
-		<div class="clock">
-			<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
 		</div>
 	</div>
 </div>
@@ -130,12 +177,8 @@
 		align-items: center;
 	}
 
-	.info-area {
-		width: 45vw;
-	}
-
 	.drop-area {
-		width: 45vw;
+		width: 90vw;
 	}
 
 	.drink-area {
@@ -169,23 +212,82 @@
 	}
 
 	.bottom_container {
+		width: 100vw;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 	}
 
+	.info-area {
+		width: 25vw;
+		min-height: 135px;
+	}
+
+	.image-area {
+		position: relative;
+		min-height: 65px;
+	}
+
+	.image-area img {
+		width: 70%;
+		height: 65px;
+		padding-left: 63px;
+		object-fit: cover;
+	}
+	.image-area div {
+		position: absolute;
+		width: 80px;
+		height: 22px;
+		background-color: black;
+		top: 0;
+		left: 0;
+		padding: 10px;
+	}
+	.image-area div.cost {
+		height: 13px;
+		top: 34px;
+		padding: 10px;
+	}
+	.image-area div.red {
+		background-color: darkred;
+	}
+	.image-area div.yellow {
+		background-color: gold;
+	}
+	.data-area {
+		min-height: 70px;
+		padding: 20px;
+		border: 2px dashed #fff;
+		font-size: 12px;
+	}
+	.data-area .skill-description {
+		font-size: 10px;
+	}
 	#left,
 	#right {
-		width: 300px;
-		min-height: 200px;
 		margin: 20px;
 		border: 2px dashed #fff;
+	}
+	#left {
+		width: 76%;
+		height: 145px;
+		padding: 15px 10px;
+	}
+	#right {
+		width: 96%;
+		height: 330px;
 	}
 	#right.ring {
 		border: 2px dashed #f00;
 	}
-
+	.card_list {
+		width: 100%;
+		height: 145px;
+		overflow-x: scroll;
+		white-space: nowrap;
+	}
 	.card_list img {
+		display: inline-block;
 		cursor: grab;
 	}
 
