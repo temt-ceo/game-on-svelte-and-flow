@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { fade, scale, slide } from 'svelte/transition';
+	import { scale, slide } from 'svelte/transition';
 	import { Clock } from 'svelte-loading-spinners';
-	import Ingredient from './ingredient.svelte';
 
 	export let data;
 </script>
@@ -45,34 +44,21 @@
 	</div>
 
 	<div class="main_container">
-		<div class="info-area"></div>
-		<div class="drop-area"></div>
-		{#if data.drinkState}
-			<div class="drink-area">
-				<h3>{data.drinkState.name}</h3>
-				<img class="drink-thumb" src={data.drinkState.thumbUrl} alt="drink thuumb" />
-				<p class="drink-instruction">
-					{data.drinkState.instructions.length <= 350
-						? data.drinkState.instructions
-						: data.drinkState.instructions.slice(0, 350) + '...'}
-				</p>
-				<!-- <p>
-				Indigredients
-				{#each data.drinkState.ingredients as ingredient}
-					<Ingredient {ingredient} />
-				{/each}
-			</p> -->
-			</div>
-		{/if}
-	</div>
-	<div class="bottom_container">
-		<div id="left">
-			<div class="hand_list">
-				{#each data.cardData.handCards as card_id, index}
+		<div class="drop-area">
+			<div
+				on:dragover={data.dragOver}
+				on:drop={data.dropFromCardList}
+				on:dragenter={data.dragEnterFromCardList}
+				on:dragleave={data.dragLeaveFromCardList}
+				id="deck_field"
+				class:ring={data.isDraggingOverFromCardList}
+			>
+				{#each data.userDeck as card_id, index}
 					<img
-						on:dragstart={data.dragHandCard}
-						out:scale
-						id={(index + 1).toString()}
+						on:dragstart={data.dragFromUserDeck}
+						on:click={data.showCardInfo}
+						in:slide
+						id={card_id.toString()}
 						class="card-thumb"
 						src="/image/card_{card_id}.jpeg"
 						alt="drink thuumb"
@@ -81,17 +67,49 @@
 				{/each}
 			</div>
 		</div>
+	</div>
+	<div class="bottom_container">
+		<div class="info-area">
+			{#if data.selectedCard}
+				<div class="image-area">
+					<img src="/image/card_{data.selectedCard.card_id}.jpeg" alt="card" />
+					<div>
+						<div>{data.selectedCard?.name}</div>
+						{#if data.selectedCard.type == '0'}
+							<div class="cost red">{data.selectedCard.cost}</div>
+						{:else}
+							<div class="cost yellow">{data.selectedCard.cost}</div>
+						{/if}
+					</div>
+				</div>
+				<div class="data-area">
+					<div>[BP: {data.selectedCard.bp}]</div>
+					<div class="skill-description">{data.selectedCard.skill?.description}</div>
+				</div>
+			{/if}
+		</div>
 		<div
 			on:dragover={data.dragOver}
-			on:drop={data.dropHandCard}
-			on:dragenter={data.dragEnterHandCard}
-			on:dragleave={data.dragLeaveHandCard}
-			id="right"
-			class:ring={data.isDraggingOverAssigned}
+			on:drop={data.dropFromUserDeck}
+			on:dragenter={data.dragEnterFromUserDeck}
+			on:dragleave={data.dragLeaveFromUserDeck}
+			class:ring={data.isDraggingOverFromUserDeck}
+			id="own_cards"
 		>
-			{#each data.cardData.fieldCards as card_id}
-				<img in:slide class="card-thumb" src="/image/card_{card_id}.jpeg" alt="drink thuumb" />
-			{/each}
+			<div class="card_list">
+				{#each data.reserveCardData as card_id, index}
+					<img
+						on:dragstart={data.dragFromCardList}
+						on:click={data.showCardInfo}
+						out:scale
+						id={card_id.toString()}
+						class="card-thumb"
+						src="/image/card_{card_id}.jpeg"
+						alt="card"
+						draggable="true"
+					/>
+				{/each}
+			</div>
 		</div>
 		<div class="clock">
 			<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
@@ -100,99 +118,41 @@
 </div>
 
 <style lang="scss">
-	.wrapper {
-		width: 100vw;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		font-family: Arial, Helvetica, sans-serif;
-	}
+	@import '../style/common.scss';
 
-	.button_container {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin: 0 20px 0 auto;
-	}
-
-	.button_container img {
-		margin-left: 15px;
-		cursor: pointer;
-	}
-
-	.main_container {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.info-area {
-		width: 45vw;
-	}
-
-	.drop-area {
-		width: 45vw;
-	}
-
-	.drink-area {
-		width: 10vw;
-	}
-
-	.drink-thumb {
-		width: 100px;
-		border-radius: 1rem;
-	}
-
-	.drink-instruction {
-		font-size: 9px;
-	}
-
-	.button_container img {
-		width: 100px;
-	}
-
-	.button_container img.logout {
-		width: 60px;
-	}
-	.button_container img.edit-deck {
-		width: 65px;
-	}
-
-	.card-thumb {
-		width: 100px;
-		border-radius: 1rem;
-	}
-
-	p {
-		text-align: center;
-	}
-
-	.bottom_container {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	#left,
-	#right {
-		width: 300px;
-		min-height: 200px;
-		margin: 20px;
+	#own_cards,
+	#deck_field {
+		margin: 8px 20px;
 		border: 2px dashed #fff;
 	}
-	#right.ring {
-		border: 2px dashed #f00;
+
+	#own_cards {
+		width: 56%;
+		height: 130px;
+		padding: 15px 10px;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
 	}
 
-	.hand_list img {
-		cursor: grab;
+	#deck_field {
+		width: 900px;
+		height: 390px;
+		margin-left: auto;
+		margin-right: 5%;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
 	}
 
 	.clock {
+		margin-right: 10px;
 		transform: rotate(-90deg);
-	}
 
-	.clock > :global(div::before) {
-		animation: none !important;
+		> :global(div::before) {
+			animation: none !important;
+		}
 	}
 </style>

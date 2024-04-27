@@ -141,11 +141,3 @@
 <Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
-
-<style>
-	.absolute {
-		position: absolute;
-		top: 20px;
-		left: 20px;
-	}
-</style>

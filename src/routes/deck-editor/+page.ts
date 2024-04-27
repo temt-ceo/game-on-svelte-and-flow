@@ -18,8 +18,6 @@ export async function load({ fetch }) {
 		player: null,
 		cardInfo: {},
 		reserveCardData: [],
-		userDeck: [],
-		isRegistered: null,
-		getCardInfos: null
+		userDeck: []
 	};
 }

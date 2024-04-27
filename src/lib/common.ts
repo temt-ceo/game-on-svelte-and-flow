@@ -1,9 +1,9 @@
 import { isRegistered, getPlayerDeck, getCardInfo } from '$lib/cadence/scripts';
 
-export const getPlayerInfo = async (data, fcl, dialog) => {
+export const getPlayerInfo = async (data, dialog) => {
 	if (data.walletUser.addr != '') {
 		data.showSpinner = true;
-		var ret = await isRegistered(fcl, data.walletUser.addr);
+		var ret = await isRegistered(data.fcl, data.walletUser.addr);
 		data.showSpinner = false;
 		console.log(`isRegistered ret: ${ret}`);
 		if (ret != null) {
@@ -13,7 +13,7 @@ export const getPlayerInfo = async (data, fcl, dialog) => {
 				playerUUId: ret.uuid
 			};
 			data.userDeck = await getPlayerDeck(
-				fcl,
+				data.fcl,
 				data.walletUser.addr,
 				parseInt(data.player.playerId)
 			);
@@ -25,11 +25,16 @@ export const getPlayerInfo = async (data, fcl, dialog) => {
 	}
 };
 
-export const getCardInfos = async (data, fcl) => {
+export const getCardInfos = async (data) => {
 	// カード情報取得
 	try {
-		data.cardInfo = await getCardInfo(fcl);
-		console.log(data.cardInfo);
+		data.cardInfo = await getCardInfo(data.fcl);
+
+		// Create Card Info Array
+		const cardList = Object.keys(data.cardInfo);
+		for (const id of cardList) {
+			data.reserveCardData.push(data.cardInfo[id].card_id);
+		}
 		// widget.callback('card-info', player.playerId, null, null, objJs);
 	} catch (e) {}
 };
