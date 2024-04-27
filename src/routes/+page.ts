@@ -1,7 +1,7 @@
-import type { DrinkType } from '../../types';
+import type { DrinkType } from '../types';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/api';
-import config from '../../config.json';
+import config from '../config.json';
 
 /** @type {import('./$types').Load} */
 export async function load({ fetch }) {
@@ -30,6 +30,8 @@ export async function load({ fetch }) {
 		drinkState: drinkProp,
 		client: client,
 		walletUser: null,
+		dialog: false,
+		intervalRet: null,
 		showSpinner: false,
 		funcPlayerMatching: null,
 		funcSignInWallet: null,
@@ -39,7 +41,6 @@ export async function load({ fetch }) {
 		cardInfo: {},
 		userDeck: [],
 		isRegistered: null,
-		getPlayerInfo: null,
 		getCardInfos: null
 	};
 }

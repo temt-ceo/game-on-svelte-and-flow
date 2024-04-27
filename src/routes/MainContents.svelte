@@ -74,7 +74,7 @@
 						out:scale
 						id={(index + 1).toString()}
 						class="card-thumb"
-						src="/image/unit/card_{card_id}.jpeg"
+						src="/image/card_{card_id}.jpeg"
 						alt="drink thuumb"
 						draggable="true"
 					/>
@@ -90,7 +90,7 @@
 			class:ring={data.isDraggingOverAssigned}
 		>
 			{#each data.cardData.fieldCards as card_id}
-				<img in:slide class="card-thumb" src="/image/unit/card_{card_id}.jpeg" alt="drink thuumb" />
+				<img in:slide class="card-thumb" src="/image/card_{card_id}.jpeg" alt="drink thuumb" />
 			{/each}
 		</div>
 		<div class="clock">
@@ -99,7 +99,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	.wrapper {
 		width: 100vw;
 		display: flex;

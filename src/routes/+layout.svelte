@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/PageHeader.svelte';
-	import Footer from '$lib/PageFooter.svelte';
 	import { page } from '$app/stores';
 </script>
 
@@ -9,9 +7,7 @@
 </svelte:head>
 
 <div class="main">
-	<Header />
 	<slot />
-	<Footer />
 </div>
 
 <style>
