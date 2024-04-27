@@ -9,3 +9,13 @@ export type DrinkType = {
 	ingredients: IngredientType[];
 	thumbUrl: string;
 };
+
+export type CardType = {
+	bp: string;
+	card_id: string;
+	category: string;
+	cost: string;
+	name: string;
+	skill: object;
+	type: string;
+};

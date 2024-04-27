@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WrapperFrame from './WrapperFrame.svelte';
-	import { onCreateGameServerProcess } from '../../graphql/subscriptions';
+	import { onCreateGameServerProcess } from '../graphql/subscriptions';
 
 	export let data;
 

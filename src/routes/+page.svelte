@@ -1,12 +1,10 @@
 <script lang="ts">
-	import GraphQLAPI from './GraphQLAPI.svelte';
-	import { createGameServerProcess } from '../../../graphql/mutations';
-	import { isRegistered } from '$lib/cadence/scripts';
+	import { createGameServerProcess } from '../graphql/mutations';
+	import { isRegistered, getPlayerDeck, getCardInfo } from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
-	import * as types from '@onflow/types';
-	import { Jumper } from 'svelte-loading-spinners';
 	import Dialog from '$lib/Dialog.svelte';
+	import MainLogic from './MainLogic.svelte';
 
 	fcl.config({
 		'accessNode.api': 'https://rest-mainnet.onflow.org',
@@ -46,19 +44,38 @@
 		console.log(ret);
 		data.showSpinner = false;
 		(intervalRet = setInterval(() => {
-			data.getPlayerInfo();
+			getPlayerInfo();
 		})),
 			3000;
 	};
 
+	data.funcSaveDeck = async () => {
+		data.showSpinner = true;
+		// Call GraphQL method.
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'save_deck',
+					message: JSON.stringify(data.userDeck),
+					playerId: data.player.playerId
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 10000);
+	};
+
 	data.funcPlayerMatching = async () => {
+		// Call GraphQL method.
 		data.client.graphql({
 			query: createGameServerProcess,
 			variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
 		});
 	};
 
-	data.getPlayerInfo = async () => {
+	const getPlayerInfo = async () => {
 		if (data.walletUser.addr != '') {
 			data.showSpinner = true;
 			var ret = await isRegistered(fcl, data.walletUser.addr);
@@ -70,18 +87,33 @@
 					playerName: ret.nickname,
 					playerUUId: ret.uuid
 				};
-				//   userDeck = await promiseToFuture(
-				//       getPlayerDeck(walletUser.addr, int.parse(playerId!)));
-				// } else {
-				//   debugPrint('Not Imporing.');
-				//   setState(() => player = PlayerResource('', '', ''));
+				data.userDeck = await getPlayerDeck(
+					fcl,
+					data.walletUser.addr,
+					parseInt(data.player.playerId)
+				);
+				const ret2 = data.userDeck.map((data) => parseInt(data));
+				data.userDeck = ret2;
 				clearInterval(intervalRet);
 			} else {
 				noteText = '';
 				dialog.showModal();
 			}
-			console.log(data.player, `isRegistered: ${ret}`);
 		}
+	};
+
+	const getCardInfos = async () => {
+		// カード情報取得
+		try {
+			data.cardInfo = await getCardInfo(fcl);
+
+			// Create Card Info Array
+			const cardList = Object.keys(data.cardInfo);
+			for (const id of cardList) {
+				data.reserveCardData.push(data.cardInfo[id].card_id);
+			}
+			// widget.callback('card-info', player.playerId, null, null, objJs);
+		} catch (e) {}
 	};
 
 	fcl.currentUser.subscribe((user) => {
@@ -90,7 +122,7 @@
 			if (data.walletUser?.addr) {
 				console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
 				if (!data.player) {
-					data.getPlayerInfo();
+					getPlayerInfo();
 					//   widget.callback('game-is-ready', player.playerId, null, null, null);
 				}
 			}
@@ -100,24 +132,12 @@
 			);
 		}
 	});
+
+	// カード情報取得
+	getCardInfos();
 </script>
 
-<div>
-	{#if data.showSpinner}
-		<div class="absolute">
-			<Jumper size="50" color="#F03E50" unit="px" duration="1s" />
-		</div>
-	{/if}
-	<GraphQLAPI {data} />
-</div>
+<MainLogic {data} />
 <Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
-
-<style>
-	.absolute {
-		position: absolute;
-		top: 20px;
-		left: 20px;
-	}
-</style>
