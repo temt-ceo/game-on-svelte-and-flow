@@ -94,3 +94,26 @@ export const getBalance = async function (fcl, address, playerId) {
 	});
 	return result;
 };
+
+export const getMariganCards = async function (fcl, address, playerId) {
+	fcl.config({
+		'accessNode.api': 'https://rest-mainnet.onflow.org',
+		'discovery.wallet': 'https://fcl-discovery.onflow.org/authn',
+		'app.detail.title': 'COF.ninja', // Shows user what dapp is trying to connect
+		'app.detail.icon': 'https://cof.ninja/cof.png' // shows image to the user to display your dapp brand
+	});
+	const result = await fcl.query({
+		cadence: `
+    import CodeOfFlow from 0x24466f7fc36e3388
+    pub fun main(address: Address, player_id: UInt): [[UInt16]] {
+        let account = getAccount(address)
+        let cap = account.getCapability<&CodeOfFlow.Player{CodeOfFlow.IPlayerPublic}>(CodeOfFlow.PlayerPublicPath).borrow()
+          ?? panic("Doesn't have capability!")
+        return cap.get_marigan_cards(player_id: player_id)
+    }
+    `,
+		args: (arg, t) => [arg(address, t.Address), arg(playerId, t.UInt)]
+	});
+	// console.log(result);
+	return result;
+};

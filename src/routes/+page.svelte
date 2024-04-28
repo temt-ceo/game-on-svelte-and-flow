@@ -5,7 +5,8 @@
 		getPlayerDeck,
 		getCardInfo,
 		getCurrentStatus,
-		getBalance
+		getBalance,
+		getMariganCards
 	} from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
@@ -24,7 +25,7 @@
 	let playerName = 'Test Player';
 	let modalDisabled = false;
 	let intervalRet;
-	let isGameStarted = false;
+	let animationOnFlag = false;
 
 	/** FCL part */
 
@@ -179,7 +180,7 @@
 			const ret = await getCurrentStatus(fcl, data.walletUser.addr);
 			if (ret == null || ret.toString().startsWith('1')) {
 				// Not starting the game
-				isGameStarted = false;
+				data.gameStarted = false;
 				// バトルデータなし
 				if (data.gameObject != null) {
 					// データがない = 10ターンが終わった可能性
@@ -207,9 +208,62 @@
 				data.canOperate = false;
 				data.gameStarted = false;
 				data.gameObject = null;
-				// 残高を取得
-				getBalances();
+			} else {
+				// Set game object.
+				data.gameObject = JSON.parse(ret);
+				// Setting the intro data.
+				if (data.gameObject['game_started'] == false && data.gameStarted == false) {
+					data.gameStarted = true;
+					animationOnFlag = true;
+					const ret = await getMariganCards(fcl, data.walletUser.addr, data.player?.playerId);
+					// Set marigan cards.
+					data.mariganCards = [];
+					for (let i = 0; i < 5; i++) {
+						data.mariganCards.push([]);
+						for (let j = 0; j < 4; j++) {
+							data.mariganCards[i].push(parseInt(ret[i][j]));
+						}
+					}
+					data.mariganClickCount = 0;
+					data.handCards = data.mariganCards[data.mariganClickCount];
+					data.canMarigan = true;
+					// After Marigan time is ended,
+					setTimeout(() => {
+						data.canMarigan = false;
+						// Start the battle.
+						data.showSpinner = true;
+						// Call GraphQL method.
+						data.client.graphql({
+							query: createGameServerProcess,
+							variables: {
+								input: {
+									type: 'game_start',
+									message: JSON.stringify(data.handCards),
+									playerId: data.gameObject.you.toString()
+								}
+							}
+						});
+						// close loading icon.
+						setTimeout(() => {
+							data.showSpinner = false;
+						}, 5000);
+						data.showToast(
+							'Game Start',
+							`Game Start! ${data.gameObject.isFirst ? 'Your Turn!' : "Opponent's Turn!"}`,
+							false
+						);
+					}, 7000);
+
+					// Start the Intro
+					setTimeout(() => {
+						animationOnFlag = false;
+					}, 1500);
+				} else if (data.gameObject['game_started'] == true) {
+					// widget.callback('started-game-info', player.playerId, setGameInfo(objJs), null, null);
+				}
 			}
+			// 残高を取得
+			getBalances();
 		}
 	}, 1000);
 </script>
@@ -220,8 +274,11 @@
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 
-{#if isGameStarted === false}
+{#if data.gameStarted === false}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
+{/if}
+{#if data.gameStarted && !data.gameObject['game_started'] && animationOnFlag}
+	<img class="not-started" src="/image/battleStart.png" alt="Let's start the game!" />
 {/if}
 
 <style lang="scss">

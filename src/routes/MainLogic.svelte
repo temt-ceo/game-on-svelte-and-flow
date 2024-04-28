@@ -58,10 +58,12 @@
 	};
 
 	// button function
-	data.sortUserDeck = () => {
-		data.userDeck.sort((a, b) => a - b);
-		data.userDeck = data.userDeck;
-		console.log(data.userDeck);
+	data.retryMarigan = () => {
+		data.mariganClickCount++;
+		if (data.mariganClickCount < 5) {
+			data.handCards = data.mariganCards[data.mariganClickCount];
+		}
+		console.log(data.mariganCards);
 	};
 
 	/** GraphQL Subscribition part */
@@ -69,9 +71,9 @@
 		next: (gameProcess) => {
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
 			console.log(retSubscription);
-			data.showSpinner = true;
 			switch (retSubscription.type) {
 				case 'save_deck':
+					data.showSpinner = true;
 					setTimeout(() => {
 						data.showSpinner = false;
 					}, 10000);
@@ -100,7 +102,12 @@
 
 {#if data.countdown}
 	<div class="clock">
-		<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+		<Clock size="120" color="#F03EFF" unit="px" duration="240s" pause={false} />
+	</div>
+{/if}
+{#if data.canMarigan}
+	<div class="marigan-clock">
+		<Clock size="100" color="#F03EFF" unit="px" duration="20s" pause={false} />
 	</div>
 {/if}
 

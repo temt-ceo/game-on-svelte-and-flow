@@ -66,12 +66,11 @@
 				on:drop={data.dropFromCardList}
 				on:dragenter={data.dragEnterFromCardList}
 				on:dragleave={data.dragLeaveFromCardList}
-				id="deck_field"
+				id="battle_field"
 				class:ring={data.isDraggingOverFromCardList}
 			>
 				{#each data.userDeck as card_id, index}
 					<img
-						on:dragstart={data.dragFromUserDeck}
 						on:click={data.showCardInfo}
 						in:slide
 						id={card_id.toString()}
@@ -104,27 +103,28 @@
 				</div>
 			{/if}
 		</div>
-		<div
-			on:dragover={data.dragOver}
-			on:drop={data.dropFromUserDeck}
-			on:dragenter={data.dragEnterFromUserDeck}
-			on:dragleave={data.dragLeaveFromUserDeck}
-			class:ring={data.isDraggingOverFromUserDeck}
-			id="own_cards"
-		>
+		<div on:dragover={data.dragOver} on:drop={data.dropFromUserDeck} id="own_cards">
 			<div class="card_list">
-				{#each data.reserveCardData as card_id, index}
+				{#each data.handCards as card_id, index}
 					<img
 						on:dragstart={data.dragFromCardList}
 						on:click={data.showCardInfo}
 						out:scale
-						id={card_id.toString()}
+						id={(index + 1).toString()}
 						class="card-thumb"
 						src="/image/card_{card_id}.jpeg"
 						alt="card"
 						draggable="true"
 					/>
 				{/each}
+				{#if data.canMarigan}
+					<img
+						class="menu-button marigan-btn"
+						on:click={data.retryMarigan}
+						src="/image/button/redo.png"
+						alt="Redo"
+					/>
+				{/if}
 			</div>
 		</div>
 		<div class="clock">
@@ -137,7 +137,7 @@
 	@import '../style/common.scss';
 
 	#own_cards,
-	#deck_field {
+	#battle_field {
 		margin: 8px 20px;
 		border: 2px dashed #fff;
 	}
@@ -152,7 +152,7 @@
 		}
 	}
 
-	#deck_field {
+	#battle_field {
 		width: 900px;
 		height: 390px;
 		margin-left: auto;
