@@ -83,7 +83,8 @@
 						}, 66000);
 						data.showToast(
 							'Success!',
-							`You successfully entered in Alcana. Now matching is started.`
+							`You successfully entered in Alcana. Now matching is started.`,
+							false
 						);
 					} else {
 						data.showToast(

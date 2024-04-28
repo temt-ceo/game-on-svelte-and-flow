@@ -16,11 +16,22 @@
 	export let data;
 	let dialog;
 	let playerName = 'Test Player';
-	let noteText = '';
 	let modalDisabled = false;
 	let intervalRet;
 
 	/** FCL part */
+
+	fcl.currentUser.subscribe((user) => {
+		data.walletUser = user;
+		if (data.walletUser?.addr) {
+			console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
+			if (!data.player) {
+				getPlayerInfo();
+				//   widget.callback('game-is-ready', player.playerId, null, null, null);
+			}
+		}
+	});
+
 	// Wallet Signin
 	data.funcSignInWallet = () => {
 		fcl.authenticate();
@@ -35,8 +46,11 @@
 
 	data.funcCreatePlayer = async () => {
 		data.showSpinner = true;
-		noteText = 'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。';
-		modalDisabled = true;
+		data.showToast(
+			'Success',
+			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
+			false
+		);
 		setTimeout(() => {
 			dialog.close();
 		}, 3000);
@@ -87,7 +101,6 @@
 				data.userDeck = ret2;
 				clearInterval(intervalRet);
 			} else {
-				noteText = '';
 				dialog.showModal();
 			}
 		}
@@ -107,28 +120,11 @@
 		} catch (e) {}
 	};
 
-	fcl.currentUser.subscribe((user) => {
-		try {
-			data.walletUser = user;
-			if (data.walletUser?.addr) {
-				console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
-				if (!data.player) {
-					getPlayerInfo();
-					//   widget.callback('game-is-ready', player.playerId, null, null, null);
-				}
-			}
-		} catch (e) {
-			alert(
-				'Please reload the browser. Maybe because changing the browser size, something went ..'
-			);
-		}
-	});
-
 	// カード情報取得
 	getCardInfos();
 </script>
 
 <MainLogic {data} />
-<Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
+<Dialog bind:dialog bind:playerName on:close={() => console.log('closed')}>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>

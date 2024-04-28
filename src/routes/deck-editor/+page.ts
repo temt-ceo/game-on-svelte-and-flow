@@ -20,19 +20,17 @@ export async function load({ fetch }) {
 		cardInfo: {},
 		reserveCardData: [],
 		userDeck: [],
-		showToast: () => {
+		showToast: (title, message, warning) => {
 			const toast = toasts.add({
-				title: 'Message title',
-				description: 'Message body',
+				title: title,
+				description: message,
 				duration: 10000, // 0 or negative to avoid auto-remove
 				placement: 'bottom-right',
-				type: 'success',
+				type: warning ? 'warning' : 'success',
 				theme: 'dark',
 				onClick: () => {},
 				onRemove: () => {}
-				// component: BootstrapToast, // allows to override toast component/template per toast
 			});
-			// toast.remove()
 		}
 	};
 }

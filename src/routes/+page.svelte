@@ -22,12 +22,23 @@
 	export let data;
 	let dialog;
 	let playerName = 'Test Player';
-	let noteText = '';
 	let modalDisabled = false;
 	let intervalRet;
 	let isGameStarted = false;
 
 	/** FCL part */
+
+	fcl.currentUser.subscribe((user) => {
+		data.walletUser = user;
+		if (data.walletUser?.addr) {
+			console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
+			if (!data.player) {
+				getPlayerInfo();
+				//   widget.callback('game-is-ready', player.playerId, null, null, null);
+			}
+		}
+	});
+
 	// Wallet Signin
 	data.funcSignInWallet = () => {
 		fcl.authenticate();
@@ -42,7 +53,11 @@
 
 	data.funcCreatePlayer = async () => {
 		data.showSpinner = true;
-		noteText = 'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。';
+		data.showToast(
+			'Success',
+			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
+			false
+		);
 		modalDisabled = true;
 		setTimeout(() => {
 			dialog.close();
@@ -109,7 +124,6 @@
 				data.userDeck = ret2;
 				clearInterval(intervalRet);
 			} else {
-				noteText = '';
 				dialog.showModal();
 			}
 		}
@@ -142,12 +156,10 @@
 				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
 				balance! + 0.501 >= parseFloat(data.yourInfo['balance'])
 			) {
-				noteText = 'Congrats! You won 0.5FLOW!';
-				dialog.showModal();
+				data.showToast('Congrats!', 'You won 0.5FLOW!', false);
 			}
 			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
-				noteText = 'EN is successfully charged.';
-				dialog.showModal();
+				data.showToast('Success', 'EN is successfully charged.', false);
 			}
 			// data.yourScore =
 			//     '${yourInfo['score'].length} games ${yourInfo['win_count']} win');
@@ -158,23 +170,6 @@
 			// }
 		}
 	};
-
-	fcl.currentUser.subscribe((user) => {
-		try {
-			data.walletUser = user;
-			if (data.walletUser?.addr) {
-				console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
-				if (!data.player) {
-					getPlayerInfo();
-					//   widget.callback('game-is-ready', player.playerId, null, null, null);
-				}
-			}
-		} catch (e) {
-			alert(
-				'Please reload the browser. Maybe because changing the browser size, something went ..'
-			);
-		}
-	});
 
 	// カード情報取得
 	getCardInfos();
@@ -194,7 +189,7 @@
 						(data.gameObject!.yourLife == 1 &&
 							data.gameObject!.yourLife < data.gameObject!.opponentLife)
 					) {
-						noteText = 'You Lose... Try Again!';
+						data.showToast('You Lose...', 'Try Again!', true);
 						dialog.showModal();
 					} else if (
 						data.gameObject!.turn == 10 &&
@@ -202,8 +197,7 @@
 						data.gameObject!.isFirst == true &&
 						data.gameObject!.yourLife <= data.gameObject!.opponentLife
 					) {
-						noteText = 'You Lose... Try Again!';
-						dialog.showModal();
+						data.showToast('You Lose...', 'Try Again!', true);
 					}
 				}
 				// 内部データ初期化
@@ -222,7 +216,7 @@
 
 <MainLogic {data} />
 
-<Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
+<Dialog bind:dialog bind:playerName on:close={() => console.log('closed')}>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 

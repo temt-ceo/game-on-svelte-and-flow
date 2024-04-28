@@ -39,9 +39,7 @@ export async function load({}) {
 				theme: 'dark',
 				onClick: () => {},
 				onRemove: () => {}
-				// component: BootstrapToast, // allows to override toast component/template per toast
 			});
-			// toast.remove()
 		}
 	};
 }
