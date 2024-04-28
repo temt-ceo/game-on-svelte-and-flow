@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { scale, slide } from 'svelte/transition';
-	import { Clock } from 'svelte-loading-spinners';
+	import { Clock, Jumper } from 'svelte-loading-spinners';
 
 	export let data;
 </script>
+
+{#if data.showSpinner}
+	<div class="spinner">
+		<Jumper size="80" color="#F03E50" unit="px" duration="1.1s" />
+	</div>
+{/if}
 
 <div class="wrapper">
 	Hello,
@@ -15,7 +21,17 @@
 		do you wanna play a blockchain game, COF Ninja? If so, let's press the activate button!
 	{/if}
 	<div class="button_container">
-		<button on:click={data.handleOnGetADrink}>Get a drink</button>
+		<div>
+			Balance: {data.yourInfo['balance']?.substring(0, 5) ?? '--'}
+			<span class="unit">Digital Currency</span>
+		</div>
+		<div>
+			EN: {data.yourInfo['cyber_energy']}
+		</div>
+		<div>
+			Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
+		</div>
+		<button class="menu-button left-end" on:click={data.handleOnGetADrink}>Get a drink</button>
 		{#if data.walletUser?.addr}
 			<img
 				class="menu-button logout"
@@ -29,13 +45,13 @@
 					location.href = './deck-editor';
 				}}
 				src="/image/button/editDeck.png"
-				alt="activate"
+				alt="edit deck"
 			/>
-			<img on:click={data.funcSignInWallet} src="/image/button/playButton.png" alt="activate" />
+			<img on:click={data.funcPlayerMatching} src="/image/button/playButton.png" alt="play" />
 		{/if}
 		{#if !data.walletUser?.addr}
 			<img
-				class="menu-button"
+				class="menu-button activate"
 				on:click={data.funcSignInWallet}
 				src="/image/button/use.png"
 				alt="activate"
@@ -144,15 +160,6 @@
 
 		&.ring {
 			border: 2px dashed rgb(58, 19, 231);
-		}
-	}
-
-	.clock {
-		margin-right: 10px;
-		transform: rotate(-90deg);
-
-		> :global(div::before) {
-			animation: none !important;
 		}
 	}
 </style>

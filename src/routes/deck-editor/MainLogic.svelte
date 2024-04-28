@@ -64,11 +64,11 @@
 	/** GraphQL part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
-			console.log(gameProcess.data);
+			console.log(gameProcess.data, 999);
 			data.showSpinner = true;
 			setTimeout(() => {
 				data.showSpinner = false;
-			}, 7000);
+			}, 9000);
 		}
 	});
 </script>

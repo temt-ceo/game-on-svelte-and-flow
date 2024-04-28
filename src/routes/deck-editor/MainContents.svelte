@@ -6,7 +6,9 @@
 </script>
 
 {#if data.showSpinner}
-	<Jumper size="80" color="#F03E50" unit="px" duration="1s" />
+	<div class="spinner">
+		<Jumper size="80" color="#F03E50" unit="px" duration="1s" />
+	</div>
 {/if}
 
 <div class="wrapper">
@@ -20,6 +22,7 @@
 	{/if}
 	<div class="button_container">
 		<button
+			class="menu-button left-end"
 			on:click={() => {
 				location.href = './';
 			}}>Go back</button

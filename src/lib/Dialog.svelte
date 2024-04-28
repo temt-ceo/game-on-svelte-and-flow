@@ -1,7 +1,6 @@
 <script>
 	export let dialog;
 	export let playerName = '';
-	export let noteText;
 	let label = 'あなたのお名前';
 
 	const id = 'textInput';
@@ -14,7 +13,6 @@
 	<label for={id}>{label}</label>
 	<input bind:value={playerName} {placeholder} {id} {name} type="text" />
 	<slot />
-	<div class="note">{noteText}</div>
 </dialog>
 
 <style>

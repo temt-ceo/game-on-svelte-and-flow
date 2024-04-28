@@ -11,18 +11,39 @@
 	}
 
 	.button_container {
+		width: 100vw;
+		min-height: 66px;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		margin: 0 20px 0 auto;
+		font-size: 24px;
+
+		.unit {
+			font-size: 14px;
+		}
+
+		.left-end {
+			margin-left: auto;
+		}
+
+		div {
+			margin-right: 25px;
+		}
+
+		.menu-button {
+			margin-right: 15px;
+		}
 
 		img {
 			width: 100px;
-			margin-left: 15px;
 			cursor: pointer;
 
 			&.menu-button {
 				width: 70px;
+			}
+
+			&.activate {
+				width: 95px;
 			}
 		}
 	}
@@ -37,20 +58,6 @@
 
 			img {
 				cursor: grab;
-			}
-		}
-
-		.drink-area {
-			width: 10vw;
-
-			.drink-thumb {
-				width: 100px;
-				border-radius: 1rem;
-			}
-
-			.drink-instruction {
-				text-align: center;
-				font-size: 9px;
 			}
 		}
 	}
@@ -125,4 +132,17 @@
 			}
 		}
 	}
+
+	.clock {
+		margin-right: 10px;
+		transform: rotate(-90deg);
+
+		> :global(div::before) {
+			animation: none !important;
+		}
+	}
+}
+
+.spinner {
+	position: absolute;
 }

@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { Clock } from 'svelte-loading-spinners';
 	import MainContents from './MainContents.svelte';
 	import { onCreateGameServerProcess } from '../graphql/subscriptions';
+	import { ToastContainer, FlatToast } from 'svelte-toasts';
 
 	export let data;
+	let countdown = false;
 
 	data.draggingCardId = null;
 	data.isDraggingOverFromCardList = false;
@@ -61,16 +64,53 @@
 		console.log(data.userDeck);
 	};
 
-	/** GraphQL part */
+	/** GraphQL Subscribition part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
-			console.log(gameProcess.data);
+			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
+			console.log(retSubscription);
 			data.showSpinner = true;
-			setTimeout(() => {
-				data.showSpinner = false;
-			}, 7000);
+			switch (retSubscription.type) {
+				case 'save_deck':
+					setTimeout(() => {
+						data.showSpinner = false;
+					}, 10000);
+				case 'player_matching':
+					if (data.player.playerId == retSubscription.playerId) {
+						data.countdown = true;
+						setTimeout(() => {
+							data.countdown = false;
+						}, 66000);
+						data.showToast(
+							'Success!',
+							`You successfully entered in Alcana. Now matching is started.`,
+							false
+						);
+					} else {
+						data.showToast(
+							'Warning!!',
+							`No. ${retSubscription.playerId} has entered in Alcana.`,
+							true
+						);
+					}
+			}
 		}
 	});
 </script>
 
+{#if data.countdown}
+	<div class="clock">
+		<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+	</div>
+{/if}
+
 <MainContents {data} />
+
+<ToastContainer placement="bottom-right" let:data>
+	<FlatToast {data} />
+	<!-- Provider template for your toasts -->
+</ToastContainer>
+
+<style lang="scss">
+	@import '../style/dialog.scss';
+</style>
