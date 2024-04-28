@@ -33,13 +33,13 @@ export async function load({}) {
 		canOperate: false,
 		gameStarted: false,
 		countdown: false,
-		showToast: (title, message, warning) => {
-			const toast = toasts.add({
+		showToast: (title, message, style) => {
+			toasts.add({
 				title: title,
 				description: message,
 				duration: 10000, // 0 or negative to avoid auto-remove
 				placement: 'bottom-right',
-				type: warning ? 'warning' : 'success',
+				type: style,
 				theme: 'dark',
 				onClick: () => {},
 				onRemove: () => {}

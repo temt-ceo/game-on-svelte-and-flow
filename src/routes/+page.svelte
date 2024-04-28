@@ -35,7 +35,6 @@
 			console.log('wallet addr:', data.walletUser.addr, 'player:', data.player);
 			if (!data.player) {
 				getPlayerInfo();
-				//   widget.callback('game-is-ready', player.playerId, null, null, null);
 			}
 		}
 	});
@@ -57,7 +56,7 @@
 		data.showToast(
 			'Success',
 			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
-			false
+			'success'
 		);
 		modalDisabled = true;
 		setTimeout(() => {
@@ -151,16 +150,15 @@
 		if (data.walletUser.addr != '') {
 			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
 			data.yourInfo = ret[0];
-			console.log(data.yourInfo, 88);
 			if (
 				balance != parseFloat(data.yourInfo['balance']) &&
 				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
 				balance! + 0.501 >= parseFloat(data.yourInfo['balance'])
 			) {
-				data.showToast('Congrats!', 'You won 0.5FLOW!', false);
+				data.showToast('Congrats!', 'You won 0.5FLOW!', 'success');
 			}
 			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
-				data.showToast('Success', 'EN is successfully charged.', false);
+				data.showToast('Success', 'EN is successfully charged.', 'success');
 			}
 			// data.yourScore =
 			//     '${yourInfo['score'].length} games ${yourInfo['win_count']} win');
@@ -177,8 +175,8 @@
 
 	setInterval(async () => {
 		if (data.player?.playerId) {
-			const ret = await getCurrentStatus(fcl, data.walletUser.addr);
-			if (ret == null || ret.toString().startsWith('1')) {
+			const bcObj = await getCurrentStatus(fcl, data.walletUser.addr);
+			if (bcObj == null || bcObj.toString().startsWith('1')) {
 				// Not starting the game
 				data.gameStarted = false;
 				// バトルデータなし
@@ -190,7 +188,7 @@
 						(data.gameObject!.yourLife == 1 &&
 							data.gameObject!.yourLife < data.gameObject!.opponentLife)
 					) {
-						data.showToast('You Lose...', 'Try Again!', true);
+						data.showToast('You Lose...', 'Try Again!', 'warning');
 						dialog.showModal();
 					} else if (
 						data.gameObject!.turn == 10 &&
@@ -198,7 +196,7 @@
 						data.gameObject!.isFirst == true &&
 						data.gameObject!.yourLife <= data.gameObject!.opponentLife
 					) {
-						data.showToast('You Lose...', 'Try Again!', true);
+						data.showToast('You Lose...', 'Try Again!', 'warning');
 					}
 				}
 				// 内部データ初期化
@@ -209,19 +207,18 @@
 				data.gameStarted = false;
 				data.gameObject = null;
 			} else {
-				// Set game object.
-				data.gameObject = JSON.parse(ret);
+				console.log(data.gameObject, data.player);
 				// Setting the intro data.
-				if (data.gameObject['game_started'] == false && data.gameStarted == false) {
+				if (bcObj['game_started'] == false && data.gameStarted == false) {
 					data.gameStarted = true;
 					animationOnFlag = true;
-					const ret = await getMariganCards(fcl, data.walletUser.addr, data.player?.playerId);
+					const mCards = await getMariganCards(fcl, data.walletUser.addr, data.player?.playerId);
 					// Set marigan cards.
 					data.mariganCards = [];
 					for (let i = 0; i < 5; i++) {
 						data.mariganCards.push([]);
 						for (let j = 0; j < 4; j++) {
-							data.mariganCards[i].push(parseInt(ret[i][j]));
+							data.mariganCards[i].push(parseInt(mCards[i][j]));
 						}
 					}
 					data.mariganClickCount = 0;
@@ -239,7 +236,7 @@
 								input: {
 									type: 'game_start',
 									message: JSON.stringify(data.handCards),
-									playerId: data.gameObject.you.toString()
+									playerId: data.player?.playerId
 								}
 							}
 						});
@@ -248,19 +245,39 @@
 							data.showSpinner = false;
 						}, 5000);
 						data.showToast(
-							'Game Start',
-							`Game Start! ${data.gameObject.isFirst ? 'Your Turn!' : "Opponent's Turn!"}`,
-							false
+							'Your first cards are set!',
+							'Please wait a moment while we load the data.',
+							'info'
 						);
 					}, 7000);
 
 					// Start the Intro
 					setTimeout(() => {
+						data.showToast(
+							'Marigan Time!',
+							'You may only redo your hand for a period of 5 seconds.',
+							'info'
+						);
 						animationOnFlag = false;
 					}, 1500);
-				} else if (data.gameObject['game_started'] == true) {
-					// widget.callback('started-game-info', player.playerId, setGameInfo(objJs), null, null);
+				} else if (
+					data.gameObject &&
+					data.gameObject['game_started'] == false &&
+					bcObj['game_started'] == true
+				) {
+					data.gameStarted = true;
+					data.showToast(
+						'Game Start',
+						`Game Start! ${data.gameObject.isFirst ? 'Your Turn!' : "Opponent's Turn!"}`,
+						'success'
+					);
+				} else {
+					data.gameStarted = true;
+					data.handCards = Object.values(bcObj.your_hand);
 				}
+
+				/**** Set the game object. ****/
+				data.gameObject = bcObj;
 			}
 			// 残高を取得
 			getBalances();
@@ -274,10 +291,10 @@
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 
-{#if data.gameStarted === false}
+{#if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {/if}
-{#if data.gameStarted && !data.gameObject['game_started'] && animationOnFlag}
+{#if animationOnFlag}
 	<img class="not-started" src="/image/battleStart.png" alt="Let's start the game!" />
 {/if}
 

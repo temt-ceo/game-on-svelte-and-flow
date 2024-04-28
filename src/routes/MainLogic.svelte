@@ -13,6 +13,11 @@
 	data.reserveCardData = [];
 
 	// click event handler
+	data.showHandCardInfo = (e: Event) => {
+		const indexPlus = parseInt((e.target as HTMLElement).getAttribute('id'));
+		const card_id = data.handCards[indexPlus - 1];
+		data.selectedCard = data.cardInfo[card_id];
+	};
 	data.showCardInfo = (e: Event) => {
 		const card_id = parseInt((e.target as HTMLElement).getAttribute('id'));
 		data.draggingCardId = card_id;
@@ -72,11 +77,6 @@
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
 			console.log(retSubscription);
 			switch (retSubscription.type) {
-				case 'save_deck':
-					data.showSpinner = true;
-					setTimeout(() => {
-						data.showSpinner = false;
-					}, 10000);
 				case 'player_matching':
 					if (data.player.playerId == retSubscription.playerId) {
 						data.countdown = true;
@@ -86,15 +86,31 @@
 						data.showToast(
 							'Success!',
 							`You successfully entered in Alcana. Now matching is started.`,
-							false
+							'success'
 						);
 					} else {
 						data.showToast(
 							'Warning!!',
 							`No. ${retSubscription.playerId} has entered in Alcana.`,
-							true
+							'warning'
 						);
 					}
+					break;
+				case 'game_start':
+					if (data.player.playerId == data.player?.playerId) {
+						data.showToast(
+							'Your first cards are sent to blockchain. Please wait.',
+							'Please wait a moment while loading the data.',
+							'success'
+						);
+					} else if (data.player.playerId == data.gameObject.opponent) {
+						data.showToast(
+							`Opponent's first cards are sent to blockchain. Please wait.`,
+							'Please wait a moment while loading the data.',
+							'info'
+						);
+					}
+					break;
 			}
 		}
 	});
@@ -102,12 +118,7 @@
 
 {#if data.countdown}
 	<div class="clock">
-		<Clock size="120" color="#F03EFF" unit="px" duration="240s" pause={false} />
-	</div>
-{/if}
-{#if data.canMarigan}
-	<div class="marigan-clock">
-		<Clock size="100" color="#F03EFF" unit="px" duration="20s" pause={false} />
+		<Clock size="160" color="#4C7D8E" unit="px" duration="240s" pause={false} />
 	</div>
 {/if}
 
@@ -115,7 +126,6 @@
 
 <ToastContainer placement="bottom-right" let:data>
 	<FlatToast {data} />
-	<!-- Provider template for your toasts -->
 </ToastContainer>
 
 <style lang="scss">
