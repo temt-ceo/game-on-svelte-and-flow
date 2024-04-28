@@ -25,7 +25,6 @@ export const getPlayerDeck = async function (fcl, address, playerId) {
     `,
 		args: (arg, t) => [arg(address, t.Address), arg(playerId, t.UInt)]
 	});
-	console.log(result);
 	return result;
 };
 
@@ -55,7 +54,6 @@ export const getCurrentStatus = async function (fcl, address) {
     `,
 		args: (arg, t) => [arg(address, t.Address)]
 	});
-	console.log(result);
 	return result;
 };
 
@@ -94,6 +92,5 @@ export const getBalance = async function (fcl, address, playerId) {
     `,
 		args: (arg, t) => [arg(address, t.Address), arg(playerId, t.Optional(t.UInt))]
 	});
-	// console.log(result);
 	return result;
 };

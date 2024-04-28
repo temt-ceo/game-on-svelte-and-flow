@@ -4,3 +4,16 @@
 	width: 100vw;
 	height: 100vh;
 }
+
+.clock {
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(-90deg);
+	margin-right: 10px;
+
+	> :global(div::before) {
+		animation: none !important;
+	}
+}

@@ -64,7 +64,7 @@
 				input: {
 					type: 'save_deck',
 					message: JSON.stringify(data.userDeck),
-					playerId: data.player.playerId
+					playerId: data.player?.playerId
 				}
 			}
 		});
@@ -74,11 +74,18 @@
 	};
 
 	data.funcPlayerMatching = async () => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
 		// Call GraphQL method.
 		data.client.graphql({
 			query: createGameServerProcess,
-			variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
+			variables: {
+				input: { type: 'player_matching', message: '', playerId: data.player?.playerId }
+			}
 		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
 	};
 
 	const getPlayerInfo = async () => {
@@ -129,7 +136,7 @@
 		if (data.walletUser.addr != '') {
 			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
 			data.yourInfo = ret[0];
-			console.log(data.yourInfo);
+			console.log(data.yourInfo, 88);
 			if (
 				balance != parseFloat(data.yourInfo['balance']) &&
 				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
