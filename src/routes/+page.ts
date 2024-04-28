@@ -21,13 +21,17 @@ export async function load({}) {
 		cardInfo: {},
 		reserveCardData: [],
 		userDeck: [],
+		handCards: [],
+		mariganClickCount: 0,
 		yourInfo: {},
+		gameObject: null,
+		mariganCards: [],
 		onChainYourFieldUnit: [],
 		onChainYourTriggerCards: [],
 		onChainYourTriggerCardsDisplay: [],
+		canMarigan: false,
 		canOperate: false,
 		gameStarted: false,
-		gameObject: null,
 		countdown: false,
 		showToast: (title, message, warning) => {
 			const toast = toasts.add({

@@ -17,3 +17,14 @@
 		animation: none !important;
 	}
 }
+
+.marigan-clock {
+	position: absolute;
+	z-index: 1;
+	right: 10%;
+	bottom: 15%;
+
+	> :global(div::before) {
+		animation: none !important;
+	}
+}
