@@ -15,7 +15,17 @@
 		do you wanna play a blockchain game, COF Ninja? If so, let's press the activate button!
 	{/if}
 	<div class="button_container">
-		<button on:click={data.handleOnGetADrink}>Get a drink</button>
+		<div>
+			Balance: {data.yourInfo['balance']?.substring(0, 5) ?? '--'}
+			<span class="unit">Digital Currency</span>
+		</div>
+		<div>
+			EN: {data.yourInfo['cyber_energy']}
+		</div>
+		<div>
+			Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
+		</div>
+		<button class="left-end" on:click={data.handleOnGetADrink}>Get a drink</button>
 		{#if data.walletUser?.addr}
 			<img
 				class="menu-button logout"

@@ -11,10 +11,23 @@
 	}
 
 	.button_container {
+		width: 100vw;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		margin: 0 20px 0 auto;
+		font-size: 24px;
+
+		.unit {
+			font-size: 14px;
+		}
+
+		.left-end {
+			margin-left: auto;
+		}
+
+		div {
+			margin-right: 25px;
+		}
 
 		img {
 			width: 100px;

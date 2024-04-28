@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { createGameServerProcess } from '../graphql/mutations';
-	import { isRegistered, getPlayerDeck, getCardInfo } from '$lib/cadence/scripts';
+	import {
+		isRegistered,
+		getPlayerDeck,
+		getCardInfo,
+		getCurrentStatus,
+		getBalance
+	} from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
 	import Dialog from '$lib/Dialog.svelte';
@@ -19,6 +25,7 @@
 	let noteText = '';
 	let modalDisabled = false;
 	let intervalRet;
+	let isGameStarted = false;
 
 	/** FCL part */
 	// Wallet Signin
@@ -43,10 +50,9 @@
 		var ret = await createPlayer(fcl, playerName);
 		console.log(ret);
 		data.showSpinner = false;
-		(intervalRet = setInterval(() => {
+		intervalRet = setInterval(() => {
 			getPlayerInfo();
-		})),
-			3000;
+		}, 3000);
 	};
 
 	data.funcSaveDeck = async () => {
@@ -116,6 +122,36 @@
 		} catch (e) {}
 	};
 
+	const getBalances = async () => {
+		let balance = parseFloat(data.yourInfo['balance']);
+		let cyberEnergy = parseInt(data.yourInfo['cyber_energy']);
+
+		if (data.walletUser.addr != '') {
+			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
+			data.yourInfo = ret[0];
+			console.log(data.yourInfo);
+			if (
+				balance != parseFloat(data.yourInfo['balance']) &&
+				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
+				balance! + 0.501 >= parseFloat(data.yourInfo['balance'])
+			) {
+				noteText = 'Congrats! You won 0.5FLOW!';
+				dialog.showModal();
+			}
+			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
+				noteText = 'EN is successfully charged.';
+				dialog.showModal();
+			}
+			// data.yourScore =
+			//     '${yourInfo['score'].length} games ${yourInfo['win_count']} win');
+			// if (gameStarted == true && objJs.length > 1) {
+			//   var opponentInfo = objJs[1];
+			//   setState(() => enemyScore =
+			//       '${opponentInfo['score'].length} games ${opponentInfo['win_count']} win');
+			// }
+		}
+	};
+
 	fcl.currentUser.subscribe((user) => {
 		try {
 			data.walletUser = user;
@@ -135,9 +171,58 @@
 
 	// カード情報取得
 	getCardInfos();
+
+	setInterval(async () => {
+		if (data.player?.playerId) {
+			const ret = await getCurrentStatus(fcl, data.walletUser.addr);
+			if (ret == null || ret.toString().startsWith('1')) {
+				// Not starting the game
+				isGameStarted = false;
+				// バトルデータなし
+				if (data.gameObject != null) {
+					// データがない = 10ターンが終わった可能性
+					if (
+						(data.gameObject!.turn == 10 &&
+							data.gameObject!.yourLife < data.gameObject!.opponentLife) ||
+						(data.gameObject!.yourLife == 1 &&
+							data.gameObject!.yourLife < data.gameObject!.opponentLife)
+					) {
+						noteText = 'You Lose... Try Again!';
+						dialog.showModal();
+					} else if (
+						data.gameObject!.turn == 10 &&
+						data.gameObject!.isFirstTurn == true &&
+						data.gameObject!.isFirst == true &&
+						data.gameObject!.yourLife <= data.gameObject!.opponentLife
+					) {
+						noteText = 'You Lose... Try Again!';
+						dialog.showModal();
+					}
+				}
+				// 内部データ初期化
+				data.onChainYourFieldUnit = [];
+				data.onChainYourTriggerCards = [];
+				data.onChainYourTriggerCardsDisplay = [];
+				data.canOperate = false;
+				data.gameStarted = false;
+				data.gameObject = null;
+				// 残高を取得
+				getBalances();
+			}
+		}
+	}, 1000);
 </script>
 
 <MainLogic {data} />
+
 <Dialog bind:dialog bind:playerName {noteText} on:close={() => console.log('closed')}>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
+
+{#if isGameStarted === false}
+	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
+{/if}
+
+<style lang="scss">
+	@import '../style/dialog.scss';
+</style>

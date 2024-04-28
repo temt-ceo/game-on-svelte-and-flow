@@ -19,6 +19,13 @@ export async function load({}) {
 		player: null,
 		cardInfo: {},
 		reserveCardData: [],
-		userDeck: []
+		userDeck: [],
+		yourInfo: {},
+		onChainYourFieldUnit: [],
+		onChainYourTriggerCards: [],
+		onChainYourTriggerCardsDisplay: [],
+		canOperate: false,
+		gameStarted: false,
+		gameObject: null
 	};
 }

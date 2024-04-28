@@ -68,7 +68,7 @@
 			data.showSpinner = true;
 			setTimeout(() => {
 				data.showSpinner = false;
-			}, 7000);
+			}, 10000);
 		}
 	});
 </script>

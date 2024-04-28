@@ -43,10 +43,9 @@
 		var ret = await createPlayer(fcl, playerName);
 		console.log(ret);
 		data.showSpinner = false;
-		(intervalRet = setInterval(() => {
+		intervalRet = setInterval(() => {
 			getPlayerInfo();
-		})),
-			3000;
+		}, 3000);
 	};
 
 	data.funcSaveDeck = async () => {
@@ -64,15 +63,7 @@
 		});
 		setTimeout(() => {
 			data.showSpinner = false;
-		}, 10000);
-	};
-
-	data.funcPlayerMatching = async () => {
-		// Call GraphQL method.
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: { input: { type: 'player_matching', message: '', playerId: '1' } }
-		});
+		}, 11000);
 	};
 
 	const getPlayerInfo = async () => {
