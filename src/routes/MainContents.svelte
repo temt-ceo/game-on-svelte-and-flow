@@ -39,15 +39,17 @@
 				src="/image/button/logout.png"
 				alt="activate"
 			/>
-			<img
-				class="menu-button edit-deck"
-				on:click={() => {
-					location.href = './deck-editor';
-				}}
-				src="/image/button/editDeck.png"
-				alt="edit deck"
-			/>
-			<img on:click={data.funcPlayerMatching} src="/image/button/playButton.png" alt="play" />
+			{#if data.gameObject == null}
+				<img
+					class="menu-button edit-deck"
+					on:click={() => {
+						location.href = './deck-editor';
+					}}
+					src="/image/button/editDeck.png"
+					alt="edit deck"
+				/>
+				<img on:click={data.funcPlayerMatching} src="/image/button/playButton.png" alt="play" />
+			{/if}
 		{/if}
 		{#if !data.walletUser?.addr}
 			<img
@@ -108,7 +110,7 @@
 				{#each data.handCards as card_id, index}
 					<img
 						on:dragstart={data.dragFromCardList}
-						on:click={data.showCardInfo}
+						on:click={data.showHandCardInfo}
 						out:scale
 						id={(index + 1).toString()}
 						class="card-thumb"
@@ -124,12 +126,22 @@
 						src="/image/button/redo.png"
 						alt="Redo"
 					/>
+					<div class="marigan-clock">
+						<Clock size="100" color="#F03EFF" unit="px" duration="20s" pause={false} />
+					</div>
 				{/if}
 			</div>
 		</div>
-		<div class="clock">
-			<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
-		</div>
+		{#if data.gameObject && data.gameObject['is_first'] == data.gameObject['is_first_turn']}
+			<div class="clock">
+				<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+			</div>
+		{/if}
+		{#if data.gameObject && data.gameObject['is_first'] != data.gameObject['is_first_turn']}
+			<div class="opponent_clock">
+				<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -153,7 +165,7 @@
 	}
 
 	#battle_field {
-		width: 900px;
+		width: 550px;
 		height: 390px;
 		margin-left: auto;
 		margin-right: 5%;

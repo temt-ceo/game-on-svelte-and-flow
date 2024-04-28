@@ -21,7 +21,7 @@ export async function load({ fetch }) {
 		reserveCardData: [],
 		userDeck: [],
 		showToast: (title, message, warning) => {
-			const toast = toasts.add({
+			toasts.add({
 				title: title,
 				description: message,
 				duration: 10000, // 0 or negative to avoid auto-remove
