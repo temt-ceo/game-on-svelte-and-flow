@@ -184,10 +184,10 @@
 				if (data.gameObject != null) {
 					// データがない = 10ターンが終わった可能性
 					if (
-						(data.gameObject!.turn == 10 &&
-							data.gameObject!.yourLife < data.gameObject!.opponentLife) ||
-						(data.gameObject!.yourLife == 1 &&
-							data.gameObject!.yourLife < data.gameObject!.opponentLife)
+						(data.gameObject.turn == 10 &&
+							data.gameObject.yourLife < data.gameObject.opponentLife) ||
+						(data.gameObject.yourLife == 1 &&
+							data.gameObject.yourLife < data.gameObject.opponentLife)
 					) {
 						data.showToast('You Lose...', 'Try Again!', 'warning');
 						dialog.showModal();
@@ -274,12 +274,17 @@
 					);
 				} else {
 					data.gameStarted = true;
-					data.handCards = Object.values(bcObj.your_hand);
-					data.opponetHandCards = parseInt(bcObj.opponent_hand);
-					data.triggerCards = Object.values(bcObj.your_trigger_cards);
-					data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
-					data.fieldCards = Object.values(bcObj.your_field_unit);
-					data.opponetFieldCards = Object.values(bcObj.opponent_field_unit);
+					// When after turn is changed.
+					if (bcObj.turn != data.turn || bcObj.isFirstTurn != data.isFirstTurn) {
+						data.handCards = Object.values(bcObj.your_hand);
+						data.opponetHandCards = parseInt(bcObj.opponent_hand);
+						data.triggerCards = Object.values(bcObj.your_trigger_cards);
+						data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
+						data.fieldCards = Object.values(bcObj.your_field_unit);
+						data.opponetFieldCards = Object.values(bcObj.opponent_field_unit);
+						data.yourCp = parseInt(bcObj.your_cp);
+					} else {
+					}
 				}
 
 				/**** Set the game object. ****/

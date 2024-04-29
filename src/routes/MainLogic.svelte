@@ -28,32 +28,39 @@
 
 	// drag & drop event handler
 	data.dragFromHand = (e: DragEvent) => {
-		const index = parseInt((e.target as HTMLElement).getAttribute('id'));
-		data.draggingCardId = data.handCards[index];
+		data.draggingCardIndex = parseInt((e.target as HTMLElement).getAttribute('id'));
+		data.draggingCardId = data.handCards[data.draggingCardIndex];
 		data.selectedCard = data.cardInfo[data.draggingCardId];
 	};
 	data.dropToBattleField = (e: DragEvent) => {
-		if (data.userDeck.length < 30) {
-			data.userDeck.push(data.draggingCardId);
+		if (parseInt(data.draggingCardId) <= 16 && data.fieldCards.length < 5) {
+			const targetCardId = data.handCards.splice(data.draggingCardIndex, 1);
+			data.fieldCards.push(targetCardId);
+			data.isDraggingOverBattleField = false;
 		}
-		data.isDraggingOverBattleField = false;
+		if (data.isDraggingNGOverBattleField) {
+			data.isDraggingNGOverBattleField = false;
+		}
 	};
 	data.dropToTriggerZone = (e: DragEvent) => {
-		const targetIndex = data.userDeck.findIndex((cardId) => {
-			return cardId == data.draggingCardId;
-		});
-		data.userDeck.splice(targetIndex, 1);
-		data.isDraggingOverTriggerZone = false;
+		if (parseInt(data.draggingCardId) > 16 && data.triggerCards.length < 4) {
+			const targetCardId = data.handCards.splice(data.draggingCardIndex, 1);
+			data.triggerCards.push(targetCardId);
+			data.isDraggingOverTriggerZone = false;
+		}
+		if (data.isDraggingNGOverBattleField) {
+			data.isDraggingNGOverTriggerZone = false;
+		}
 	};
 	data.dragEnterToBattleField = (e: DragEvent) => {
-		if (parseInt(data.draggingCardId) <= 16) {
+		if (parseInt(data.draggingCardId) <= 16 && data.fieldCards.length < 5) {
 			data.isDraggingOverBattleField = true;
 		} else {
 			data.isDraggingNGOverBattleField = true;
 		}
 	};
 	data.dragEnterToTriggerZone = (e: DragEvent) => {
-		if (parseInt(data.draggingCardId) > 16) {
+		if (parseInt(data.draggingCardId) > 16 && data.triggerCards.length < 4) {
 			data.isDraggingOverTriggerZone = true;
 		} else {
 			data.isDraggingNGOverTriggerZone = true;

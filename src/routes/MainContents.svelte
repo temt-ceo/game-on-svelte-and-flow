@@ -95,7 +95,7 @@
 				<div class="your_info">
 					<div>
 						<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
-						<div class="parameter1">CP: {('0' + data.gameObject.your_cp).slice(-2)}</div>
+						<div class="parameter1">CP: {('0' + data.yourCp).slice(-2)}</div>
 					</div>
 					<div
 						on:dragover={data.dragOver}
