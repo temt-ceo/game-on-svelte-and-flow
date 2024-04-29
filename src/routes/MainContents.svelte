@@ -106,13 +106,13 @@
 						on:dragenter={data.dragEnterToTriggerZone}
 						on:dragleave={data.dragLeaveToTriggerZone}
 					>
-						{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
+						{#each Object.keys(data.triggerCards) as index}
 							<img
 								on:click={data.showCardInfo}
 								in:slide
-								id={card_id.toString()}
-								class="card-thumb"
-								src="/image/card_{card_id}.jpeg"
+								id={data.triggerCards[index]}
+								class="card-thumb trigger-card"
+								src="/image/card_{data.triggerCards[index]}.jpeg"
 								alt="drink thuumb"
 								draggable="true"
 							/>
@@ -140,21 +140,21 @@
 								id={data.gameObject.your_field_unit[index]}
 								class="card-thumb"
 								src="/image/card_{data.gameObject.your_field_unit[index]}.jpeg"
-								alt="drink thuumb"
+								alt="Opponent's field unit"
 								draggable="true"
 							/>
 						{/each}
 					</div>
-					<div></div>
+					<div class="battle-space"></div>
 					<div class="your_unit">
-						{#each Object.keys(data.gameObject.your_field_unit) as index}
+						{#each Object.keys(data.fieldCards) as index}
 							<img
 								on:click={data.showCardInfo}
 								in:slide
-								id={data.gameObject.your_field_unit[index]}
+								id={data.fieldCards[index]}
 								class="card-thumb"
-								src="/image/card_{data.gameObject.your_field_unit[index]}.jpeg"
-								alt="drink thuumb"
+								src="/image/card_{data.fieldCards[index]}.jpeg"
+								alt="Your field unit"
 								draggable="true"
 							/>
 						{/each}
@@ -270,6 +270,7 @@
 		.opponent_unit,
 		.your_unit {
 			height: 120px;
+			margin: 0 5px;
 		}
 	}
 

@@ -8,6 +8,11 @@
 	.card-thumb {
 		width: 90px;
 		border-radius: 1rem;
+
+		&.trigger-card {
+			width: 78px;
+			margin: 4px 2px 0 3px;
+		}
 	}
 
 	.button_container {
@@ -210,6 +215,10 @@
 		> :global(div::before) {
 			animation: none !important;
 		}
+	}
+
+	.battle-space {
+		min-height: 100px;
 	}
 }
 

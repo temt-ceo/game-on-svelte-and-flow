@@ -33,9 +33,15 @@
 		data.selectedCard = data.cardInfo[data.draggingCardId];
 	};
 	data.dropToBattleField = (e: DragEvent) => {
-		if (parseInt(data.draggingCardId) <= 16 && data.fieldCards.length < 5) {
-			const targetCardId = data.handCards.splice(data.draggingCardIndex, 1);
-			data.fieldCards.push(targetCardId);
+		// PUT CARD ON THE BATTLE FIELD
+		if (
+			parseInt(data.draggingCardId) <= 16 &&
+			data.fieldCards.length < 5 &&
+			parseInt(data.selectedCard.cost) < data.yourCp
+		) {
+			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
+			data.fieldCards.push(targetCard[0]);
+			data.yourCp -= parseInt(data.selectedCard.cost);
 			data.isDraggingOverBattleField = false;
 		}
 		if (data.isDraggingNGOverBattleField) {
@@ -43,9 +49,10 @@
 		}
 	};
 	data.dropToTriggerZone = (e: DragEvent) => {
+		// PUT CARD ON THE TRIGGER ZONE
 		if (parseInt(data.draggingCardId) > 16 && data.triggerCards.length < 4) {
-			const targetCardId = data.handCards.splice(data.draggingCardIndex, 1);
-			data.triggerCards.push(targetCardId);
+			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
+			data.triggerCards.push(targetCard[0]);
 			data.isDraggingOverTriggerZone = false;
 		}
 		if (data.isDraggingNGOverBattleField) {
@@ -53,7 +60,11 @@
 		}
 	};
 	data.dragEnterToBattleField = (e: DragEvent) => {
-		if (parseInt(data.draggingCardId) <= 16 && data.fieldCards.length < 5) {
+		if (
+			parseInt(data.draggingCardId) <= 16 &&
+			data.fieldCards.length < 5 &&
+			parseInt(data.selectedCard.cost) < data.yourCp
+		) {
 			data.isDraggingOverBattleField = true;
 		} else {
 			data.isDraggingNGOverBattleField = true;
@@ -76,7 +87,6 @@
 	};
 	data.dragOver = (e: DragEvent) => {
 		e.preventDefault();
-		data.isDraggingOverTriggerZone = true;
 	};
 
 	// button function

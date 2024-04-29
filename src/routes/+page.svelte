@@ -275,7 +275,10 @@
 				} else {
 					data.gameStarted = true;
 					// When after turn is changed.
-					if (bcObj.turn != data.turn || bcObj.isFirstTurn != data.isFirstTurn) {
+					if (
+						bcObj.turn != data.gameObject?.turn ||
+						bcObj.isFirstTurn != data.gameObject?.isFirstTurn
+					) {
 						data.handCards = Object.values(bcObj.your_hand);
 						data.opponetHandCards = parseInt(bcObj.opponent_hand);
 						data.triggerCards = Object.values(bcObj.your_trigger_cards);
@@ -284,6 +287,7 @@
 						data.opponetFieldCards = Object.values(bcObj.opponent_field_unit);
 						data.yourCp = parseInt(bcObj.your_cp);
 					} else {
+						console.log(data.fieldCards, 22);
 					}
 				}
 

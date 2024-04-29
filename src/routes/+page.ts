@@ -21,8 +21,6 @@ export async function load({}) {
 		cardInfo: {},
 		reserveCardData: [],
 		userDeck: [],
-		turn: false,
-		isFirstTurn: false,
 		yourCp: 0,
 		handCards: [],
 		opponetHandCards: 0,
