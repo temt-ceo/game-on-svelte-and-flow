@@ -8,14 +8,16 @@
 	let countdown = false;
 
 	data.draggingCardId = null;
-	data.isDraggingOverFromCardList = false;
-	data.isDraggingOverFromUserDeck = false;
+	data.isDraggingOverBattleField = false;
+	data.isDraggingNGOverBattleField = false;
+	data.isDraggingOverTriggerZone = false;
+	data.isDraggingNGOverTriggerZone = false;
 	data.reserveCardData = [];
 
 	// click event handler
 	data.showHandCardInfo = (e: Event) => {
-		const indexPlus = parseInt((e.target as HTMLElement).getAttribute('id'));
-		const card_id = data.handCards[indexPlus - 1];
+		const index = parseInt((e.target as HTMLElement).getAttribute('id'));
+		const card_id = data.handCards[index];
 		data.selectedCard = data.cardInfo[card_id];
 	};
 	data.showCardInfo = (e: Event) => {
@@ -25,41 +27,49 @@
 	};
 
 	// drag & drop event handler
-	data.dragFromCardList = (e: DragEvent) => {
-		data.draggingCardId = parseInt((e.target as HTMLElement).getAttribute('id'));
+	data.dragFromHand = (e: DragEvent) => {
+		const index = parseInt((e.target as HTMLElement).getAttribute('id'));
+		data.draggingCardId = data.handCards[index];
 		data.selectedCard = data.cardInfo[data.draggingCardId];
 	};
-	data.dragFromUserDeck = (e: DragEvent) => {
-		data.draggingCardId = parseInt((e.target as HTMLElement).getAttribute('id'));
-		data.selectedCard = data.cardInfo[data.draggingCardId];
-	};
-	data.dropFromCardList = (e: DragEvent) => {
+	data.dropToBattleField = (e: DragEvent) => {
 		if (data.userDeck.length < 30) {
 			data.userDeck.push(data.draggingCardId);
 		}
-		data.isDraggingOverFromCardList = false;
+		data.isDraggingOverBattleField = false;
 	};
-	data.dropFromUserDeck = (e: DragEvent) => {
+	data.dropToTriggerZone = (e: DragEvent) => {
 		const targetIndex = data.userDeck.findIndex((cardId) => {
 			return cardId == data.draggingCardId;
 		});
 		data.userDeck.splice(targetIndex, 1);
-		data.isDraggingOverFromUserDeck = false;
+		data.isDraggingOverTriggerZone = false;
 	};
-	data.dragEnterFromCardList = (e: DragEvent) => {
-		data.isDraggingOverFromCardList = true;
+	data.dragEnterToBattleField = (e: DragEvent) => {
+		if (parseInt(data.draggingCardId) <= 16) {
+			data.isDraggingOverBattleField = true;
+		} else {
+			data.isDraggingNGOverBattleField = true;
+		}
 	};
-	data.dragLeaveFromCardList = (e: DragEvent) => {
-		data.isDraggingOverFromCardList = false;
+	data.dragEnterToTriggerZone = (e: DragEvent) => {
+		if (parseInt(data.draggingCardId) > 16) {
+			data.isDraggingOverTriggerZone = true;
+		} else {
+			data.isDraggingNGOverTriggerZone = true;
+		}
 	};
-	data.dragEnterFromUserDeck = (e: DragEvent) => {
-		data.isDraggingOverFromUserDeck = true;
+	data.dragLeaveToBattleField = (e: DragEvent) => {
+		data.isDraggingOverBattleField = false;
+		data.isDraggingNGOverBattleField = false;
 	};
-	data.dragLeaveFromUserDeck = (e: DragEvent) => {
-		data.isDraggingOverFromUserDeck = false;
+	data.dragLeaveToTriggerZone = (e: DragEvent) => {
+		data.isDraggingOverTriggerZone = false;
+		data.isDraggingNGOverTriggerZone = false;
 	};
 	data.dragOver = (e: DragEvent) => {
 		e.preventDefault();
+		data.isDraggingOverTriggerZone = true;
 	};
 
 	// button function

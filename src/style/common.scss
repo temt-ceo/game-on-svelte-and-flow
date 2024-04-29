@@ -73,8 +73,24 @@
 			}
 		}
 		.drop-area {
+			margin: 10px 0 5px 6vw;
+
 			img {
 				cursor: grab;
+			}
+
+			.info {
+				display: flex;
+				flex-direction: row;
+				text-align: justify;
+
+				.round_text {
+					margin-left: 20px;
+				}
+
+				.turn_text {
+					margin-left: auto;
+				}
 			}
 		}
 

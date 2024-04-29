@@ -26,11 +26,13 @@
 			<span class="unit">Digital Currency</span>
 		</div>
 		<div>
-			EN: {data.yourInfo['cyber_energy']}
+			Cyber EN: {data.yourInfo['cyber_energy']}
 		</div>
-		<div>
-			Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
-		</div>
+		{#if data.gameObject == null}
+			<div>
+				Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
+			</div>
+		{/if}
 		<button class="menu-button left-end" on:click={data.handleOnGetADrink}>Get a drink</button>
 		{#if data.walletUser?.addr}
 			<img
@@ -64,7 +66,7 @@
 	<div class="main_container">
 		<div class="info-area">
 			{#if data.gameObject != null}
-				<div id="opponent_trigger_field" class:ring={data.isDraggingOverFromCardList}>
+				<div id="opponent_trigger_zone">
 					{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
 						<img
 							in:slide
@@ -97,11 +99,12 @@
 					</div>
 					<div
 						on:dragover={data.dragOver}
-						on:drop={data.dropFromCardList}
-						on:dragenter={data.dragEnterFromCardList}
-						on:dragleave={data.dragLeaveFromCardList}
-						id="trigger_field"
-						class:ring={data.isDraggingOverFromCardList}
+						id="trigger_zone"
+						class:ring={data.isDraggingOverTriggerZone}
+						class:ring_ng={data.isDraggingNGOverTriggerZone}
+						on:drop={data.dropToTriggerZone}
+						on:dragenter={data.dragEnterToTriggerZone}
+						on:dragleave={data.dragLeaveToTriggerZone}
 					>
 						{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
 							<img
@@ -119,15 +122,16 @@
 			{/if}
 		</div>
 		<div class="drop-area">
-			<div
-				id="battle_field"
-				class:ring={data.isDraggingOverFromCardList}
-				on:dragover={data.dragOver}
-				on:drop={data.dropFromCardList}
-				on:dragenter={data.dragEnterFromCardList}
-				on:dragleave={data.dragLeaveFromCardList}
-			>
-				{#if data.gameObject != null}
+			{#if data.gameObject != null}
+				<div
+					id="battle_field"
+					class:ring={data.isDraggingOverBattleField}
+					class:ring_ng={data.isDraggingNGOverBattleField}
+					on:dragover={data.dragOver}
+					on:drop={data.dropToBattleField}
+					on:dragenter={data.dragEnterToBattleField}
+					on:dragleave={data.dragLeaveToBattleField}
+				>
 					<div class="opponent_unit">
 						{#each Object.keys(data.gameObject.your_field_unit) as index}
 							<img
@@ -155,8 +159,17 @@
 							/>
 						{/each}
 					</div>
-				{/if}
-			</div>
+				</div>
+				<div class="info">
+					<div class="round_text">Round {data.gameObject['turn']}</div>
+					<div class="turn_text">
+						{data.gameObject['is_first'] ? 'First Turn' : 'Second Turn'}
+						({data.gameObject['is_first'] == data.gameObject['is_first_turn']
+							? 'Your Turn'
+							: 'Opponent Turn'})
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 	<div class="bottom_container">
@@ -183,10 +196,10 @@
 			<div class="card_list">
 				{#each data.handCards as card_id, index}
 					<img
-						on:dragstart={data.dragFromCardList}
+						on:dragstart={data.dragFromHand}
 						on:click={data.showHandCardInfo}
 						out:scale
-						id={(index + 1).toString()}
+						id={index.toString()}
 						class="card-thumb"
 						src="/image/card_{card_id}.jpeg"
 						alt="card"
@@ -224,7 +237,7 @@
 
 	#own_cards,
 	#battle_field,
-	#trigger_field {
+	#trigger_zone {
 		margin: 8px 20px;
 		border: 2px dashed #fff;
 	}
@@ -246,11 +259,13 @@
 	#battle_field {
 		width: 550px;
 		height: 355px;
-		margin-left: 6vw;
-		margin-bottom: 40px;
+		margin-right: 0;
 
 		&.ring {
 			border: 2px dashed rgb(58, 19, 231);
+		}
+		&.ring_ng {
+			border: 2px dashed rgb(231, 19, 26);
 		}
 		.opponent_unit,
 		.your_unit {
@@ -258,7 +273,7 @@
 		}
 	}
 
-	#trigger_field {
+	#trigger_zone {
 		min-width: 330px;
 		height: 120px;
 		background-image: url('/image/trigger.png');
@@ -268,9 +283,12 @@
 		&.ring {
 			border: 2px dashed rgb(58, 19, 231);
 		}
+		&.ring_ng {
+			border: 2px dashed rgb(231, 19, 26);
+		}
 	}
 
-	#opponent_trigger_field {
+	#opponent_trigger_zone {
 		width: 132px;
 		height: 48px;
 		background-image: url('/image/trigger.png');
