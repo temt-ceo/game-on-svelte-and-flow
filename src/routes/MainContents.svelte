@@ -243,7 +243,7 @@
 	}
 
 	#own_cards {
-		width: 60%;
+		width: 58%;
 		height: 120px;
 		padding: 15px 10px;
 
