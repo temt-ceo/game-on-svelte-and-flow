@@ -150,6 +150,7 @@
 		if (data.walletUser.addr != '') {
 			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
 			data.yourInfo = ret[0];
+			data.opponentInfo = ret[1];
 			if (
 				balance != parseFloat(data.yourInfo['balance']) &&
 				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
@@ -183,10 +184,10 @@
 				if (data.gameObject != null) {
 					// データがない = 10ターンが終わった可能性
 					if (
-						(data.gameObject!.turn == 10 &&
-							data.gameObject!.yourLife < data.gameObject!.opponentLife) ||
-						(data.gameObject!.yourLife == 1 &&
-							data.gameObject!.yourLife < data.gameObject!.opponentLife)
+						(data.gameObject.turn == 10 &&
+							data.gameObject.yourLife < data.gameObject.opponentLife) ||
+						(data.gameObject.yourLife == 1 &&
+							data.gameObject.yourLife < data.gameObject.opponentLife)
 					) {
 						data.showToast('You Lose...', 'Try Again!', 'warning');
 						dialog.showModal();
@@ -207,7 +208,7 @@
 				data.gameStarted = false;
 				data.gameObject = null;
 			} else {
-				console.log(data.gameObject, data.player);
+				console.log(data.gameObject, data.yourInfo, data.opponentInfo);
 				// Setting the intro data.
 				if (bcObj['game_started'] == false && data.gameStarted == false) {
 					data.gameStarted = true;
@@ -273,7 +274,21 @@
 					);
 				} else {
 					data.gameStarted = true;
-					data.handCards = Object.values(bcObj.your_hand);
+					// When after turn is changed.
+					if (
+						bcObj.turn != data.gameObject?.turn ||
+						bcObj.isFirstTurn != data.gameObject?.isFirstTurn
+					) {
+						data.handCards = Object.values(bcObj.your_hand);
+						data.opponetHandCards = parseInt(bcObj.opponent_hand);
+						data.triggerCards = Object.values(bcObj.your_trigger_cards);
+						data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
+						data.fieldCards = Object.values(bcObj.your_field_unit);
+						data.opponetFieldCards = Object.values(bcObj.opponent_field_unit);
+						data.yourCp = parseInt(bcObj.your_cp);
+					} else {
+						console.log(data.fieldCards, 22);
+					}
 				}
 
 				/**** Set the game object. ****/
@@ -287,7 +302,7 @@
 
 <MainLogic {data} />
 
-<Dialog bind:dialog bind:playerName on:close={() => console.log('closed')}>
+<Dialog bind:dialog bind:playerName>
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 
