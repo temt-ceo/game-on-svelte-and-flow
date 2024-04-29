@@ -62,26 +62,100 @@
 	</div>
 
 	<div class="main_container">
+		<div class="info-area">
+			{#if data.gameObject != null}
+				<div id="opponent_trigger_field" class:ring={data.isDraggingOverFromCardList}>
+					{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
+						<img
+							in:slide
+							id={card_id.toString()}
+							class="card-thumb"
+							src="/image/card_{card_id}.jpeg"
+							alt="drink thuumb"
+							draggable="true"
+						/>
+					{/each}
+				</div>
+				<div>
+					Opponent: {data.opponentInfo.player_name}
+					<span class="score">
+						Score: {`${data.opponentInfo['score']?.length} games ${data.opponentInfo['win_count']} win`}
+					</span>
+				</div>
+				<div class="parameter1">LIFE: {data.gameObject.opponent_life}</div>
+				<div class="parameter1">CP: {('0' + data.gameObject.opponent_cp).slice(-2)}</div>
+				<div class="opponent">
+					You: {data.yourInfo.player_name}
+					<span class="score">
+						Score: {`${data.yourInfo['score']?.length} games ${data.yourInfo['win_count']} win`}
+					</span>
+				</div>
+				<div class="your_info">
+					<div>
+						<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
+						<div class="parameter1">CP: {('0' + data.gameObject.your_cp).slice(-2)}</div>
+					</div>
+					<div
+						on:dragover={data.dragOver}
+						on:drop={data.dropFromCardList}
+						on:dragenter={data.dragEnterFromCardList}
+						on:dragleave={data.dragLeaveFromCardList}
+						id="trigger_field"
+						class:ring={data.isDraggingOverFromCardList}
+					>
+						{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
+							<img
+								on:click={data.showCardInfo}
+								in:slide
+								id={card_id.toString()}
+								class="card-thumb"
+								src="/image/card_{card_id}.jpeg"
+								alt="drink thuumb"
+								draggable="true"
+							/>
+						{/each}
+					</div>
+				</div>
+			{/if}
+		</div>
 		<div class="drop-area">
 			<div
+				id="battle_field"
+				class:ring={data.isDraggingOverFromCardList}
 				on:dragover={data.dragOver}
 				on:drop={data.dropFromCardList}
 				on:dragenter={data.dragEnterFromCardList}
 				on:dragleave={data.dragLeaveFromCardList}
-				id="battle_field"
-				class:ring={data.isDraggingOverFromCardList}
 			>
-				{#each data.userDeck as card_id, index}
-					<img
-						on:click={data.showCardInfo}
-						in:slide
-						id={card_id.toString()}
-						class="card-thumb"
-						src="/image/card_{card_id}.jpeg"
-						alt="drink thuumb"
-						draggable="true"
-					/>
-				{/each}
+				{#if data.gameObject != null}
+					<div class="opponent_unit">
+						{#each Object.keys(data.gameObject.your_field_unit) as index}
+							<img
+								on:click={data.showCardInfo}
+								in:slide
+								id={data.gameObject.your_field_unit[index]}
+								class="card-thumb"
+								src="/image/card_{data.gameObject.your_field_unit[index]}.jpeg"
+								alt="drink thuumb"
+								draggable="true"
+							/>
+						{/each}
+					</div>
+					<div></div>
+					<div class="your_unit">
+						{#each Object.keys(data.gameObject.your_field_unit) as index}
+							<img
+								on:click={data.showCardInfo}
+								in:slide
+								id={data.gameObject.your_field_unit[index]}
+								class="card-thumb"
+								src="/image/card_{data.gameObject.your_field_unit[index]}.jpeg"
+								alt="drink thuumb"
+								draggable="true"
+							/>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -105,7 +179,7 @@
 				</div>
 			{/if}
 		</div>
-		<div on:dragover={data.dragOver} on:drop={data.dropFromUserDeck} id="own_cards">
+		<div id="own_cards">
 			<div class="card_list">
 				{#each data.handCards as card_id, index}
 					<img
@@ -149,29 +223,59 @@
 	@import '../style/common.scss';
 
 	#own_cards,
-	#battle_field {
+	#battle_field,
+	#trigger_field {
 		margin: 8px 20px;
 		border: 2px dashed #fff;
 	}
 
 	#own_cards {
-		width: 56%;
-		height: 130px;
+		width: 60%;
+		height: 120px;
 		padding: 15px 10px;
 
 		&.ring {
 			border: 2px dashed rgb(58, 19, 231);
 		}
+
+		img {
+			margin-right: 5px;
+		}
 	}
 
 	#battle_field {
 		width: 550px;
-		height: 390px;
+		height: 355px;
+		margin-left: 6vw;
+		margin-bottom: 40px;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
+		.opponent_unit,
+		.your_unit {
+			height: 120px;
+		}
+	}
+
+	#trigger_field {
+		min-width: 330px;
+		height: 120px;
+		background-image: url('/image/trigger.png');
 		margin-left: auto;
 		margin-right: 5%;
 
 		&.ring {
 			border: 2px dashed rgb(58, 19, 231);
 		}
+	}
+
+	#opponent_trigger_field {
+		width: 132px;
+		height: 48px;
+		background-image: url('/image/trigger.png');
+		background-size: contain;
+		margin-left: auto;
+		margin-right: 5%;
 	}
 </style>

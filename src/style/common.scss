@@ -49,16 +49,38 @@
 	}
 
 	.main_container {
+		width: 100%;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 
-		.drop-area {
-			width: 90vw;
+		.info-area {
+			width: 40vw;
+			font-size: 22px;
 
+			.score {
+				margin-left: 25px;
+			}
+
+			.opponent {
+				margin-top: 40px;
+			}
+
+			.parameter1 {
+				margin-top: 10px;
+				margin-left: 5vw;
+				min-width: 10vw;
+			}
+		}
+		.drop-area {
 			img {
 				cursor: grab;
 			}
+		}
+
+		.your_info {
+			display: flex;
+			flex-direction: row;
 		}
 	}
 
