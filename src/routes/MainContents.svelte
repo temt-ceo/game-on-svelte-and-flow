@@ -1,6 +1,15 @@
 <script lang="ts">
 	import { scale, slide } from 'svelte/transition';
 	import { Clock, Jumper } from 'svelte-loading-spinners';
+	import {
+		ActedUp,
+		CanBlock,
+		CanAttack,
+		CardNeedsSelectTarget,
+		CardNeedsSelectActedTarget,
+		CardTriggerWhenPutOnField,
+		CardTriggerWhenAttack
+	} from '$lib/const';
 
 	export let data;
 </script>
@@ -161,7 +170,7 @@
 										{/if}
 									</div>
 									{#if data.waitPlayerChoice}
-										{#if data.selectTargetType == data.CardNeedsSelectTarget || (data.selectTargetType == data.CardNeedsSelectActedTarget && data.gameObject.opponent_field_unit_action[position] == data.ActedUp)}
+										{#if data.selectTargetType == CardNeedsSelectTarget || (data.selectTargetType == CardNeedsSelectActedTarget && data.gameObject.opponent_field_unit_action[position] == ActedUp)}
 											<img
 												in:slide
 												on:click={() => {

@@ -35,7 +35,7 @@
 	let animationOnFlag = false;
 
 	/** FCL part */
-
+	// Subscribe Blockchain user info
 	fcl.currentUser.subscribe((user) => {
 		data.walletUser = user;
 		if (data.walletUser?.addr) {
@@ -58,114 +58,12 @@
 		data.walletUser = null;
 	};
 
-	data.funcCreatePlayer = async () => {
-		data.showSpinner = true;
-		data.showToast(
-			'Success',
-			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
-			'success'
-		);
-		modalDisabled = true;
-		setTimeout(() => {
-			dialog.close();
-		}, 3000);
-		var ret = await createPlayer(fcl, playerName);
-		console.log(ret);
-		data.showSpinner = false;
-		intervalRet = setInterval(() => {
-			getPlayerInfo();
-		}, 3000);
-	};
+	// Get card info from smart contract.
+	(async () => {
+		data.cardInfo = await getCardInfo(fcl);
+	})();
 
-	data.funcSaveDeck = async () => {
-		data.showSpinner = true;
-		// Call GraphQL method.
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: {
-					type: 'save_deck',
-					message: JSON.stringify(data.userDeck),
-					playerId: data.player?.playerId
-				}
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 10000);
-	};
-
-	data.funcPlayerMatching = async () => {
-		if (data.showSpinner) return;
-		data.showSpinner = true;
-		// Call GraphQL method.
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: { type: 'player_matching', message: '', playerId: data.player?.playerId }
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
-	};
-
-	data.funcPutCardOnTheField = async (putCardOnFieldPosition, usedTriggers, skillMessage) => {
-		if (data.showSpinner) return;
-		data.showSpinner = true;
-		// Call GraphQL method.
-		const arg1 = {};
-		arg1[putCardOnFieldPosition] = data.fieldCards[putCardOnFieldPosition];
-		const message = {
-			arg1: arg1, // field unit
-			arg2: data.skillTargetUnitPos, // unit skill's target
-			arg3: data.triggerCards, // trigger cards
-			arg4: usedTriggers, // used trigger/intercept card position
-			skillMessage: skillMessage,
-			usedTriggers: usedTriggers
-		};
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: {
-					type: 'put_card_on_the_field',
-					message: JSON.stringify(message),
-					playerId: data.player.playerId
-				}
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
-	};
-
-	data.funcTurnEnd = async () => {
-		if (data.showSpinner) return;
-		data.showSpinner = true;
-		// Call GraphQL method.
-		const message = {
-			arg1: data.gameObject.is_first != data.gameObject.is_first_turn, // from opponent
-			arg2: data.triggerCards // trigger cards
-		};
-		console.log(message, 77);
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: {
-					type: 'turn_change',
-					message: JSON.stringify(message),
-					playerId:
-						data.gameObject.is_first == data.gameObject.is_first_turn
-							? data.player.playerId
-							: data.gameObject.opponent
-				}
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
-	};
-
+	// Get game player info from smart contract.
 	const getPlayerInfo = async () => {
 		if (data.walletUser.addr != '') {
 			data.showSpinner = true;
@@ -192,60 +90,38 @@
 		}
 	};
 
-	const getCardInfos = async () => {
-		// カード情報取得
-		try {
-			data.cardInfo = await getCardInfo(fcl);
-
-			// Create Card Info Array
-			const cardList = Object.keys(data.cardInfo);
-			for (const id of cardList) {
-				data.reserveCardData.push(data.cardInfo[id].card_id);
-			}
-			// widget.callback('card-info', player.playerId, null, null, objJs);
-		} catch (e) {}
-	};
-
+	// Get balance of creypto and game currencies.
 	const getBalances = async () => {
-		let balance = parseFloat(data.yourInfo['balance']);
-		let cyberEnergy = parseInt(data.yourInfo['cyber_energy']);
-
 		if (data.walletUser.addr != '') {
+			let balance = parseFloat(data.yourInfo['balance']);
+			let cyberEnergy = parseInt(data.yourInfo['cyber_energy']);
+
 			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
 			data.yourInfo = ret[0];
 			data.opponentInfo = ret[1];
 			if (
 				balance != parseFloat(data.yourInfo['balance']) &&
-				balance! + 0.499 <= parseFloat(data.yourInfo['balance']) &&
-				balance! + 0.501 >= parseFloat(data.yourInfo['balance'])
+				balance + 0.499 <= parseFloat(data.yourInfo['balance']) &&
+				balance + 0.501 >= parseFloat(data.yourInfo['balance'])
 			) {
 				data.showToast('Congrats!', 'You won 0.5FLOW!', 'success');
 			}
 			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
 				data.showToast('Success', 'EN is successfully charged.', 'success');
 			}
-			// data.yourScore =
-			//     '${yourInfo['score'].length} games ${yourInfo['win_count']} win');
-			// if (gameStarted == true && objJs.length > 1) {
-			//   var opponentInfo = objJs[1];
-			//   setState(() => enemyScore =
-			//       '${opponentInfo['score'].length} games ${opponentInfo['win_count']} win');
-			// }
 		}
 	};
 
-	// カード情報取得
-	getCardInfos();
-
+	// Get battle info from smart contract every 1 second.
 	setInterval(async () => {
 		if (data.player?.playerId) {
 			const bcObj = await getCurrentStatus(fcl, data.walletUser.addr);
 			if (bcObj == null || bcObj.toString().startsWith('1')) {
 				// Not starting the game
 				data.gameStarted = false;
-				// バトルデータなし
+				// If there is no battle data,
 				if (data.gameObject != null) {
-					// データがない = 10ターンが終わった可能性
+					// If turn exceeds 10 turn so there is no battle data..
 					if (
 						(data.gameObject.turn == 10 &&
 							data.gameObject.yourLife < data.gameObject.opponentLife) ||
@@ -263,11 +139,7 @@
 						data.showToast('You Lose...', 'Try Again!', 'warning');
 					}
 				}
-				// 内部データ初期化
-				data.onChainYourFieldUnit = [];
-				data.onChainYourTriggerCards = [];
-				data.onChainYourTriggerCardsDisplay = [];
-				data.canOperate = false;
+				// Initialize game object.
 				data.gameStarted = false;
 				data.gameObject = null;
 			} else {
@@ -358,6 +230,120 @@
 			getBalances();
 		}
 	}, 1000);
+
+	/** GraphQL createGameServerProcess part */
+	// GraphQL CreatePlayer Server Process
+	data.funcCreatePlayer = async () => {
+		data.showSpinner = true;
+		data.showToast(
+			'Success',
+			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
+			'success'
+		);
+		modalDisabled = true;
+		setTimeout(() => {
+			dialog.close();
+		}, 3000);
+		var ret = await createPlayer(fcl, playerName);
+		console.log(ret);
+		data.showSpinner = false;
+		intervalRet = setInterval(() => {
+			getPlayerInfo();
+		}, 3000);
+	};
+
+	// GraphQL SaveDeck Server Process
+	data.funcSaveDeck = async () => {
+		data.showSpinner = true;
+		// Call GraphQL method.
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'save_deck',
+					message: JSON.stringify(data.userDeck),
+					playerId: data.player?.playerId
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 10000);
+	};
+
+	// GraphQL PlayerMatching Server Process
+	data.funcPlayerMatching = async () => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
+		// Call GraphQL method.
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: { type: 'player_matching', message: '', playerId: data.player?.playerId }
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
+	// GraphQL PutCardOnTheField Server Process
+	data.funcPutCardOnTheField = async (putCardOnFieldPosition, usedTriggers, skillMessage) => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const arg1 = {};
+		arg1[putCardOnFieldPosition] = data.fieldCards[putCardOnFieldPosition];
+		const message = {
+			arg1: arg1, // field unit
+			arg2: data.skillTargetUnitPos, // unit skill's target
+			arg3: data.triggerCards, // trigger cards
+			arg4: usedTriggers, // used trigger/intercept card position
+			skillMessage: skillMessage,
+			usedTriggers: usedTriggers
+		};
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'put_card_on_the_field',
+					message: JSON.stringify(message),
+					playerId: data.player.playerId
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
+	// GraphQL TurnEnd Server Process
+	data.funcTurnEnd = async () => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: data.gameObject.is_first != data.gameObject.is_first_turn, // from opponent
+			arg2: data.triggerCards // trigger cards
+		};
+		console.log(message, 77);
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'turn_change',
+					message: JSON.stringify(message),
+					playerId:
+						data.gameObject.is_first == data.gameObject.is_first_turn
+							? data.player.playerId
+							: data.gameObject.opponent
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
 </script>
 
 <MainLogic {data} />
