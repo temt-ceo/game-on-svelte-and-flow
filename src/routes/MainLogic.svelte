@@ -22,7 +22,6 @@
 	};
 	data.showCardInfo = (e: Event) => {
 		const card_id = parseInt((e.target as HTMLElement).getAttribute('id'));
-		data.draggingCardId = card_id;
 		data.selectedCard = data.cardInfo[card_id];
 	};
 
@@ -36,13 +35,20 @@
 		// PUT CARD ON THE BATTLE FIELD
 		if (
 			parseInt(data.draggingCardId) <= 16 &&
-			data.fieldCards.length < 5 &&
+			Object.keys(data.fieldCards).length < 5 &&
+			data.gameObject['is_first'] == data.gameObject['is_first_turn'] &&
 			parseInt(data.selectedCard.cost) < data.yourCp
 		) {
 			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
-			data.fieldCards.push(targetCard[0]);
+			for (const pos of [1, 2, 3, 4, 5]) {
+				if (!data.triggerCards[pos]) {
+					data.fieldCards[pos] = targetCard[0];
+					break;
+				}
+			}
 			data.yourCp -= parseInt(data.selectedCard.cost);
 			data.isDraggingOverBattleField = false;
+			data.funcPutCardOnTheField();
 		}
 		if (data.isDraggingNGOverBattleField) {
 			data.isDraggingNGOverBattleField = false;
@@ -50,9 +56,18 @@
 	};
 	data.dropToTriggerZone = (e: DragEvent) => {
 		// PUT CARD ON THE TRIGGER ZONE
-		if (parseInt(data.draggingCardId) > 16 && data.triggerCards.length < 4) {
+		if (
+			parseInt(data.draggingCardId) > 16 &&
+			Object.keys(data.triggerCards).length < 4 &&
+			data.gameObject['is_first'] == data.gameObject['is_first_turn']
+		) {
 			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
-			data.triggerCards.push(targetCard[0]);
+			for (const pos of [1, 2, 3, 4]) {
+				if (!data.triggerCards[pos]) {
+					data.triggerCards[pos] = targetCard[0];
+					break;
+				}
+			}
 			data.isDraggingOverTriggerZone = false;
 		}
 		if (data.isDraggingNGOverBattleField) {
@@ -62,8 +77,9 @@
 	data.dragEnterToBattleField = (e: DragEvent) => {
 		if (
 			parseInt(data.draggingCardId) <= 16 &&
-			data.fieldCards.length < 5 &&
-			parseInt(data.selectedCard.cost) < data.yourCp
+			Object.keys(data.fieldCards).length < 5 &&
+			parseInt(data.selectedCard.cost) < data.yourCp &&
+			data.gameObject['is_first'] == data.gameObject['is_first_turn']
 		) {
 			data.isDraggingOverBattleField = true;
 		} else {
@@ -71,7 +87,11 @@
 		}
 	};
 	data.dragEnterToTriggerZone = (e: DragEvent) => {
-		if (parseInt(data.draggingCardId) > 16 && data.triggerCards.length < 4) {
+		if (
+			parseInt(data.draggingCardId) > 16 &&
+			Object.keys(data.triggerCards).length < 4 &&
+			data.gameObject['is_first'] == data.gameObject['is_first_turn']
+		) {
 			data.isDraggingOverTriggerZone = true;
 		} else {
 			data.isDraggingNGOverTriggerZone = true;
@@ -95,7 +115,6 @@
 		if (data.mariganClickCount < 5) {
 			data.handCards = data.mariganCards[data.mariganClickCount];
 		}
-		console.log(data.mariganCards);
 	};
 
 	/** GraphQL Subscribition part */
@@ -134,6 +153,21 @@
 						data.showToast(
 							`Opponent's first cards are sent to blockchain. Please wait.`,
 							'Please wait a moment while loading the data.',
+							'info'
+						);
+					}
+					break;
+				case 'turn_change':
+					if (data.player.playerId == data.player?.playerId) {
+						data.showToast(
+							'Turn Change transaction Called!',
+							'Please wait until opponent start the turn.',
+							'info'
+						);
+					} else if (data.player.playerId == data.gameObject.opponent) {
+						data.showToast(
+							'Turn Change transaction Called!',
+							'Please wait until coming your Turn!',
 							'info'
 						);
 					}

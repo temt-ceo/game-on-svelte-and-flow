@@ -13,6 +13,45 @@
 			width: 78px;
 			margin: 4px 2px 0 3px;
 		}
+
+		&.opponent-trigger {
+			width: 30px;
+			border-radius: 0;
+			margin: 5px 1px 0 2px;
+		}
+
+		&.field-card {
+			margin: 5px 13px 0 5px;
+		}
+	}
+
+	#battle_field > div {
+		display: flex;
+		flex-direction: row;
+		padding: 0;
+
+		&.battle-space {
+			max-height: 90px;
+			margin: 0;
+		}
+
+		.your_unit,
+		.opponent_unit {
+			position: relative;
+
+			.field-no-card {
+				width: 90px;
+				height: 126px;
+			}
+
+			.status {
+				position: absolute;
+				width: 88px;
+				top: 88px;
+				left: 0;
+				opacity: 0.6;
+			}
+		}
 	}
 
 	.button_container {
@@ -78,7 +117,7 @@
 			}
 		}
 		.drop-area {
-			margin: 10px 0 5px 6vw;
+			margin: 10px 0 5px 2vw;
 
 			img {
 				cursor: grab;
@@ -178,9 +217,9 @@
 	}
 
 	.clock {
-		position: absolute;
-		bottom: 8%;
-		right: 2%;
+		width: 100px;
+		height: 100px;
+		padding: 2px 0 0 20px;
 		transform: rotate(-90deg);
 
 		> :global(div::before) {
@@ -188,10 +227,15 @@
 		}
 	}
 
+	.turn-end-btn {
+		width: 100px;
+		cursor: pointer;
+	}
+
 	.opponent_clock {
 		position: absolute;
-		top: 14%;
-		right: 2%;
+		top: 3%;
+		right: 5%;
 		transform: rotate(-90deg);
 
 		> :global(div::before) {
@@ -204,6 +248,7 @@
 		width: 100px;
 		right: 30%;
 		bottom: 20%;
+		cursor: pointer;
 	}
 
 	.marigan-clock {

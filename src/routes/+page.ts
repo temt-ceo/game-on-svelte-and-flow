@@ -17,6 +17,8 @@ export async function load({}) {
 		funcSignOutWallet: null,
 		funcCreatePlayer: null,
 		funcSaveDeck: null,
+		funcPutCardOnTheField: null,
+		funcTurnEnd: null,
 		player: null,
 		cardInfo: {},
 		reserveCardData: [],

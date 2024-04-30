@@ -103,6 +103,61 @@
 		}, 5000);
 	};
 
+	data.funcPutCardOnTheField = async () => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: data.fieldCards, // field unit
+			arg2: null, // skill target (enemy)
+			arg3: data.triggerCards, // trigger cards
+			arg4: [], // used intercept card position
+			skillMessage: '',
+			usedTriggers: []
+		};
+		console.log(message, 99);
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'put_card_on_the_field',
+					message: JSON.stringify(message),
+					playerId: data.gameObject.you
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
+	data.funcTurnEnd = async () => {
+		if (data.showSpinner) return;
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: data.gameObject.is_first != data.gameObject.is_first_turn, // from opponent
+			arg2: data.triggerCards // trigger cards
+		};
+		console.log(message, 77);
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'turn_change',
+					message: JSON.stringify(message),
+					playerId:
+						data.gameObject.is_first == data.gameObject.is_first_turn
+							? data.player.playerId
+							: data.gameObject.opponent
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
 	const getPlayerInfo = async () => {
 		if (data.walletUser.addr != '') {
 			data.showSpinner = true;
@@ -281,13 +336,13 @@
 					) {
 						data.handCards = Object.values(bcObj.your_hand);
 						data.opponetHandCards = parseInt(bcObj.opponent_hand);
-						data.triggerCards = Object.values(bcObj.your_trigger_cards);
+						data.triggerCards = bcObj.your_trigger_cards;
 						data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
-						data.fieldCards = Object.values(bcObj.your_field_unit);
-						data.opponetFieldCards = Object.values(bcObj.opponent_field_unit);
+						data.fieldCards = bcObj.your_field_unit;
+						data.opponetFieldCards = bcObj.opponent_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
 					} else {
-						console.log(data.fieldCards, 22);
+						// console.log(data.fieldCards, 22);
 					}
 				}
 
