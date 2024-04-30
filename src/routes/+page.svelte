@@ -306,7 +306,6 @@
 			arg1: data.gameObject.is_first != data.gameObject.is_first_turn, // from opponent
 			arg2: data.triggerCards // trigger cards
 		};
-		console.log(message, 77);
 		data.client.graphql({
 			query: createGameServerProcess,
 			variables: {
@@ -332,7 +331,9 @@
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 
-{#if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
+{#if data.walletUser == null}
+	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
+{:else if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {/if}
 {#if animationOnFlag}
