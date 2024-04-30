@@ -11,7 +11,9 @@
 
 		&.trigger-card {
 			width: 78px;
-			margin: 4px 2px 0 3px;
+			height: 100px;
+			margin: 4px 0 0 4px;
+			object-fit: contain;
 		}
 
 		&.opponent-trigger {
@@ -23,6 +25,74 @@
 		&.field-card {
 			margin: 5px 13px 0 5px;
 		}
+	}
+
+	#hand_cards,
+	#battle_field,
+	#trigger_zone {
+		margin: 8px 20px;
+		padding-left: 2px;
+		border: 2px dashed #fff;
+	}
+
+	#hand_cards {
+		width: 700px;
+		height: 120px;
+		padding: 15px 10px;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
+
+		img {
+			margin-right: 5px;
+		}
+	}
+
+	#battle_field {
+		width: 550px;
+		height: 355px;
+		margin-right: 0;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
+		&.ring_ng {
+			border: 2px dashed rgb(231, 19, 26);
+		}
+		.opponent_unit,
+		.your_unit {
+			height: 120px;
+			margin: 0 5px;
+		}
+	}
+
+	#trigger_zone {
+		min-width: 333px;
+		height: 120px;
+		background-image: url('/image/trigger.png');
+		margin-left: auto;
+		margin-right: 5%;
+
+		&.ring {
+			border: 2px dashed rgb(58, 19, 231);
+		}
+		&.ring_ng {
+			border: 2px dashed rgb(231, 19, 26);
+		}
+
+		img {
+			cursor: grab;
+		}
+	}
+
+	#opponent_trigger_zone {
+		width: 132px;
+		height: 48px;
+		background-image: url('/image/trigger.png');
+		background-size: contain;
+		margin-left: auto;
+		margin-right: 5%;
 	}
 
 	#battle_field > div {
@@ -50,6 +120,34 @@
 				top: 88px;
 				left: 0;
 				opacity: 0.6;
+			}
+
+			.status_sword {
+				position: absolute;
+				top: 92px;
+				left: 13px;
+				opacity: 0.9;
+			}
+
+			.status_name {
+				position: absolute;
+				top: 93px;
+				left: 30px;
+				opacity: 0.7;
+			}
+
+			.status_shield {
+				position: absolute;
+				top: 114px;
+				left: 13px;
+				opacity: 0.9;
+			}
+
+			.status_bp {
+				position: absolute;
+				top: 115px;
+				left: 30px;
+				opacity: 0.7;
 			}
 		}
 	}

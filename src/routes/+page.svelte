@@ -108,21 +108,26 @@
 		data.showSpinner = true;
 		// Call GraphQL method.
 		const message = {
-			arg1: data.fieldCards, // field unit
-			arg2: null, // skill target (enemy)
+			arg1: {
+				1: data.fieldCards[1] ?? 0,
+				2: data.fieldCards[2] ?? 0,
+				3: data.fieldCards[3] ?? 0,
+				4: data.fieldCards[4] ?? 0,
+				5: data.fieldCards[5] ?? 0
+			}, // field unit
+			arg2: 0, // field unit's skill target
 			arg3: data.triggerCards, // trigger cards
 			arg4: [], // used intercept card position
 			skillMessage: '',
 			usedTriggers: []
 		};
-		console.log(message, 99);
 		data.client.graphql({
 			query: createGameServerProcess,
 			variables: {
 				input: {
 					type: 'put_card_on_the_field',
 					message: JSON.stringify(message),
-					playerId: data.gameObject.you
+					playerId: data.player.playerId
 				}
 			}
 		});
@@ -335,11 +340,8 @@
 						bcObj.isFirstTurn != data.gameObject?.isFirstTurn
 					) {
 						data.handCards = Object.values(bcObj.your_hand);
-						data.opponetHandCards = parseInt(bcObj.opponent_hand);
 						data.triggerCards = bcObj.your_trigger_cards;
-						data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
 						data.fieldCards = bcObj.your_field_unit;
-						data.opponetFieldCards = bcObj.opponent_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
 					} else {
 						// console.log(data.fieldCards, 22);

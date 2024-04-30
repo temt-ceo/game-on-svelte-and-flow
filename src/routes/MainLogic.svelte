@@ -41,7 +41,7 @@
 		) {
 			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
 			for (const pos of [1, 2, 3, 4, 5]) {
-				if (!data.triggerCards[pos]) {
+				if (!data.fieldCards[pos]) {
 					data.fieldCards[pos] = targetCard[0];
 					break;
 				}
@@ -156,6 +156,9 @@
 							'info'
 						);
 					}
+					break;
+				case 'put_card_on_the_field':
+					data.showToast('The card drive transaction Called!', '', 'info');
 					break;
 				case 'turn_change':
 					if (data.player.playerId == data.player?.playerId) {
