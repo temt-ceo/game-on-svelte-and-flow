@@ -1,6 +1,6 @@
 import { toasts } from 'svelte-toasts';
 
-export function load({}) {
+export function load() {
 	return {
 		client: null,
 		walletUser: null,

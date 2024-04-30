@@ -1,4 +1,4 @@
-export function load({}) {
+export function load() {
 	return {
 		client: null,
 		walletUser: null,
