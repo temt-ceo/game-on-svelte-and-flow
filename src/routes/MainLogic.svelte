@@ -3,25 +3,20 @@
 	import MainContents from './MainContents.svelte';
 	import { onCreateGameServerProcess } from '../graphql/subscriptions';
 	import { ToastContainer, FlatToast } from 'svelte-toasts';
+	import {
+		ActedUp,
+		CanBlock,
+		CanAttack,
+		CardNeedsSelectTarget,
+		CardNeedsSelectActedTarget,
+		CardTriggerWhenPutOnField,
+		CardTriggerWhenAttack,
+		CardTriggerWhenBlocking,
+		CardTriggerWhenTurnEnd,
+		CardTriggerWhenBattling
+	} from '$lib/const';
 
 	export let data;
-	let countdown = false;
-
-	data.draggingCardId = null;
-	data.isDraggingOverBattleField = false;
-	data.isDraggingNGOverBattleField = false;
-	data.isDraggingOverTriggerZone = false;
-	data.isDraggingNGOverTriggerZone = false;
-	data.waitPlayerChoice = false;
-	data.reserveCardData = [];
-
-	data.CardNeedsSelectTarget = '1';
-	data.CardNeedsSelectActedTarget = '2';
-	data.ActedUp = '0';
-	const CanBlock = '1';
-	const CanAttack = '2';
-	const CardTriggerWhenPutOnField = '1';
-	const CardTriggerWhenAttack = '2';
 
 	// click event handler
 	data.showHandCardInfo = (e: Event) => {
@@ -67,7 +62,7 @@
 			for (const pos of [1, 2, 3, 4]) {
 				if (data.cardInfo[data.triggerCards[pos]]?.skill.trigger_1 == CardTriggerWhenPutOnField) {
 					// Is needed to select enemy unit?
-					if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == data.CardNeedsSelectTarget) {
+					if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectTarget) {
 						// Are there target unit?
 						for (const pos of [1, 2, 3, 4, 5]) {
 							if (data.gameObject.opponent_field_unit_action[pos]) {
@@ -79,7 +74,7 @@
 									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
 									'success'
 								);
-								data.selectTargetType = data.CardNeedsSelectTarget;
+								data.selectTargetType = CardNeedsSelectTarget;
 								data.waitPlayerChoice = true;
 								data.sleep(5); // wait until player choose the target.
 								break;
@@ -87,11 +82,11 @@
 						}
 						// Is needed to select acted-up enemy unit?
 					} else if (
-						data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == data.CardNeedsSelectActedTarget
+						data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectActedTarget
 					) {
 						// Are there target unit?
 						for (const pos of [1, 2, 3, 4, 5]) {
-							if (data.gameObject.opponent_field_unit_action[pos] == data.ActedUp) {
+							if (data.gameObject.opponent_field_unit_action[pos] == ActedUp) {
 								usedTriggers.push(pos);
 								// default target is most left unit.
 								data.skillTargetUnitPos = pos;
@@ -100,7 +95,7 @@
 									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
 									'success'
 								);
-								data.selectTargetType = data.CardNeedsSelectActedTarget;
+								data.selectTargetType = CardNeedsSelectActedTarget;
 								data.waitPlayerChoice = true;
 								data.sleep(5); // wait until player choose the target.
 								break;
