@@ -331,7 +331,7 @@
 	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
 </Dialog>
 
-{#if data.walletUser == null}
+{#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == ''}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {:else if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
