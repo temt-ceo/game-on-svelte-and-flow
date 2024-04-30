@@ -13,18 +13,6 @@ export function load({}) {
 		player: null,
 		cardInfo: {},
 		reserveCardData: [],
-		userDeck: [],
-		showToast: (title, message, warning) => {
-			toasts.add({
-				title: title,
-				description: message,
-				duration: 10000, // 0 or negative to avoid auto-remove
-				placement: 'bottom-right',
-				type: warning ? 'warning' : 'success',
-				theme: 'dark',
-				onClick: () => {},
-				onRemove: () => {}
-			});
-		}
+		userDeck: []
 	};
 }

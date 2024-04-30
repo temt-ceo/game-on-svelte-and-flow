@@ -8,6 +8,7 @@
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../../config.json';
+	import { showToast } from '$lib/const';
 
 	Amplify.configure(config);
 
@@ -27,7 +28,7 @@
 	let intervalRet;
 
 	/** FCL part */
-
+	// Subscribe Blockchain wallet info
 	fcl.currentUser.subscribe((user) => {
 		data.walletUser = user;
 		if (data.walletUser?.addr) {
@@ -51,42 +52,17 @@
 		data.walletUser = null;
 	};
 
-	data.funcCreatePlayer = async () => {
-		data.showSpinner = true;
-		data.showToast(
-			'Success',
-			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
-			false
-		);
-		setTimeout(() => {
-			dialog.close();
-		}, 3000);
-		var ret = await createPlayer(fcl, playerName);
-		console.log(ret);
-		data.showSpinner = false;
-		intervalRet = setInterval(() => {
-			getPlayerInfo();
-		}, 3000);
-	};
+	// Get card info from smart contract.
+	(async () => {
+		data.cardInfo = await getCardInfo(fcl);
+		// Create Card Info Array
+		const cardList = Object.keys(data.cardInfo);
+		for (const id of cardList) {
+			data.reserveCardData.push(data.cardInfo[id].card_id);
+		}
+	})();
 
-	data.funcSaveDeck = async () => {
-		data.showSpinner = true;
-		// Call GraphQL method.
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: {
-					type: 'save_deck',
-					message: JSON.stringify(data.userDeck),
-					playerId: data.player.playerId
-				}
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 11000);
-	};
-
+	// Get game player info from smart contract.
 	const getPlayerInfo = async () => {
 		if (data.walletUser.addr != '') {
 			data.showSpinner = true;
@@ -113,22 +89,44 @@
 		}
 	};
 
-	const getCardInfos = async () => {
-		// カード情報取得
-		try {
-			data.cardInfo = await getCardInfo(fcl);
-
-			// Create Card Info Array
-			const cardList = Object.keys(data.cardInfo);
-			for (const id of cardList) {
-				data.reserveCardData.push(data.cardInfo[id].card_id);
-			}
-			// widget.callback('card-info', player.playerId, null, null, objJs);
-		} catch (e) {}
+	/** GraphQL createGameServerProcess part */
+	// GraphQL CreatePlayer Server Process
+	data.funcCreatePlayer = async () => {
+		data.showSpinner = true;
+		showToast(
+			'Success',
+			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
+			false
+		);
+		setTimeout(() => {
+			dialog.close();
+		}, 3000);
+		var ret = await createPlayer(fcl, playerName);
+		console.log(ret);
+		data.showSpinner = false;
+		intervalRet = setInterval(() => {
+			getPlayerInfo();
+		}, 3000);
 	};
 
-	// カード情報取得
-	getCardInfos();
+	// GraphQL SaveDeck Server Process
+	data.funcSaveDeck = async () => {
+		data.showSpinner = true;
+		// Call GraphQL method.
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'save_deck',
+					message: JSON.stringify(data.userDeck),
+					playerId: data.player.playerId
+				}
+			}
+		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 11000);
+	};
 </script>
 
 <MainLogic {data} />

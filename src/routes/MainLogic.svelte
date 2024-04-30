@@ -2,7 +2,6 @@
 	import { Clock } from 'svelte-loading-spinners';
 	import MainContents from './MainContents.svelte';
 	import { onCreateGameServerProcess } from '../graphql/subscriptions';
-	import { ToastContainer, FlatToast } from 'svelte-toasts';
 	import {
 		ActedUp,
 		CanBlock,
@@ -13,7 +12,9 @@
 		CardTriggerWhenAttack,
 		CardTriggerWhenBlocking,
 		CardTriggerWhenTurnEnd,
-		CardTriggerWhenBattling
+		CardTriggerWhenBattling,
+		sleep,
+		showToast
 	} from '$lib/const';
 
 	export let data;
@@ -69,14 +70,14 @@
 								usedTriggers.push(pos);
 								// default target is most left unit.
 								data.skillTargetUnitPos = pos;
-								data.showToast(
+								showToast(
 									'Trigger Card Activated!',
 									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
 									'success'
 								);
 								data.selectTargetType = CardNeedsSelectTarget;
 								data.waitPlayerChoice = true;
-								data.sleep(5); // wait until player choose the target.
+								sleep(5); // wait until player choose the target.
 								break;
 							}
 						}
@@ -90,14 +91,14 @@
 								usedTriggers.push(pos);
 								// default target is most left unit.
 								data.skillTargetUnitPos = pos;
-								data.showToast(
+								showToast(
 									'Trigger Card Activated!',
 									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
 									'success'
 								);
 								data.selectTargetType = CardNeedsSelectActedTarget;
 								data.waitPlayerChoice = true;
-								data.sleep(5); // wait until player choose the target.
+								sleep(5); // wait until player choose the target.
 								break;
 							}
 						}
@@ -187,13 +188,13 @@
 						setTimeout(() => {
 							data.countdown = false;
 						}, 66000);
-						data.showToast(
+						showToast(
 							'Success!',
 							`You successfully entered in Alcana. Now matching is started.`,
 							'success'
 						);
 					} else {
-						data.showToast(
+						showToast(
 							'Warning!!',
 							`No. ${retSubscription.playerId} has entered in Alcana.`,
 							'warning'
@@ -202,13 +203,13 @@
 					break;
 				case 'game_start':
 					if (data.player.playerId == data.player?.playerId) {
-						data.showToast(
+						showToast(
 							'Your first cards are sent to blockchain. Please wait.',
 							'Please wait a moment while loading the data.',
 							'success'
 						);
 					} else if (data.player.playerId == data.gameObject.opponent) {
-						data.showToast(
+						showToast(
 							`Opponent's first cards are sent to blockchain. Please wait.`,
 							'Please wait a moment while loading the data.',
 							'info'
@@ -217,26 +218,26 @@
 					break;
 				case 'put_card_on_the_field':
 					data.showSpinner = true;
-					data.showToast('The card drive transaction Called!', '', 'info');
-					data.sleep(7);
+					showToast('The card drive transaction Called!', '', 'info');
+					sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'turn_change':
 					data.showSpinner = true;
 					if (data.player.playerId == data.player?.playerId) {
-						data.showToast(
+						showToast(
 							'Turn Change transaction Called!',
 							'Please wait until opponent start the turn.',
 							'info'
 						);
 					} else if (data.player.playerId == data.gameObject.opponent) {
-						data.showToast(
+						showToast(
 							'Turn Change transaction Called!',
 							'Please wait until coming your Turn!',
 							'info'
 						);
 					}
-					data.sleep(7);
+					sleep(7);
 					data.showSpinner = false;
 					break;
 			}
@@ -251,10 +252,6 @@
 {/if}
 
 <MainContents {data} />
-
-<ToastContainer placement="bottom-right" let:data>
-	<FlatToast {data} />
-</ToastContainer>
 
 <style lang="scss">
 	@import '../style/dialog.scss';

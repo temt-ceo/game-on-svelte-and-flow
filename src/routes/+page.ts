@@ -1,13 +1,3 @@
-import { toasts } from 'svelte-toasts';
-
-const wait = (sec) => {
-	return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-};
-
-const sleep = async (sec) => {
-	await wait(sec);
-};
-
 export function load({}) {
 	return {
 		client: null,
@@ -41,19 +31,6 @@ export function load({}) {
 		isDraggingNGOverBattleField: false,
 		isDraggingOverTriggerZone: false,
 		isDraggingNGOverTriggerZone: false,
-		waitPlayerChoice: false,
-		sleep: sleep,
-		showToast: (title, message, style) => {
-			toasts.add({
-				title: title,
-				description: message,
-				duration: 10000, // 0 or negative to avoid auto-remove
-				placement: 'bottom-right',
-				type: style,
-				theme: 'dark',
-				onClick: () => {},
-				onRemove: () => {}
-			});
-		}
+		waitPlayerChoice: false
 	};
 }

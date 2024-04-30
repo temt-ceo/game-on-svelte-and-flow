@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { scale, slide } from 'svelte/transition';
 	import { Clock, Jumper } from 'svelte-loading-spinners';
+	import { ToastContainer, FlatToast } from 'svelte-toasts';
 	import {
 		ActedUp,
 		CanBlock,
@@ -13,6 +14,10 @@
 
 	export let data;
 </script>
+
+<ToastContainer placement="bottom-right" let:data>
+	<FlatToast {data} />
+</ToastContainer>
 
 {#if data.showSpinner}
 	<div class="spinner">
