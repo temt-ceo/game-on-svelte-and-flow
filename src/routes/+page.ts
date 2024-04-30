@@ -1,15 +1,16 @@
-import { Amplify } from 'aws-amplify';
-import { generateClient } from 'aws-amplify/api';
-import config from '../config.json';
 import { toasts } from 'svelte-toasts';
 
-/** @type {import('./$types').Load} */
-export async function load({}) {
-	Amplify.configure(config);
-	const client = generateClient();
+const wait = (sec) => {
+	return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+};
 
+const sleep = async (sec) => {
+	await wait(sec);
+};
+
+export function load({}) {
 	return {
-		client: client,
+		client: null,
 		walletUser: null,
 		showSpinner: false,
 		funcPlayerMatching: null,
@@ -35,10 +36,12 @@ export async function load({}) {
 		onChainYourFieldUnit: [],
 		onChainYourTriggerCards: [],
 		onChainYourTriggerCardsDisplay: [],
+		skillTargetUnitPos: 0,
 		canMarigan: false,
 		canOperate: false,
 		gameStarted: false,
 		countdown: false,
+		sleep: sleep,
 		showToast: (title, message, style) => {
 			toasts.add({
 				title: title,

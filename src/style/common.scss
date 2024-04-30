@@ -27,6 +27,11 @@
 		}
 	}
 
+	.target-select {
+		width: 78px;
+		margin-left: 10px;
+	}
+
 	#hand_cards,
 	#battle_field,
 	#trigger_zone {
@@ -249,7 +254,7 @@
 		align-items: center;
 
 		.info-area {
-			width: 25vw;
+			width: 26vw;
 			min-height: 135px;
 
 			.image-area {
@@ -296,7 +301,6 @@
 
 				.skill-description {
 					margin-top: 2px;
-					font-size: 11px;
 				}
 			}
 		}

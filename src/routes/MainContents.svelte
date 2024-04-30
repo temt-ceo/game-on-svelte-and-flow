@@ -112,8 +112,6 @@
 								id={data.triggerCards[index]}
 								class="card-thumb trigger-card"
 								src="/image/card_{data.triggerCards[index]}.jpeg"
-								alt="drink thuumb"
-								draggable="true"
 							/>
 						{/each}
 					</div>
@@ -145,10 +143,12 @@
 									/>
 									<img class="status" src="/image/status.png" alt="card" />
 									<div class="status_name">
-										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.name}
+										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.name ??
+											'loading...'}
 									</div>
 									<div class="status_bp">
-										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp}
+										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp ??
+											'loading...'}
 									</div>
 									<div class="status_sword">
 										{#if data.gameObject.opponent_field_unit_action[position] == '2'}
@@ -160,6 +160,18 @@
 											🛡️
 										{/if}
 									</div>
+									{#if data.waitPlayerChoice}
+										{#if data.selectTargetType == data.CardNeedsSelectTarget || (data.selectTargetType == data.CardNeedsSelectActedTarget && data.gameObject.opponent_field_unit_action[position] == data.ActedUp)}
+											<img
+												in:slide
+												on:click={() => {
+													data.skillTargetUnitPos = position;
+												}}
+												class="target-select"
+												src="/image/button/select.png"
+											/>
+										{/if}
+									{/if}
 								{:else}
 									<div class="field-no-card"></div>
 								{/if}
@@ -181,10 +193,10 @@
 									/>
 									<img class="status" src="/image/status.png" alt="card" />
 									<div class="status_name">
-										{data.cardInfo[data.gameObject.your_field_unit[position]]?.name}
+										{data.cardInfo[data.gameObject.your_field_unit[position]]?.name ?? 'loading...'}
 									</div>
 									<div class="status_bp">
-										{data.cardInfo[data.gameObject.your_field_unit[position]]?.bp}
+										{data.cardInfo[data.gameObject.your_field_unit[position]]?.bp ?? 'loading...'}
 									</div>
 									<div class="status_sword">
 										{#if data.gameObject.your_field_unit_action[position] == '2'}
@@ -230,7 +242,9 @@
 					</div>
 				</div>
 				<div class="data-area">
-					<div>[BP: {data.selectedCard.bp}]</div>
+					{#if parseInt(data.selectedCard.bp) > 0}
+						<div>[BP: {data.selectedCard.bp}]</div>
+					{/if}
 					<div class="skill-description">{data.selectedCard.skill?.description}</div>
 				</div>
 			{/if}

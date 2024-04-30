@@ -5,6 +5,11 @@
 	import * as fcl from '@onflow/fcl';
 	import Dialog from '$lib/Dialog.svelte';
 	import MainLogic from './MainLogic.svelte';
+	import { Amplify } from 'aws-amplify';
+	import { generateClient } from 'aws-amplify/api';
+	import config from '../../config.json';
+
+	Amplify.configure(config);
 
 	fcl.config({
 		'accessNode.api': 'https://rest-mainnet.onflow.org',
@@ -14,6 +19,8 @@
 	});
 
 	export let data;
+	data.client = generateClient();
+
 	let dialog;
 	let playerName = 'Test Player';
 	let modalDisabled = false;

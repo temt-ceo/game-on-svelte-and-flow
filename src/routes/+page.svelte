@@ -12,6 +12,11 @@
 	import * as fcl from '@onflow/fcl';
 	import Dialog from '$lib/Dialog.svelte';
 	import MainLogic from './MainLogic.svelte';
+	import { Amplify } from 'aws-amplify';
+	import { generateClient } from 'aws-amplify/api';
+	import config from '../config.json';
+
+	Amplify.configure(config);
 
 	fcl.config({
 		'accessNode.api': 'https://rest-mainnet.onflow.org',
@@ -21,6 +26,8 @@
 	});
 
 	export let data;
+	data.client = generateClient();
+
 	let dialog;
 	let playerName = 'Test Player';
 	let modalDisabled = false;
@@ -103,23 +110,19 @@
 		}, 5000);
 	};
 
-	data.funcPutCardOnTheField = async () => {
+	data.funcPutCardOnTheField = async (putCardOnFieldPosition, usedTriggers, skillMessage) => {
 		if (data.showSpinner) return;
 		data.showSpinner = true;
 		// Call GraphQL method.
+		const arg1 = {};
+		arg1[putCardOnFieldPosition] = data.fieldCards[putCardOnFieldPosition];
 		const message = {
-			arg1: {
-				1: data.fieldCards[1] ?? 0,
-				2: data.fieldCards[2] ?? 0,
-				3: data.fieldCards[3] ?? 0,
-				4: data.fieldCards[4] ?? 0,
-				5: data.fieldCards[5] ?? 0
-			}, // field unit
-			arg2: 0, // field unit's skill target
+			arg1: arg1, // field unit
+			arg2: data.skillTargetUnitPos, // unit skill's target
 			arg3: data.triggerCards, // trigger cards
-			arg4: [], // used intercept card position
-			skillMessage: '',
-			usedTriggers: []
+			arg4: usedTriggers, // used trigger/intercept card position
+			skillMessage: skillMessage,
+			usedTriggers: usedTriggers
 		};
 		data.client.graphql({
 			query: createGameServerProcess,

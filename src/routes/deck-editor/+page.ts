@@ -1,14 +1,8 @@
-import { Amplify } from 'aws-amplify';
-import { generateClient } from 'aws-amplify/api';
-import config from '../../config.json';
-import { toasts, ToastContainer, FlatToast, BootstrapToast } from 'svelte-toasts';
+import { toasts } from 'svelte-toasts';
 
-export async function load({ fetch }) {
-	Amplify.configure(config);
-	const client = generateClient();
-
+export function load({}) {
 	return {
-		client: client,
+		client: null,
 		walletUser: null,
 		showSpinner: false,
 		funcPlayerMatching: null,
