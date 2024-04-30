@@ -112,8 +112,6 @@
 								id={data.triggerCards[index]}
 								class="card-thumb trigger-card"
 								src="/image/card_{data.triggerCards[index]}.jpeg"
-								alt="drink thuumb"
-								draggable="true"
 							/>
 						{/each}
 					</div>
@@ -134,16 +132,46 @@
 					<div>
 						{#each [1, 2, 3, 4, 5] as position}
 							<div class="opponent_unit">
-								{#if parseInt(data.opponetFieldCards[position]) >= 1}
+								{#if parseInt(data.gameObject.opponent_field_unit[position]) >= 1}
 									<img
 										on:click={data.showCardInfo}
 										in:slide
-										id={data.opponetFieldCards[position]}
+										id={data.gameObject.opponent_field_unit[position]}
 										class="card-thumb field-card"
-										src="/image/card_{data.opponetFieldCards[position]}.jpeg"
+										src="/image/card_{data.gameObject.opponent_field_unit[position]}.jpeg"
 										alt="Opponent's field unit"
 									/>
 									<img class="status" src="/image/status.png" alt="card" />
+									<div class="status_name">
+										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.name ??
+											'loading...'}
+									</div>
+									<div class="status_bp">
+										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp ??
+											'loading...'}
+									</div>
+									<div class="status_sword">
+										{#if data.gameObject.opponent_field_unit_action[position] == '2'}
+											🗡️
+										{/if}
+									</div>
+									<div class="status_shield">
+										{#if data.gameObject.opponent_field_unit_action[position] == '1' || data.gameObject.opponent_field_unit_action[position] == '2'}
+											🛡️
+										{/if}
+									</div>
+									{#if data.waitPlayerChoice}
+										{#if data.selectTargetType == data.CardNeedsSelectTarget || (data.selectTargetType == data.CardNeedsSelectActedTarget && data.gameObject.opponent_field_unit_action[position] == data.ActedUp)}
+											<img
+												in:slide
+												on:click={() => {
+													data.skillTargetUnitPos = position;
+												}}
+												class="target-select"
+												src="/image/button/select.png"
+											/>
+										{/if}
+									{/if}
 								{:else}
 									<div class="field-no-card"></div>
 								{/if}
@@ -164,6 +192,22 @@
 										alt="Your field unit"
 									/>
 									<img class="status" src="/image/status.png" alt="card" />
+									<div class="status_name">
+										{data.cardInfo[data.gameObject.your_field_unit[position]]?.name ?? 'loading...'}
+									</div>
+									<div class="status_bp">
+										{data.cardInfo[data.gameObject.your_field_unit[position]]?.bp ?? 'loading...'}
+									</div>
+									<div class="status_sword">
+										{#if data.gameObject.your_field_unit_action[position] == '2'}
+											🗡️
+										{/if}
+									</div>
+									<div class="status_shield">
+										{#if data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2'}
+											🛡️
+										{/if}
+									</div>
 								{:else}
 									<div class="field-no-card"></div>
 								{/if}
@@ -198,12 +242,14 @@
 					</div>
 				</div>
 				<div class="data-area">
-					<div>[BP: {data.selectedCard.bp}]</div>
+					{#if parseInt(data.selectedCard.bp) > 0}
+						<div>[BP: {data.selectedCard.bp}]</div>
+					{/if}
 					<div class="skill-description">{data.selectedCard.skill?.description}</div>
 				</div>
 			{/if}
 		</div>
-		<div id="own_cards">
+		<div id="hand_cards">
 			<div class="card_list">
 				{#each data.handCards as card_id, index}
 					<img
@@ -233,7 +279,7 @@
 		{#if data.gameObject && data.gameObject['is_first'] == data.gameObject['is_first_turn']}
 			<div>
 				<div class="clock">
-					<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+					<Clock size="80" color="#F03E50" unit="px" duration="300s" pause={false} />
 				</div>
 				<img
 					class="turn-end-btn"
@@ -245,7 +291,7 @@
 		{/if}
 		{#if data.gameObject && data.gameObject['is_first'] != data.gameObject['is_first_turn']}
 			<div class="opponent_clock">
-				<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+				<Clock size="80" color="#F03E50" unit="px" duration="300s" pause={false} />
 			</div>
 		{/if}
 	</div>
@@ -253,67 +299,4 @@
 
 <style lang="scss">
 	@import '../style/common.scss';
-
-	#own_cards,
-	#battle_field,
-	#trigger_zone {
-		margin: 8px 20px;
-		border: 2px dashed #fff;
-	}
-
-	#own_cards {
-		width: 700px;
-		height: 120px;
-		padding: 15px 10px;
-
-		&.ring {
-			border: 2px dashed rgb(58, 19, 231);
-		}
-
-		img {
-			margin-right: 5px;
-		}
-	}
-
-	#battle_field {
-		width: 550px;
-		height: 355px;
-		margin-right: 0;
-
-		&.ring {
-			border: 2px dashed rgb(58, 19, 231);
-		}
-		&.ring_ng {
-			border: 2px dashed rgb(231, 19, 26);
-		}
-		.opponent_unit,
-		.your_unit {
-			height: 120px;
-			margin: 0 5px;
-		}
-	}
-
-	#trigger_zone {
-		min-width: 333px;
-		height: 120px;
-		background-image: url('/image/trigger.png');
-		margin-left: auto;
-		margin-right: 5%;
-
-		&.ring {
-			border: 2px dashed rgb(58, 19, 231);
-		}
-		&.ring_ng {
-			border: 2px dashed rgb(231, 19, 26);
-		}
-	}
-
-	#opponent_trigger_zone {
-		width: 132px;
-		height: 48px;
-		background-image: url('/image/trigger.png');
-		background-size: contain;
-		margin-left: auto;
-		margin-right: 5%;
-	}
 </style>

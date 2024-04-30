@@ -12,6 +12,11 @@
 	import * as fcl from '@onflow/fcl';
 	import Dialog from '$lib/Dialog.svelte';
 	import MainLogic from './MainLogic.svelte';
+	import { Amplify } from 'aws-amplify';
+	import { generateClient } from 'aws-amplify/api';
+	import config from '../config.json';
+
+	Amplify.configure(config);
 
 	fcl.config({
 		'accessNode.api': 'https://rest-mainnet.onflow.org',
@@ -21,6 +26,8 @@
 	});
 
 	export let data;
+	data.client = generateClient();
+
 	let dialog;
 	let playerName = 'Test Player';
 	let modalDisabled = false;
@@ -103,26 +110,27 @@
 		}, 5000);
 	};
 
-	data.funcPutCardOnTheField = async () => {
+	data.funcPutCardOnTheField = async (putCardOnFieldPosition, usedTriggers, skillMessage) => {
 		if (data.showSpinner) return;
 		data.showSpinner = true;
 		// Call GraphQL method.
+		const arg1 = {};
+		arg1[putCardOnFieldPosition] = data.fieldCards[putCardOnFieldPosition];
 		const message = {
-			arg1: data.fieldCards, // field unit
-			arg2: null, // skill target (enemy)
+			arg1: arg1, // field unit
+			arg2: data.skillTargetUnitPos, // unit skill's target
 			arg3: data.triggerCards, // trigger cards
-			arg4: [], // used intercept card position
-			skillMessage: '',
-			usedTriggers: []
+			arg4: usedTriggers, // used trigger/intercept card position
+			skillMessage: skillMessage,
+			usedTriggers: usedTriggers
 		};
-		console.log(message, 99);
 		data.client.graphql({
 			query: createGameServerProcess,
 			variables: {
 				input: {
 					type: 'put_card_on_the_field',
 					message: JSON.stringify(message),
-					playerId: data.gameObject.you
+					playerId: data.player.playerId
 				}
 			}
 		});
@@ -335,11 +343,8 @@
 						bcObj.isFirstTurn != data.gameObject?.isFirstTurn
 					) {
 						data.handCards = Object.values(bcObj.your_hand);
-						data.opponetHandCards = parseInt(bcObj.opponent_hand);
 						data.triggerCards = bcObj.your_trigger_cards;
-						data.opponetTriggerCards = parseInt(bcObj.opponent_trigger_cards);
 						data.fieldCards = bcObj.your_field_unit;
-						data.opponetFieldCards = bcObj.opponent_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
 					} else {
 						// console.log(data.fieldCards, 22);
