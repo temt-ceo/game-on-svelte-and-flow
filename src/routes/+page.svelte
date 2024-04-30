@@ -15,6 +15,7 @@
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../config.json';
+	import { showToast } from '$lib/const';
 
 	Amplify.configure(config);
 
@@ -35,7 +36,7 @@
 	let animationOnFlag = false;
 
 	/** FCL part */
-	// Subscribe Blockchain user info
+	// Subscribe Blockchain wallet info
 	fcl.currentUser.subscribe((user) => {
 		data.walletUser = user;
 		if (data.walletUser?.addr) {
@@ -69,7 +70,6 @@
 			data.showSpinner = true;
 			var ret = await isRegistered(fcl, data.walletUser.addr);
 			data.showSpinner = false;
-			console.log(`isRegistered ret: ${ret}`);
 			if (ret != null) {
 				data.player = {
 					playerId: ret.player_id,
@@ -81,8 +81,7 @@
 					data.walletUser.addr,
 					parseInt(data.player.playerId)
 				);
-				const ret2 = data.userDeck.map((data) => parseInt(data));
-				data.userDeck = ret2;
+				data.userDeck = data.userDeck.map((data) => parseInt(data));
 				clearInterval(intervalRet);
 			} else {
 				dialog.showModal();
@@ -104,10 +103,10 @@
 				balance + 0.499 <= parseFloat(data.yourInfo['balance']) &&
 				balance + 0.501 >= parseFloat(data.yourInfo['balance'])
 			) {
-				data.showToast('Congrats!', 'You won 0.5FLOW!', 'success');
+				showToast('Congrats!', 'You won 0.5FLOW!', 'success');
 			}
 			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
-				data.showToast('Success', 'EN is successfully charged.', 'success');
+				showToast('Success', 'EN is successfully charged.', 'success');
 			}
 		}
 	};
@@ -128,7 +127,7 @@
 						(data.gameObject.yourLife == 1 &&
 							data.gameObject.yourLife < data.gameObject.opponentLife)
 					) {
-						data.showToast('You Lose...', 'Try Again!', 'warning');
+						showToast('You Lose...', 'Try Again!', 'warning');
 						dialog.showModal();
 					} else if (
 						data.gameObject!.turn == 10 &&
@@ -136,7 +135,7 @@
 						data.gameObject!.isFirst == true &&
 						data.gameObject!.yourLife <= data.gameObject!.opponentLife
 					) {
-						data.showToast('You Lose...', 'Try Again!', 'warning');
+						showToast('You Lose...', 'Try Again!', 'warning');
 					}
 				}
 				// Initialize game object.
@@ -180,7 +179,7 @@
 						setTimeout(() => {
 							data.showSpinner = false;
 						}, 5000);
-						data.showToast(
+						showToast(
 							'Your first cards are set!',
 							'Please wait a moment while we load the data.',
 							'info'
@@ -189,7 +188,7 @@
 
 					// Start the Intro
 					setTimeout(() => {
-						data.showToast(
+						showToast(
 							'Marigan Time!',
 							'You may only redo your hand for a period of 5 seconds.',
 							'info'
@@ -202,7 +201,7 @@
 					bcObj['game_started'] == true
 				) {
 					data.gameStarted = true;
-					data.showToast(
+					showToast(
 						'Game Start',
 						`Game Start! ${data.gameObject.isFirst ? 'Your Turn!' : "Opponent's Turn!"}`,
 						'success'
@@ -235,7 +234,7 @@
 	// GraphQL CreatePlayer Server Process
 	data.funcCreatePlayer = async () => {
 		data.showSpinner = true;
-		data.showToast(
+		showToast(
 			'Success',
 			'ブロックチェーンにプレイヤーネームを保存します。少々お待ちください。',
 			'success'
@@ -250,25 +249,6 @@
 		intervalRet = setInterval(() => {
 			getPlayerInfo();
 		}, 3000);
-	};
-
-	// GraphQL SaveDeck Server Process
-	data.funcSaveDeck = async () => {
-		data.showSpinner = true;
-		// Call GraphQL method.
-		data.client.graphql({
-			query: createGameServerProcess,
-			variables: {
-				input: {
-					type: 'save_deck',
-					message: JSON.stringify(data.userDeck),
-					playerId: data.player?.playerId
-				}
-			}
-		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 10000);
 	};
 
 	// GraphQL PlayerMatching Server Process
