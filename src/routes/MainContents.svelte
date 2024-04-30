@@ -33,15 +33,14 @@
 				Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
 			</div>
 		{/if}
-		<button class="menu-button left-end" on:click={data.handleOnGetADrink}>Get a drink</button>
 		{#if data.walletUser?.addr}
-			<img
-				class="menu-button logout"
-				on:click={data.funcSignOutWallet}
-				src="/image/button/logout.png"
-				alt="activate"
-			/>
 			{#if data.gameObject == null}
+				<img
+					class="menu-button logout left-end"
+					on:click={data.funcSignOutWallet}
+					src="/image/button/logout.png"
+					alt="activate"
+				/>
 				<img
 					class="menu-button edit-deck"
 					on:click={() => {
@@ -55,7 +54,7 @@
 		{/if}
 		{#if !data.walletUser?.addr}
 			<img
-				class="menu-button activate"
+				class="menu-button activate left-end"
 				on:click={data.funcSignInWallet}
 				src="/image/button/use.png"
 				alt="activate"
@@ -67,15 +66,15 @@
 		<div class="info-area">
 			{#if data.gameObject != null}
 				<div id="opponent_trigger_zone">
-					{#each Object.keys(data.gameObject.your_trigger_cards) as card_id, index}
-						<img
-							in:slide
-							id={card_id.toString()}
-							class="card-thumb"
-							src="/image/card_{card_id}.jpeg"
-							alt="drink thuumb"
-							draggable="true"
-						/>
+					{#each 'A_'.repeat(parseInt(data.gameObject.opponent_trigger_cards)).split('_') as _}
+						{#if _ != ''}
+							<img
+								in:slide
+								class="card-thumb opponent-trigger"
+								src="/image/button/enemyHand.png"
+								alt="drink thuumb"
+							/>
+						{/if}
 					{/each}
 				</div>
 				<div>
@@ -98,18 +97,18 @@
 						<div class="parameter1">CP: {('0' + data.yourCp).slice(-2)}</div>
 					</div>
 					<div
-						on:dragover={data.dragOver}
 						id="trigger_zone"
 						class:ring={data.isDraggingOverTriggerZone}
 						class:ring_ng={data.isDraggingNGOverTriggerZone}
+						on:dragover={data.dragOver}
 						on:drop={data.dropToTriggerZone}
 						on:dragenter={data.dragEnterToTriggerZone}
 						on:dragleave={data.dragLeaveToTriggerZone}
 					>
 						{#each Object.keys(data.triggerCards) as index}
 							<img
-								on:click={data.showCardInfo}
 								in:slide
+								on:click={data.showCardInfo}
 								id={data.triggerCards[index]}
 								class="card-thumb trigger-card"
 								src="/image/card_{data.triggerCards[index]}.jpeg"
@@ -132,31 +131,43 @@
 					on:dragenter={data.dragEnterToBattleField}
 					on:dragleave={data.dragLeaveToBattleField}
 				>
-					<div class="opponent_unit">
-						{#each Object.keys(data.gameObject.your_field_unit) as index}
-							<img
-								on:click={data.showCardInfo}
-								in:slide
-								id={data.gameObject.your_field_unit[index]}
-								class="card-thumb"
-								src="/image/card_{data.gameObject.your_field_unit[index]}.jpeg"
-								alt="Opponent's field unit"
-								draggable="true"
-							/>
+					<div>
+						{#each [1, 2, 3, 4, 5] as position}
+							<div class="opponent_unit">
+								{#if parseInt(data.opponetFieldCards[position]) >= 1}
+									<img
+										on:click={data.showCardInfo}
+										in:slide
+										id={data.opponetFieldCards[position]}
+										class="card-thumb field-card"
+										src="/image/card_{data.opponetFieldCards[position]}.jpeg"
+										alt="Opponent's field unit"
+									/>
+									<img class="status" src="/image/status.png" alt="card" />
+								{:else}
+									<div class="field-no-card"></div>
+								{/if}
+							</div>
 						{/each}
 					</div>
 					<div class="battle-space"></div>
-					<div class="your_unit">
-						{#each Object.keys(data.fieldCards) as index}
-							<img
-								on:click={data.showCardInfo}
-								in:slide
-								id={data.fieldCards[index]}
-								class="card-thumb"
-								src="/image/card_{data.fieldCards[index]}.jpeg"
-								alt="Your field unit"
-								draggable="true"
-							/>
+					<div>
+						{#each [1, 2, 3, 4, 5] as position}
+							<div class="your_unit">
+								{#if parseInt(data.fieldCards[position]) >= 1}
+									<img
+										on:click={data.showCardInfo}
+										in:slide
+										id={data.fieldCards[position]}
+										class="card-thumb field-card"
+										src="/image/card_{data.fieldCards[position]}.jpeg"
+										alt="Your field unit"
+									/>
+									<img class="status" src="/image/status.png" alt="card" />
+								{:else}
+									<div class="field-no-card"></div>
+								{/if}
+							</div>
 						{/each}
 					</div>
 				</div>
@@ -220,8 +231,16 @@
 			</div>
 		</div>
 		{#if data.gameObject && data.gameObject['is_first'] == data.gameObject['is_first_turn']}
-			<div class="clock">
-				<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+			<div>
+				<div class="clock">
+					<Clock size="80" color="#F03E50" unit="px" duration="240s" pause={false} />
+				</div>
+				<img
+					class="turn-end-btn"
+					on:click={data.funcTurnEnd}
+					src="/image/button/turnChangeEn.png"
+					alt="Redo"
+				/>
 			</div>
 		{/if}
 		{#if data.gameObject && data.gameObject['is_first'] != data.gameObject['is_first_turn']}
@@ -243,7 +262,7 @@
 	}
 
 	#own_cards {
-		width: 58%;
+		width: 700px;
 		height: 120px;
 		padding: 15px 10px;
 
@@ -275,7 +294,7 @@
 	}
 
 	#trigger_zone {
-		min-width: 330px;
+		min-width: 333px;
 		height: 120px;
 		background-image: url('/image/trigger.png');
 		margin-left: auto;
