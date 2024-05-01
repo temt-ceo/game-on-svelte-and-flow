@@ -8,7 +8,7 @@
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../../config.json';
-	import { showToast } from '$lib/const';
+	import { showToast } from '$lib/common';
 
 	Amplify.configure(config);
 
