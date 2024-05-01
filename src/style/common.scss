@@ -32,6 +32,13 @@
 		margin-left: 10px;
 	}
 
+	.attack-defence-btn {
+		position: absolute;
+		width: 70px;
+		margin-left: 15px;
+		top: -3px;
+	}
+
 	#hand_cards,
 	#battle_field,
 	#trigger_zone {
@@ -87,7 +94,7 @@
 		}
 
 		img {
-			cursor: grab;
+			cursor: pointer;
 		}
 	}
 
@@ -223,7 +230,7 @@
 			margin: 10px 0 5px 2vw;
 
 			img {
-				cursor: grab;
+				cursor: pointer;
 			}
 
 			.info {

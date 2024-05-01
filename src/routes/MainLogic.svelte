@@ -2,20 +2,7 @@
 	import { Clock } from 'svelte-loading-spinners';
 	import MainContents from './MainContents.svelte';
 	import { onCreateGameServerProcess } from '../graphql/subscriptions';
-	import {
-		ActedUp,
-		CanBlock,
-		CanAttack,
-		CardNeedsSelectTarget,
-		CardNeedsSelectActedTarget,
-		CardTriggerWhenPutOnField,
-		CardTriggerWhenAttack,
-		CardTriggerWhenBlocking,
-		CardTriggerWhenTurnEnd,
-		CardTriggerWhenBattling,
-		sleep,
-		showToast
-	} from '$lib/const';
+	import { sleep, showToast, checkFieldUnitAndTriggerZoneAbilityWhenPutCard } from '$lib/common';
 
 	export let data;
 
@@ -28,6 +15,9 @@
 	data.showCardInfo = (e: Event) => {
 		const card_id = parseInt((e.target as HTMLElement).getAttribute('id'));
 		data.selectedCard = data.cardInfo[card_id];
+	};
+	data.selectDefendUnit = (position) => {
+		data.defendUnitPosition = position;
 	};
 
 	// drag & drop event handler
@@ -57,57 +47,12 @@
 			data.yourCp -= parseInt(data.selectedCard.cost);
 			data.isDraggingOverBattleField = false;
 
-			// Check Trigger Zone Ability will be fired.
-			const usedTriggers = [];
-			let skillMessage = '';
-			for (const pos of [1, 2, 3, 4]) {
-				if (data.cardInfo[data.triggerCards[pos]]?.skill.trigger_1 == CardTriggerWhenPutOnField) {
-					// Is needed to select enemy unit?
-					if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectTarget) {
-						// Are there target unit?
-						for (const pos of [1, 2, 3, 4, 5]) {
-							if (data.gameObject.opponent_field_unit_action[pos]) {
-								usedTriggers.push(pos);
-								// default target is most left unit.
-								data.skillTargetUnitPos = pos;
-								showToast(
-									'Trigger Card Activated!',
-									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
-									'success'
-								);
-								data.selectTargetType = CardNeedsSelectTarget;
-								data.waitPlayerChoice = true;
-								sleep(5); // wait until player choose the target.
-								break;
-							}
-						}
-						// Is needed to select acted-up enemy unit?
-					} else if (
-						data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectActedTarget
-					) {
-						// Are there target unit?
-						for (const pos of [1, 2, 3, 4, 5]) {
-							if (data.gameObject.opponent_field_unit_action[pos] == ActedUp) {
-								usedTriggers.push(pos);
-								// default target is most left unit.
-								data.skillTargetUnitPos = pos;
-								showToast(
-									'Trigger Card Activated!',
-									`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
-									'success'
-								);
-								data.selectTargetType = CardNeedsSelectActedTarget;
-								data.waitPlayerChoice = true;
-								sleep(5); // wait until player choose the target.
-								break;
-							}
-						}
-					} else {
-						usedTriggers.push(pos);
-					}
-				}
-			}
-			data.funcPutCardOnTheField(putCardOnFieldPosition, usedTriggers, skillMessage);
+			// Check Field Unit & Trigger Zone Ability
+			checkFieldUnitAndTriggerZoneAbilityWhenPutCard(
+				data,
+				putCardOnFieldPosition,
+				data.cardInfo[targetCard[0]]
+			);
 		}
 		if (data.isDraggingNGOverBattleField) {
 			data.isDraggingNGOverBattleField = false;
@@ -180,6 +125,7 @@
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
+			const msg = retSubscription.message.split(',TransactionID:')[0];
 			console.log(retSubscription);
 			switch (retSubscription.type) {
 				case 'player_matching':
@@ -218,13 +164,13 @@
 					break;
 				case 'put_card_on_the_field':
 					data.showSpinner = true;
-					showToast('The card drive transaction Called!', '', 'info');
+					showToast('The card drive transaction Called!', msg['skillMessage'], 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'turn_change':
 					data.showSpinner = true;
-					if (data.player.playerId == data.player?.playerId) {
+					if (data.player.playerId != data.gameObject.opponent) {
 						showToast(
 							'Turn Change transaction Called!',
 							'Please wait until opponent start the turn.',
@@ -239,6 +185,29 @@
 					}
 					sleep(7);
 					data.showSpinner = false;
+					break;
+				case 'attack':
+					// rival's attack
+					if (data.gameObject.opponent == retSubscription.playerId) {
+						const onBattlePosition = msg['arg1'];
+						data.attackerUsedInterceptCardPositions = msg['arg4'];
+						data.attackerUsedCardIds = msg['usedCardIds'];
+
+						if (msg.canBlock) {
+							data.waitPlayerChoice = true;
+							sleep(7);
+							data.funcDefenceAction();
+						} else {
+							if (data.gameObject.opponent_field_unit[onBattlePosition] == '6') {
+								// Valkyrie
+								showToast(
+									`Opponent's attack!`,
+									`Valkyrie's ability is activated! Cannot Block!`,
+									'warning'
+								);
+							}
+						}
+					}
 					break;
 			}
 		}

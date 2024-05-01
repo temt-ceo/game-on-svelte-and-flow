@@ -15,7 +15,13 @@
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../config.json';
-	import { showToast } from '$lib/const';
+	import {
+		sleep,
+		showToast,
+		checkFieldUnitAbilityWhenTurnChange,
+		checkFieldUnitAndTriggerZoneAbilityWhenAttack,
+		checkTriggerZoneAbilityWhenBattle
+	} from '$lib/common';
 
 	Amplify.configure(config);
 
@@ -300,6 +306,10 @@
 	// GraphQL TurnEnd Server Process
 	data.funcTurnEnd = async () => {
 		if (data.showSpinner) return;
+
+		// Check Field Unit Ability
+		checkFieldUnitAbilityWhenTurnChange(data);
+
 		data.showSpinner = true;
 		// Call GraphQL method.
 		const message = {
@@ -319,6 +329,97 @@
 				}
 			}
 		});
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
+	// GraphQL TurnEnd Server Process
+	data.funcAttack = async (fieldPosition) => {
+		if (data.showSpinner) return;
+
+		// Check Field Unit And Trigger Card Ability
+		const ret = await checkFieldUnitAndTriggerZoneAbilityWhenAttack(
+			data,
+			data.cardInfo[data.fieldCards[fieldPosition]]
+		);
+		const usedTriggerCardIDs = [];
+		ret.usedTriggers.forEach((pos) => {
+			usedTriggerCardIDs.push(data.triggerCards[pos]);
+		});
+
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: fieldPosition, // position
+			arg2: ret.selectTargetType, // unit skill's target
+			arg3: data.triggerCards, // trigger cards
+			arg4: ret.usedTriggers, // used trigger/intercept card position
+			usedCardIds: usedTriggerCardIDs,
+			canBlock: true,
+			skillMessage: ret.skillMessage
+		};
+
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'attack',
+					message: JSON.stringify(message),
+					playerId: data.player.playerId
+				}
+			}
+		});
+
+		// Initialization
+		data.selectTargetType = null;
+		data.waitPlayerChoice = false;
+
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
+	data.funcDefenceAction = async () => {
+		if (data.showSpinner) return;
+
+		if (data.defendUnitPosition) {
+			await sleep(5);
+		}
+		// Check Field Unit And Trigger Card Ability
+		const ret = await checkTriggerZoneAbilityWhenBattle(data);
+		const usedTriggerCardIDs = [];
+		ret.usedTriggers.forEach((pos) => {
+			usedTriggerCardIDs.push(data.triggerCards[pos]);
+		});
+
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: data.defendUnitPosition, // defender defend position
+			arg2: data.attackerUsedInterceptCardPositions, // attacker used intercept card positions
+			arg3: ret.usedTriggers, // defender used intercept card positions
+			attackerUsedCardIds: data.attackerUsedCardIds, // attackerUsedCardIds
+			defenderUsedCardIds: usedTriggerCardIDs // defenderUsedCardIds
+		};
+
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'defence_action',
+					message: JSON.stringify(message),
+					playerId: data.player.playerId
+				}
+			}
+		});
+
+		// Initialization
+		data.defendUnitPosition = null;
+		data.waitPlayerChoice = false;
+		data.attackerUsedInterceptCardPositions = [];
+		data.attackerUsedCardIds = [];
+
 		setTimeout(() => {
 			data.showSpinner = false;
 		}, 5000);
