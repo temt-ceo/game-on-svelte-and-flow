@@ -12,7 +12,7 @@
 		&.trigger-card {
 			width: 78px;
 			height: 100px;
-			margin-top: 4px;
+			margin: 4px 0 0 2px;
 			object-fit: contain;
 		}
 
@@ -80,6 +80,8 @@
 	}
 
 	#trigger_zone {
+		display: flex;
+		flex-direction: row;
 		min-width: 333px;
 		height: 120px;
 		background-image: url('/image/trigger.png');
@@ -91,6 +93,17 @@
 		}
 		&.ring_ng {
 			border: 2px dashed rgb(231, 19, 26);
+		}
+
+		div {
+			position: relative;
+
+			.attack-signal {
+				position: absolute;
+				top: -25px;
+				width: 38px;
+				left: 26px;
+			}
 		}
 
 		img {
@@ -226,6 +239,16 @@
 				margin-top: 10px;
 				margin-left: 5vw;
 				min-width: 10vw;
+
+				&.used {
+					color: yellow;
+					font-weight: bold;
+				}
+
+				&.damaged {
+					color: red;
+					font-weight: bold;
+				}
 			}
 		}
 		.drop-area {
@@ -297,6 +320,7 @@
 					}
 
 					&.yellow {
+						color: black;
 						background-color: gold;
 					}
 				}

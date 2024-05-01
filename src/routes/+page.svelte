@@ -15,13 +15,16 @@
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../config.json';
+	import { sleep, showToast } from '$lib/common';
 	import {
-		sleep,
-		showToast,
-		checkFieldUnitAbilityWhenTurnChange,
-		checkFieldUnitAndTriggerZoneAbilityWhenAttack,
-		checkTriggerZoneAbilityWhenBattle
-	} from '$lib/common';
+		ActedUp,
+		CardNotNeedSelectTarget,
+		CardNeedsSelectTarget,
+		CardNeedsSelectActedTarget,
+		CardTriggerWhenPutOnField,
+		CardTriggerWhenTurnEnd,
+		CardTriggerWhenBattling
+	} from '$lib/const';
 
 	Amplify.configure(config);
 
@@ -217,12 +220,16 @@
 					// When after turn is changed.
 					if (
 						bcObj.turn != data.gameObject?.turn ||
-						bcObj.isFirstTurn != data.gameObject?.isFirstTurn
+						bcObj.is_first_turn != data.gameObject?.is_first_turn
 					) {
 						data.handCards = Object.values(bcObj.your_hand);
 						data.triggerCards = bcObj.your_trigger_cards;
 						data.fieldCards = bcObj.your_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
+						data.originalOpponentLife = bcObj.opponent_life;
+						if (bcObj.is_first_turn == bcObj.is_first) {
+							showToast(`Your Turn!`, '', 'info');
+						}
 					} else {
 						if (bcObj['your_attacking_card']) {
 							const attackedTime = new Date(
@@ -284,7 +291,7 @@
 	};
 
 	// GraphQL PutCardOnTheField Server Process
-	data.funcPutCardOnTheField = async (putCardOnFieldPosition, usedTriggers, skillMessage) => {
+	data.funcPutCardOnTheField = async (putCardOnFieldPosition, skillMessage) => {
 		if (data.showSpinner) return;
 		data.showSpinner = true;
 		// Call GraphQL method.
@@ -294,9 +301,9 @@
 			arg1: arg1, // field unit
 			arg2: data.skillTargetUnitPos, // unit skill's target
 			arg3: data.triggerCards, // trigger cards
-			arg4: usedTriggers, // used trigger/intercept card position
+			arg4: data.usedTriggers, // used trigger/intercept card position
 			skillMessage: skillMessage,
-			usedTriggers: usedTriggers
+			usedTriggers: data.usedTriggers
 		};
 		data.client.graphql({
 			query: createGameServerProcess,
@@ -308,8 +315,12 @@
 				}
 			}
 		});
+		data.usedTriggers.forEach((pos) => {
+			delete data.triggerCards[pos];
+		});
 		setTimeout(() => {
 			data.showSpinner = false;
+			data.usedTriggers = [];
 		}, 5000);
 	};
 
@@ -318,7 +329,7 @@
 		if (data.showSpinner) return;
 
 		// Check Field Unit Ability
-		checkFieldUnitAbilityWhenTurnChange(data);
+		checkFieldUnitAbilityWhenTurnChange();
 
 		data.showSpinner = true;
 		// Call GraphQL method.
@@ -349,25 +360,25 @@
 		if (data.showSpinner) return;
 
 		// Check Field Unit And Trigger Card Ability
-		const ret = await checkFieldUnitAndTriggerZoneAbilityWhenAttack(
-			data,
+		await checkFieldUnitAndTriggerZoneAbilityWhenAttack(
 			data.cardInfo[data.fieldCards[fieldPosition]]
 		);
 		const usedTriggerCardIDs = [];
-		ret.usedTriggers.forEach((pos) => {
+		data.usedTriggers.forEach((pos) => {
 			usedTriggerCardIDs.push(data.triggerCards[pos]);
+			delete data.triggerCards[pos];
 		});
 
 		data.showSpinner = true;
 		// Call GraphQL method.
 		const message = {
 			arg1: fieldPosition, // position
-			arg2: ret.selectTargetType, // unit skill's target
+			arg2: data.selectTargetType, // unit skill's target
 			arg3: data.triggerCards, // trigger cards
-			arg4: ret.usedTriggers, // used trigger/intercept card position
+			arg4: data.usedTriggers, // used trigger/intercept card position
 			usedCardIds: usedTriggerCardIDs,
 			canBlock: true,
-			skillMessage: ret.skillMessage
+			skillMessage: data.skillMessage
 		};
 
 		data.client.graphql({
@@ -397,17 +408,18 @@
 			await sleep(5);
 		}
 		// Check Field Unit And Trigger Card Ability
-		const ret = await checkTriggerZoneAbilityWhenBattle(data);
+		await checkTriggerZoneAbilityWhenBattle();
 		const usedTriggerCardIDs = [];
-		ret.usedTriggers.forEach((pos) => {
+		data.usedTriggers.forEach((pos) => {
 			usedTriggerCardIDs.push(data.triggerCards[pos]);
+			delete data.triggerCards[pos];
 		});
 		data.showSpinner = true;
 		// Call GraphQL method.
 		const message = {
 			arg1: data.defendUnitPosition, // defender defend position
 			arg2: data.attackerUsedInterceptCardPositions, // attacker used intercept card positions
-			arg3: ret.usedTriggers, // defender used intercept card positions
+			arg3: data.usedTriggers, // defender used intercept card positions
 			attackerUsedCardIds: data.attackerUsedCardIds, // attackerUsedCardIds
 			defenderUsedCardIds: usedTriggerCardIDs // defenderUsedCardIds
 		};
@@ -471,6 +483,140 @@
 		setTimeout(() => {
 			data.showSpinner = false;
 		}, 5000);
+	};
+
+	const checkFieldUnitAbilityWhenTurnChange = () => {
+		for (const pos of [1, 2, 3, 4, 5]) {
+			if (data.cardInfo[data.fieldCards[pos]]?.skill.trigger_1 == CardTriggerWhenTurnEnd) {
+				showToast(
+					`${data.cardInfo[data.fieldCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+					`=> ${data.cardInfo[data.fieldCards[pos]]?.skill.description}.`,
+					'success'
+				);
+			}
+		}
+	};
+
+	const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (unitAbility) => {
+		data.skillMessage = '';
+		// Field Unit
+		if (unitAbility?.skill.trigger_1 == CardTriggerWhenPutOnField) {
+			// Is needed to select enemy unit?
+			if (unitAbility?.skill.ask_1 == CardNeedsSelectTarget) {
+				// Are there target unit?
+				for (const pos of [1, 2, 3, 4, 5]) {
+					if (data.gameObject.opponent_field_unit_action[pos]) {
+						// default target is most left unit.
+						data.skillTargetUnitPos = pos;
+						data.skillMessage += `${unitAbility?.name} Ability Activated!!/`;
+						showToast(
+							`${unitAbility?.name} is Activated! 【SELECT ONE TARGET!】`,
+							`=> ${unitAbility?.skill.description}.`,
+							'success'
+						);
+						data.selectTargetType = CardNeedsSelectTarget;
+						data.waitPlayerChoice = true;
+						await sleep(7); // wait until player choose the target.
+						break;
+					}
+				}
+				// Is needed to select acted-up enemy unit?
+			} else if (unitAbility?.skill.ask_1 == CardNeedsSelectActedTarget) {
+				// Are there target unit?
+				for (const pos of [1, 2, 3, 4, 5]) {
+					if (data.gameObject.opponent_field_unit_action[pos] == ActedUp) {
+						// default target is most left unit.
+						data.skillTargetUnitPos = pos;
+						data.skillMessage += `${unitAbility?.name} Ability Activated!!/`;
+						showToast(
+							`${unitAbility?.name} is Activated! 【SELECT ONE TARGET (which is already acted up)!】`,
+							`=> ${unitAbility?.skill.description}.`,
+							'success'
+						);
+						data.selectTargetType = CardNeedsSelectActedTarget;
+						data.waitPlayerChoice = true;
+						await sleep(7); // wait until player choose the target.
+						break;
+					}
+				}
+			}
+		}
+
+		data.usedTriggers = [];
+		// Trigger Zone
+		for (const pos of [1, 2, 3, 4]) {
+			if (data.cardInfo[data.triggerCards[pos]]?.skill.trigger_1 == CardTriggerWhenPutOnField) {
+				// Is needed to select enemy unit?
+				if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectTarget) {
+					// Are there target unit?
+					for (const unitPos of [1, 2, 3, 4, 5]) {
+						if (data.gameObject.opponent_field_unit_action[unitPos]) {
+							data.usedTriggers.push(pos);
+							// default target is most left unit.
+							data.skillTargetUnitPos = unitPos;
+							data.skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+							showToast(
+								`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
+								'success'
+							);
+							data.selectTargetType = CardNeedsSelectTarget;
+							data.waitPlayerChoice = true;
+							await sleep(7); // wait until player choose the target.
+							break;
+						}
+					}
+					// Is needed to select acted-up enemy unit?
+				} else if (
+					data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectActedTarget
+				) {
+					// Are there target unit?
+					for (const unitPos of [1, 2, 3, 4, 5]) {
+						if (data.gameObject.opponent_field_unit_action[unitPos] == ActedUp) {
+							data.usedTriggers.push(pos);
+							// default target is most left unit.
+							data.skillTargetUnitPos = unitPos;
+							data.skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+							showToast(
+								`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET (which is already acted up)!】`,
+								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
+								'success'
+							);
+							data.selectTargetType = CardNeedsSelectActedTarget;
+							data.waitPlayerChoice = true;
+							await sleep(7); // wait until player choose the target.
+							break;
+						}
+					}
+				} else if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNotNeedSelectTarget) {
+					data.usedTriggers.push(pos);
+					data.skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+					showToast(
+						`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+						`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+						'success'
+					);
+				}
+			}
+		}
+	};
+
+	const checkTriggerZoneAbilityWhenBattle = async () => {
+		data.skillMessage = '';
+
+		data.usedTriggers = [];
+		// Trigger Zone
+		for (const pos of [1, 2, 3, 4]) {
+			if (data.cardInfo[data.triggerCards[pos]]?.skill.trigger_1 == CardTriggerWhenBattling) {
+				data.usedTriggers.push(pos);
+				data.skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+				showToast(
+					`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+					`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+					'success'
+				);
+			}
+		}
 	};
 </script>
 

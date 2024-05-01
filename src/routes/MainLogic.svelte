@@ -2,7 +2,14 @@
 	import { Clock } from 'svelte-loading-spinners';
 	import MainContents from './MainContents.svelte';
 	import { onCreateGameServerProcess } from '../graphql/subscriptions';
-	import { sleep, showToast, checkFieldUnitAndTriggerZoneAbilityWhenPutCard } from '$lib/common';
+	import { sleep, showToast } from '$lib/common';
+	import {
+		ActedUp,
+		CardNotNeedSelectTarget,
+		CardNeedsSelectTarget,
+		CardNeedsSelectActedTarget,
+		CardTriggerWhenPutOnField
+	} from '$lib/const';
 
 	export let data;
 
@@ -34,7 +41,7 @@
 			parseInt(data.draggingCardId) <= 16 &&
 			Object.keys(data.fieldCards).length < 5 &&
 			data.gameObject['is_first'] == data.gameObject['is_first_turn'] &&
-			parseInt(data.selectedCard.cost) < data.yourCp
+			parseInt(data.selectedCard.cost) <= data.yourCp
 		) {
 			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
 			for (const pos of [1, 2, 3, 4, 5]) {
@@ -49,7 +56,6 @@
 
 			// Check Field Unit & Trigger Zone Ability
 			checkFieldUnitAndTriggerZoneAbilityWhenPutCard(
-				data,
 				putCardOnFieldPosition,
 				data.cardInfo[targetCard[0]]
 			);
@@ -82,7 +88,7 @@
 		if (
 			parseInt(data.draggingCardId) <= 16 &&
 			Object.keys(data.fieldCards).length < 5 &&
-			parseInt(data.selectedCard.cost) < data.yourCp &&
+			parseInt(data.selectedCard.cost) <= data.yourCp &&
 			data.gameObject['is_first'] == data.gameObject['is_first_turn']
 		) {
 			data.isDraggingOverBattleField = true;
@@ -102,7 +108,7 @@
 		}
 	};
 	data.dragLeaveToBattleField = (e: DragEvent) => {
-		data.isDraggingOverBattleField = false;
+		// data.isDraggingOverBattleField = false; // To avoid overly sensitive reaction.
 		data.isDraggingNGOverBattleField = false;
 	};
 	data.dragLeaveToTriggerZone = (e: DragEvent) => {
@@ -164,7 +170,7 @@
 					break;
 				case 'put_card_on_the_field':
 					data.showSpinner = true;
-					showToast('The card drive transaction Called!', msg['skillMessage'], 'info');
+					showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
@@ -245,6 +251,117 @@
 			}
 		}
 	});
+
+	const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
+		putCardOnFieldPosition,
+		unitAbility
+	) => {
+		let skillMessage = '';
+		// Field Unit
+		if (unitAbility?.skill.trigger_1 == CardTriggerWhenPutOnField) {
+			// Is needed to select enemy unit?
+			if (unitAbility?.skill.ask_1 == CardNeedsSelectTarget) {
+				// Are there target unit?
+				for (const pos of [1, 2, 3, 4, 5]) {
+					if (data.gameObject.opponent_field_unit_action[pos]) {
+						// default target is most left unit.
+						data.skillTargetUnitPos = pos;
+						skillMessage += `${unitAbility?.name} Ability Activated!!/`;
+						showToast(
+							`${unitAbility?.name} is Ability Activated! 【SELECT ONE TARGET!】`,
+							`=> ${unitAbility?.skill.description}.`,
+							'success'
+						);
+						data.selectTargetType = CardNeedsSelectTarget;
+						data.waitPlayerChoice = true;
+						await sleep(7); // wait until player choose the target.
+						break;
+					}
+				}
+				// Is needed to select acted-up enemy unit?
+			} else if (unitAbility?.skill.ask_1 == CardNeedsSelectActedTarget) {
+				// Are there target unit?
+				for (const pos of [1, 2, 3, 4, 5]) {
+					if (data.gameObject.opponent_field_unit_action[pos] == ActedUp) {
+						// default target is most left unit.
+						data.skillTargetUnitPos = pos;
+						skillMessage += `${unitAbility?.name} Ability Activated!!/`;
+						showToast(
+							`${unitAbility?.name} is Activated! 【SELECT ONE TARGET (which is already acted up)!】`,
+							`=> ${unitAbility?.skill.description}.`,
+							'success'
+						);
+						data.selectTargetType = CardNeedsSelectActedTarget;
+						data.waitPlayerChoice = true;
+						await sleep(7); // wait until player choose the target.
+						break;
+					}
+				}
+			}
+		}
+
+		data.usedTriggers = [];
+		// Trigger Zone
+		for (const pos of [1, 2, 3, 4]) {
+			if (data.cardInfo[data.triggerCards[pos]]?.skill.trigger_1 == CardTriggerWhenPutOnField) {
+				// Is needed to select enemy unit?
+				if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectTarget) {
+					// Are there target unit?
+					for (const unitPos of [1, 2, 3, 4, 5]) {
+						if (data.gameObject.opponent_field_unit_action[unitPos]) {
+							data.usedTriggers.push(pos);
+							// default target is most left unit.
+							data.skillTargetUnitPos = unitPos;
+							skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+							showToast(
+								`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
+								'success'
+							);
+							data.selectTargetType = CardNeedsSelectTarget;
+							data.waitPlayerChoice = true;
+							await sleep(7); // wait until player choose the target.
+							break;
+						}
+					}
+					// Is needed to select acted-up enemy unit?
+				} else if (
+					data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNeedsSelectActedTarget
+				) {
+					// Are there target unit?
+					for (const unitPos of [1, 2, 3, 4, 5]) {
+						if (data.gameObject.opponent_field_unit_action[unitPos] == ActedUp) {
+							data.usedTriggers.push(pos);
+							// default target is most left unit.
+							data.skillTargetUnitPos = unitPos;
+							skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+							showToast(
+								`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET (which is already acted up)!】`,
+								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+								'success'
+							);
+							data.selectTargetType = CardNeedsSelectActedTarget;
+							data.waitPlayerChoice = true;
+							await sleep(7); // wait until player choose the target.
+							break;
+						}
+					}
+				} else if (data.cardInfo[data.triggerCards[pos]]?.skill.ask_1 == CardNotNeedSelectTarget) {
+					data.usedTriggers.push(pos);
+					skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
+					showToast(
+						`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+						`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+						'success'
+					);
+				}
+			}
+		}
+		data.funcPutCardOnTheField(putCardOnFieldPosition, skillMessage);
+		// Initialization
+		data.selectTargetType = null;
+		data.waitPlayerChoice = false;
+	};
 </script>
 
 {#if data.countdown}
