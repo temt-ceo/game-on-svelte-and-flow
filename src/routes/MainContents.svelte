@@ -197,6 +197,24 @@
 						{#each [1, 2, 3, 4, 5] as position}
 							<div class="your_unit">
 								{#if parseInt(data.fieldCards[position]) >= 1}
+									{#if data.gameObject['is_first'] == data.gameObject['is_first_turn'] && data.gameObject.your_field_unit_action[position] == '2'}
+										<img
+											in:slide
+											on:click={data.funcAttack(position)}
+											class="attack-defence-btn"
+											src="/image/button/attack.png"
+										/>
+									{/if}
+									{#if data.waitPlayerChoice}
+										{#if data.gameObject['is_first'] != data.gameObject['is_first_turn'] && (data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2')}
+											<img
+												in:slide
+												on:click={data.selectDefendUnit(position)}
+												class="attack-defence-btn"
+												src="/image/button/select.png"
+											/>
+										{/if}
+									{/if}
 									<img
 										on:click={data.showCardInfo}
 										in:slide

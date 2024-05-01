@@ -10,6 +10,8 @@ export function load() {
 		funcSaveDeck: null,
 		funcPutCardOnTheField: null,
 		funcTurnEnd: null,
+		funcAttack: null,
+		funcDefenceAction: null,
 		player: null,
 		cardInfo: {},
 		userDeck: [],
@@ -31,6 +33,10 @@ export function load() {
 		isDraggingNGOverBattleField: false,
 		isDraggingOverTriggerZone: false,
 		isDraggingNGOverTriggerZone: false,
-		waitPlayerChoice: false
+		waitPlayerChoice: false,
+		selectTargetType: null,
+		defendUnitPosition: null,
+		attackerUsedInterceptCardPositions: [],
+		attackerUsedCardIds: []
 	};
 }
