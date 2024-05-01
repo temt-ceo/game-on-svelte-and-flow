@@ -11,6 +11,7 @@ export function load() {
 		funcPutCardOnTheField: null,
 		funcTurnEnd: null,
 		funcAttack: null,
+		funcBattleReaction: null,
 		funcDefenceAction: null,
 		player: null,
 		cardInfo: {},

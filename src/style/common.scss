@@ -12,7 +12,7 @@
 		&.trigger-card {
 			width: 78px;
 			height: 100px;
-			margin: 4px 0 0 4px;
+			margin-top: 4px;
 			object-fit: contain;
 		}
 
@@ -139,6 +139,7 @@
 				top: 92px;
 				left: 13px;
 				opacity: 0.9;
+				background-color: white;
 			}
 
 			.status_name {
@@ -153,6 +154,7 @@
 				top: 114px;
 				left: 13px;
 				opacity: 0.9;
+				background-color: yellow;
 			}
 
 			.status_bp {
