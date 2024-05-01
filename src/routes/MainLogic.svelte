@@ -196,7 +196,7 @@
 						if (msg.canBlock) {
 							data.waitPlayerChoice = true;
 							sleep(7);
-							data.funcDefenceAction();
+							data.funcBattleReaction();
 						} else {
 							if (data.gameObject.opponent_field_unit[onBattlePosition] == '6') {
 								// Valkyrie
@@ -207,6 +207,39 @@
 								);
 							}
 						}
+					}
+					break;
+				case 'battle_reaction':
+					// rival's attack
+					if (data.gameObject.opponent == retSubscription.playerId) {
+						const onDefendPosition = msg['arg1'];
+						if (onDefendPosition) {
+							showToast(
+								`Opponent blocked!`,
+								`Valkyrie's ability is activated! Cannot Block!`,
+								'warning'
+							);
+						}
+					}
+					break;
+				case 'defence_action':
+					if (data.gameObject.opponent == retSubscription.playerId) {
+						const onDefendPosition = msg['arg1'];
+						if (onDefendPosition) {
+							showToast(
+								`Opponent blocked!`,
+								`Valkyrie's ability is activated! Cannot Block!`,
+								'warning'
+							);
+						} else {
+							showToast(`Opponent doesn't block!`, 'Damage opponent 1 life!', 'success');
+						}
+					} else {
+						showToast(
+							`Opponent's attack!`,
+							`Valkyrie's ability is activated! Cannot Block!`,
+							'warning'
+						);
 					}
 					break;
 			}

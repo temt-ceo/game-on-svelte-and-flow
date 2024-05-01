@@ -380,6 +380,50 @@
 		}, 5000);
 	};
 
+	data.funcBattleReaction = async () => {
+		if (data.showSpinner) return;
+
+		if (data.defendUnitPosition) {
+			await sleep(5);
+		}
+		// Check Field Unit And Trigger Card Ability
+		const ret = await checkTriggerZoneAbilityWhenBattle(data);
+		const usedTriggerCardIDs = [];
+		ret.usedTriggers.forEach((pos) => {
+			usedTriggerCardIDs.push(data.triggerCards[pos]);
+		});
+		data.showSpinner = true;
+		// Call GraphQL method.
+		const message = {
+			arg1: data.defendUnitPosition, // defender defend position
+			arg2: data.attackerUsedInterceptCardPositions, // attacker used intercept card positions
+			arg3: ret.usedTriggers, // defender used intercept card positions
+			attackerUsedCardIds: data.attackerUsedCardIds, // attackerUsedCardIds
+			defenderUsedCardIds: usedTriggerCardIDs // defenderUsedCardIds
+		};
+
+		data.client.graphql({
+			query: createGameServerProcess,
+			variables: {
+				input: {
+					type: 'battle_reaction',
+					message: JSON.stringify(message),
+					playerId: data.player.playerId
+				}
+			}
+		});
+
+		// Initialization
+		data.defendUnitPosition = null;
+		data.waitPlayerChoice = false;
+		data.attackerUsedInterceptCardPositions = [];
+		data.attackerUsedCardIds = [];
+
+		setTimeout(() => {
+			data.showSpinner = false;
+		}, 5000);
+	};
+
 	data.funcDefenceAction = async () => {
 		if (data.showSpinner) return;
 
