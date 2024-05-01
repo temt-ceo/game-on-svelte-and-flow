@@ -39,6 +39,8 @@ export function load() {
 		defendUnitPosition: null,
 		attackerUsedInterceptCardPositions: [],
 		attackerUsedCardIds: [],
-		originalOpponentLife: 7
+		originalOpponentLife: 7,
+		usedTriggers: [],
+		skillMessage: ''
 	};
 }

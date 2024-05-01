@@ -80,6 +80,8 @@
 	}
 
 	#trigger_zone {
+		display: flex;
+		flex-direction: row;
 		min-width: 333px;
 		height: 120px;
 		background-image: url('/image/trigger.png');
@@ -91,6 +93,17 @@
 		}
 		&.ring_ng {
 			border: 2px dashed rgb(231, 19, 26);
+		}
+
+		div {
+			position: relative;
+
+			.attack-signal {
+				position: absolute;
+				top: -25px;
+				width: 38px;
+				left: 26px;
+			}
 		}
 
 		img {

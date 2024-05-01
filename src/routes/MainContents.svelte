@@ -128,13 +128,18 @@
 						on:dragleave={data.dragLeaveToTriggerZone}
 					>
 						{#each Object.keys(data.triggerCards) as index}
-							<img
-								in:slide
-								on:click={data.showCardInfo}
-								id={data.triggerCards[index]}
-								class="card-thumb trigger-card"
-								src="/image/card_{data.triggerCards[index]}.jpeg"
-							/>
+							<div>
+								{#if data.usedTriggers.includes(index)}
+									<img class="attack-signal" src="/image/attackSignal.png" alt="card" />
+								{/if}
+								<img
+									in:slide
+									on:click={data.showCardInfo}
+									id={data.triggerCards[index]}
+									class="card-thumb trigger-card"
+									src="/image/card_{data.triggerCards[index]}.jpeg"
+								/>
+							</div>
 						{/each}
 					</div>
 				</div>
@@ -188,6 +193,7 @@
 												in:slide
 												on:click={() => {
 													data.skillTargetUnitPos = position;
+													data.selectTargetType = null;
 												}}
 												class="target-select"
 												src="/image/button/select.png"
@@ -296,6 +302,7 @@
 						on:dragstart={data.dragFromHand}
 						on:click={data.showHandCardInfo}
 						out:scale
+						in:scale
 						id={index.toString()}
 						class="card-thumb"
 						src="/image/card_{card_id}.jpeg"
