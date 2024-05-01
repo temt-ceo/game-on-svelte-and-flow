@@ -51,8 +51,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
 					data.skillTargetUnitPos = pos;
 					skillMessage += `${unitAbility?.name} Ability Activated!!/`;
 					showToast(
-						'Field Unit Card Ability Activated!',
-						`${unitAbility?.name} => ${unitAbility?.skill.description}. SELECT ONE TARGET!`,
+						`${unitAbility?.name} is Ability Activated! 【SELECT ONE TARGET!】`,
+						`=> ${unitAbility?.skill.description}.`,
 						'success'
 					);
 					data.selectTargetType = CardNeedsSelectTarget;
@@ -70,8 +70,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
 					data.skillTargetUnitPos = pos;
 					skillMessage += `${unitAbility?.name} Ability Activated!!/`;
 					showToast(
-						'Trigger Card Activated!',
-						`${unitAbility?.name} => ${unitAbility?.skill.description}. SELECT ONE TARGET!`,
+						`${unitAbility?.name} is Activated! 【SELECT ONE TARGET!】`,
+						`=> ${unitAbility?.skill.description}.`,
 						'success'
 					);
 					data.selectTargetType = CardNeedsSelectActedTarget;
@@ -97,8 +97,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
 						data.skillTargetUnitPos = pos;
 						skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 						showToast(
-							'Trigger Card Activated!',
-							`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+							`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+							`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
 							'success'
 						);
 						data.selectTargetType = CardNeedsSelectTarget;
@@ -117,8 +117,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
 						data.skillTargetUnitPos = pos;
 						skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 						showToast(
-							'Trigger Card Activated!',
-							`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+							`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+							`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
 							'success'
 						);
 						data.selectTargetType = CardNeedsSelectActedTarget;
@@ -131,8 +131,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenPutCard = async (
 				usedTriggers.push(pos);
 				skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 				showToast(
-					'Trigger Card Activated!',
-					`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+					`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+					`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
 					'success'
 				);
 			}
@@ -148,8 +148,8 @@ export const checkFieldUnitAbilityWhenTurnChange = (data) => {
 	for (const pos of [1, 2, 3, 4, 5]) {
 		if (data.cardInfo[data.fieldCards[pos]]?.skill.trigger_1 == CardTriggerWhenTurnEnd) {
 			showToast(
-				'Field Unit Card Ability Activated!',
-				`${data.cardInfo[data.fieldCards[pos]]?.name} => ${data.cardInfo[data.fieldCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+				`${data.cardInfo[data.fieldCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+				`=> ${data.cardInfo[data.fieldCards[pos]]?.skill.description}.`,
 				'success'
 			);
 		}
@@ -169,8 +169,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (data, unitAb
 					data.skillTargetUnitPos = pos;
 					skillMessage += `${unitAbility?.name} Ability Activated!!/`;
 					showToast(
-						'Field Unit Card Ability Activated!',
-						`${unitAbility?.name} => ${unitAbility?.skill.description}. SELECT ONE TARGET!`,
+						`${unitAbility?.name} is Activated! 【SELECT ONE TARGET!】`,
+						`=> ${unitAbility?.skill.description}.`,
 						'success'
 					);
 					data.selectTargetType = CardNeedsSelectTarget;
@@ -188,8 +188,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (data, unitAb
 					data.skillTargetUnitPos = pos;
 					skillMessage += `${unitAbility?.name} Ability Activated!!/`;
 					showToast(
-						'Trigger Card Activated!',
-						`${unitAbility?.name} => ${unitAbility?.skill.description}. SELECT ONE TARGET!`,
+						`${unitAbility?.name} is Activated! 【SELECT ONE TARGET!】`,
+						`=> ${unitAbility?.skill.description}.`,
 						'success'
 					);
 					data.selectTargetType = CardNeedsSelectActedTarget;
@@ -215,8 +215,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (data, unitAb
 						data.skillTargetUnitPos = pos;
 						skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 						showToast(
-							'Trigger Card Activated!',
-							`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+							`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+							`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
 							'success'
 						);
 						data.selectTargetType = CardNeedsSelectTarget;
@@ -235,8 +235,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (data, unitAb
 						data.skillTargetUnitPos = pos;
 						skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 						showToast(
-							'Trigger Card Activated!',
-							`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+							`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET!】`,
+							`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
 							'success'
 						);
 						data.selectTargetType = CardNeedsSelectActedTarget;
@@ -249,8 +249,8 @@ export const checkFieldUnitAndTriggerZoneAbilityWhenAttack = async (data, unitAb
 				usedTriggers.push(pos);
 				skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 				showToast(
-					'Trigger Card Activated!',
-					`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+					`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+					`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
 					'success'
 				);
 			}
@@ -271,8 +271,8 @@ export const checkTriggerZoneAbilityWhenBattle = async (data) => {
 			usedTriggers.push(pos);
 			skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 			showToast(
-				'Trigger Card Activated!',
-				`${data.cardInfo[data.triggerCards[pos]]?.name} => ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
+				`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated!`,
+				`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}!`,
 				'success'
 			);
 		}

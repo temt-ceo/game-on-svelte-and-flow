@@ -224,7 +224,17 @@
 						data.fieldCards = bcObj.your_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
 					} else {
-						// console.log(data.fieldCards, 22);
+						if (bcObj['your_attacking_card']) {
+							const attackedTime = new Date(
+								parseInt(bcObj['your_attacking_card']['attacked_time']) * 1000
+							);
+							const currentTime = new Date();
+							const pastSeconds = (currentTime.getTime() - attackedTime.getTime()) / 1000;
+							// Time Limit.
+							if (pastSeconds > 14) {
+								data.funcDefenceAction(null, [], []);
+							}
+						}
 					}
 				}
 
@@ -424,27 +434,21 @@
 		}, 5000);
 	};
 
-	data.funcDefenceAction = async () => {
+	data.funcDefenceAction = async (
+		defendUnitPosition,
+		attackerUsedCardPositions,
+		defenderUsedCardPositions
+	) => {
 		if (data.showSpinner) return;
-
-		if (data.defendUnitPosition) {
-			await sleep(5);
-		}
-		// Check Field Unit And Trigger Card Ability
-		const ret = await checkTriggerZoneAbilityWhenBattle(data);
-		const usedTriggerCardIDs = [];
-		ret.usedTriggers.forEach((pos) => {
-			usedTriggerCardIDs.push(data.triggerCards[pos]);
-		});
 
 		data.showSpinner = true;
 		// Call GraphQL method.
 		const message = {
-			arg1: data.defendUnitPosition, // defender defend position
-			arg2: data.attackerUsedInterceptCardPositions, // attacker used intercept card positions
-			arg3: ret.usedTriggers, // defender used intercept card positions
-			attackerUsedCardIds: data.attackerUsedCardIds, // attackerUsedCardIds
-			defenderUsedCardIds: usedTriggerCardIDs // defenderUsedCardIds
+			arg1: data.defendUnitPosition ?? defendUnitPosition, // defender defend position
+			arg2: attackerUsedCardPositions, // attacker used intercept card positions
+			arg3: defenderUsedCardPositions, // defender used intercept card positions
+			attackerUsedCardIds: attackerUsedCardPositions, // attackerUsedCardIds
+			defenderUsedCardIds: defenderUsedCardPositions // defenderUsedCardIds
 		};
 
 		data.client.graphql({
