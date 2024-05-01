@@ -97,7 +97,11 @@
 						Score: {`${data.opponentInfo['score']?.length} games ${data.opponentInfo['win_count']} win`}
 					</span>
 				</div>
-				<div class="parameter1">LIFE: {data.gameObject.opponent_life}</div>
+				{#if parseInt(data.originalOpponentLife) > parseInt(data.gameObject.opponent_life)}
+					<div class="parameter1 damaged">LIFE: {data.gameObject.opponent_life}</div>
+				{:else}
+					<div class="parameter1">LIFE: {data.gameObject.opponent_life}</div>
+				{/if}
 				<div class="parameter1">CP: {('0' + data.gameObject.opponent_cp).slice(-2)}</div>
 				<div class="opponent">
 					You: {data.yourInfo.player_name}
@@ -108,7 +112,11 @@
 				<div class="your_info">
 					<div>
 						<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
-						<div class="parameter1">CP: {('0' + data.yourCp).slice(-2)}</div>
+						{#if parseInt(data.gameObject.your_cp) > parseInt(data.yourCp)}
+							<div class="parameter1 used">CP: {('0' + data.yourCp).slice(-2)}</div>
+						{:else}
+							<div class="parameter1">CP: {('0' + data.yourCp).slice(-2)}</div>
+						{/if}
 					</div>
 					<div
 						id="trigger_zone"

@@ -223,6 +223,7 @@
 						data.triggerCards = bcObj.your_trigger_cards;
 						data.fieldCards = bcObj.your_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
+						data.originalOpponentLife = bcObj.opponent_life;
 					} else {
 						if (bcObj['your_attacking_card']) {
 							const attackedTime = new Date(

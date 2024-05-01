@@ -34,7 +34,7 @@
 			parseInt(data.draggingCardId) <= 16 &&
 			Object.keys(data.fieldCards).length < 5 &&
 			data.gameObject['is_first'] == data.gameObject['is_first_turn'] &&
-			parseInt(data.selectedCard.cost) < data.yourCp
+			parseInt(data.selectedCard.cost) <= data.yourCp
 		) {
 			const targetCard = data.handCards.splice(data.draggingCardIndex, 1);
 			for (const pos of [1, 2, 3, 4, 5]) {
@@ -82,7 +82,7 @@
 		if (
 			parseInt(data.draggingCardId) <= 16 &&
 			Object.keys(data.fieldCards).length < 5 &&
-			parseInt(data.selectedCard.cost) < data.yourCp &&
+			parseInt(data.selectedCard.cost) <= data.yourCp &&
 			data.gameObject['is_first'] == data.gameObject['is_first_turn']
 		) {
 			data.isDraggingOverBattleField = true;
@@ -102,7 +102,7 @@
 		}
 	};
 	data.dragLeaveToBattleField = (e: DragEvent) => {
-		data.isDraggingOverBattleField = false;
+		// data.isDraggingOverBattleField = false; // To avoid overly sensitive reaction.
 		data.isDraggingNGOverBattleField = false;
 	};
 	data.dragLeaveToTriggerZone = (e: DragEvent) => {
@@ -164,7 +164,7 @@
 					break;
 				case 'put_card_on_the_field':
 					data.showSpinner = true;
-					showToast('The card drive transaction Called!', msg['skillMessage'], 'info');
+					showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
