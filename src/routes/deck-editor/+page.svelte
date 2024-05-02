@@ -52,6 +52,10 @@
 		data.walletUser = null;
 	};
 
+	data.funcResetUserDeck = async () => {
+		data.userDeck = await getPlayerDeck(fcl, data.walletUser.addr, parseInt(data.player.playerId));
+	};
+
 	// Get card info from smart contract.
 	(async () => {
 		data.cardInfo = await getCardInfo(fcl);

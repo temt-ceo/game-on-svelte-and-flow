@@ -30,6 +30,12 @@
 		{#if data.walletUser?.addr}
 			<img
 				class="menu-button"
+				on:click={data.funcResetUserDeck}
+				src="/image/button/reset.png"
+				alt="activate"
+			/>
+			<img
+				class="menu-button"
 				on:click={data.sortUserDeck}
 				src="/image/button/sort.png"
 				alt="activate"

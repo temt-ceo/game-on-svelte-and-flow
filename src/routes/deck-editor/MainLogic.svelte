@@ -58,7 +58,6 @@
 	data.sortUserDeck = () => {
 		data.userDeck.sort((a, b) => a - b);
 		data.userDeck = data.userDeck;
-		console.log(data.userDeck);
 	};
 
 	/** GraphQL part */

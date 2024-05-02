@@ -236,23 +236,33 @@
 						data.yourCp = parseInt(bcObj.your_cp);
 						data.originalYourLife = bcObj.your_life;
 						data.originalOpponentLife = bcObj.opponent_life;
+						data.timeLimitCalcFlag = true;
 						if (bcObj.is_first_turn == bcObj.is_first) {
 							showToast(`Your Turn!`, '', 'info');
-							if (parseInt(data.gameObject.turn) == 10) {
+							if (parseInt(data.gameObject?.turn) == 10) {
 								title = `Final Turn! Let's defeat within this turn!!`;
 								modal.showModal();
 							}
 						}
 					} else {
+						const currentTime = new Date();
 						if (bcObj['your_attacking_card']) {
 							const attackedTime = new Date(
 								parseInt(bcObj['your_attacking_card']['attacked_time']) * 1000
 							);
-							const currentTime = new Date();
 							const pastSeconds = (currentTime.getTime() - attackedTime.getTime()) / 1000;
 							// Time Limit.
 							if (pastSeconds > 14) {
 								data.funcDefenceAction(null, [], []);
+							}
+						}
+						if (data.timeLimitCalcFlag) {
+							const lastTurnEnd = new Date(parseInt(bcObj.last_time_turnend) * 1000);
+							const pastSeconds = (currentTime.getTime() - lastTurnEnd.getTime()) / 1000;
+							if (pastSeconds > 80) {
+								showToast('The time limit has passed.', '', 'success');
+								data.funcTurnEnd();
+								data.timeLimitCalcFlag = false;
 							}
 						}
 					}

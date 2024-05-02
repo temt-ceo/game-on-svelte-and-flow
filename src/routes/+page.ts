@@ -42,6 +42,7 @@ export function load() {
 		originalOpponentLife: 7,
 		originalYourLife: 7,
 		usedTriggers: [],
-		skillMessage: ''
+		skillMessage: '',
+		timeLimitCalcFlag: false
 	};
 }

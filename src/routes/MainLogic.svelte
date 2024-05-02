@@ -176,19 +176,7 @@
 					break;
 				case 'turn_change':
 					data.showSpinner = true;
-					if (data.player.playerId != data.gameObject.opponent) {
-						showToast(
-							'Turn Change transaction Called!',
-							'Please wait until opponent start the turn.',
-							'info'
-						);
-					} else if (data.player.playerId == data.gameObject.opponent) {
-						showToast(
-							'Turn Change transaction Called!',
-							'Please wait until coming your Turn!',
-							'info'
-						);
-					}
+					showToast('Turn Change transaction Called!', '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;

@@ -194,6 +194,7 @@
 		flex-direction: row;
 		align-items: center;
 		font-size: 24px;
+		color: aquamarine;
 
 		.unit {
 			font-size: 14px;
@@ -211,6 +212,11 @@
 			margin-right: 15px;
 		}
 
+		.orange {
+			color: orange;
+		}
+
+		button,
 		img {
 			width: 100px;
 			cursor: pointer;
@@ -429,7 +435,7 @@
 #deck_field {
 	width: 900px;
 	height: 390px;
-	margin-left: 10%;
+	margin-left: 253px;
 	border: 2px dashed #fff;
 
 	&.ring {
