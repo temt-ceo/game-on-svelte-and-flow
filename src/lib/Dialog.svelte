@@ -10,7 +10,7 @@
 </script>
 
 <dialog bind:this={dialog} on:close>
-	{#if title != ''}
+	{#if title}
 		<div>{title}</div>
 	{:else}
 		<div>プレイヤーネームを入力してください。</div>
