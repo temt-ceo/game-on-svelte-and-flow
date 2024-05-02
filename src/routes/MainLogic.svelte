@@ -184,7 +184,7 @@
 						showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
 					}
 					data.showSpinner = true;
-					sleep(7);
+					sleep(3);
 					data.showSpinner = false;
 					break;
 				case 'turn_change':
@@ -202,14 +202,14 @@
 						data.attackerUsedCardIds = msg['usedCardIds'];
 
 						if (msg['canBlock']) {
-							data.waitPlayerChoice = true;
+							data.waitPlayerChoiceForDefence = true;
 							if (!data.showSpinner) {
 								showToast(`Opponent attacked!`, 'Take an action!!', 'error');
 							}
 							sleep(7);
+							data.waitPlayerChoiceForDefence = false;
 							data.funcBattleReaction();
 						} else {
-							console.log(msg, msg['canBlock'], 777);
 							if (!data.showSpinner) {
 								// Valkyrie
 								showToast(
@@ -221,6 +221,10 @@
 							data.showSpinner = true;
 							sleep(2);
 							data.showSpinner = false;
+						}
+					} else {
+						if (!data.showSpinner) {
+							showToast('Attacking transaction Called!', msg['skillMessage'] ?? '', 'info');
 						}
 					}
 					break;
@@ -237,16 +241,18 @@
 					}
 					break;
 				case 'defence_action':
-					if (!data.showSpinner) {
-						if (data.gameObject?.opponent == retSubscription.playerId) {
-							// rival's attack
-							const onDefendPosition = msg['arg1'];
+					if (data.gameObject?.opponent == retSubscription.playerId) {
+						// rival's attack
+						const onDefendPosition = msg['arg1'];
+						if (!data.showSpinner) {
 							if (onDefendPosition) {
 								showToast(`The block wes implemented!!`, `Battle!`, 'success');
 							} else {
 								showToast(`Geez1`, 'You took 1 damage!!', 'error');
 							}
-						} else {
+						}
+					} else {
+						if (!data.showSpinner) {
 							const onDefendPosition = msg['arg1'];
 							if (onDefendPosition) {
 								showToast(`Opponent blocked!`, `Battle!`, 'success');
