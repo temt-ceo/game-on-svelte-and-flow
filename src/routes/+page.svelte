@@ -156,10 +156,10 @@
 						title = 'You Lose... Try Again!';
 						modal.showModal();
 					}
+					// Initialize game object.
+					data.gameStarted = false;
+					data.gameObject = null;
 				}
-				// Initialize game object.
-				data.gameStarted = false;
-				data.gameObject = null;
 			} else {
 				console.log(data.gameObject);
 				// Setting the intro data.
@@ -207,12 +207,12 @@
 
 					// Start the Intro
 					setTimeout(() => {
+						animationOnFlag = false;
 						showToast(
 							'Marigan Time!',
 							'You may only redo your hand for a period of 5 seconds.',
 							'info'
 						);
-						animationOnFlag = false;
 					}, 1500);
 				} else if (
 					data.gameObject &&
@@ -254,8 +254,9 @@
 							);
 							const pastSeconds = (currentTime.getTime() - attackedTime.getTime()) / 1000;
 							// Time Limit.
-							if (pastSeconds > 14) {
+							if (pastSeconds > 14 && !data.defenceResultCalledFlg) {
 								data.funcDefenceAction(null, [], []);
+								data.defenceResultCalledFlg = true;
 							}
 						}
 						if (data.timeLimitCalcFlag) {
@@ -449,6 +450,7 @@
 		data.showSpinner = false;
 	};
 
+	// GraphQL BattleReaction Server Process
 	data.funcBattleReaction = async () => {
 		if (data.showSpinner) return;
 
@@ -490,6 +492,7 @@
 		data.showSpinner = false;
 	};
 
+	// GraphQL DefenceAction Server Process
 	data.funcDefenceAction = async (
 		defendUnitPosition,
 		attackerUsedCardPositions,
@@ -526,6 +529,7 @@
 
 		sleep(3);
 		data.showSpinner = false;
+		data.defenceResultCalledFlg = false;
 	};
 
 	const checkFieldUnitAbilityWhenTurnChange = () => {

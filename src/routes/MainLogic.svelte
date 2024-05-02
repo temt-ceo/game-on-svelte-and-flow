@@ -129,7 +129,8 @@
 
 	/** GraphQL Subscribition part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
-		next: (gameProcess) => {
+		next: async (gameProcess) => {
+			if (data.showSpinner) return;
 			let msg = {};
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
 			console.log(retSubscription);
@@ -158,7 +159,7 @@
 						}
 					}
 					data.showSpinner = true;
-					sleep(5);
+					await sleep(5);
 					data.showSpinner = false;
 					break;
 				case 'game_start':
@@ -176,7 +177,7 @@
 						);
 					}
 					data.showSpinner = true;
-					sleep(7);
+					await sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'put_card_on_the_field':
@@ -184,7 +185,7 @@
 						showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
 					}
 					data.showSpinner = true;
-					sleep(3);
+					await sleep(3);
 					data.showSpinner = false;
 					break;
 				case 'turn_change':
@@ -192,7 +193,7 @@
 						showToast('Turn Change transaction Called!', '', 'info');
 					}
 					data.showSpinner = true;
-					sleep(7);
+					await sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'attack':
@@ -202,12 +203,12 @@
 						data.attackerUsedCardIds = msg['usedCardIds'];
 
 						if (msg['canBlock']) {
-							data.waitPlayerChoiceForDefence = true;
 							if (!data.showSpinner) {
-								showToast(`Opponent attacked!`, 'Take an action!!', 'error');
+								data.waitPlayerChoice = true;
+								showToast(`Opponent attacked!`, 'Take an action!!', 'error'); // todo 行動できない場合
 							}
-							sleep(7);
-							data.waitPlayerChoiceForDefence = false;
+							await sleep(7);
+							data.waitPlayerChoice = false;
 							data.funcBattleReaction();
 						} else {
 							if (!data.showSpinner) {
@@ -219,7 +220,7 @@
 								);
 							}
 							data.showSpinner = true;
-							sleep(2);
+							await sleep(2);
 							data.showSpinner = false;
 						}
 					} else {
@@ -235,7 +236,7 @@
 						if (!data.showSpinner && onDefendPosition) {
 							showToast(`Opponent blocked!`, `Battle!`, 'success');
 							data.showSpinner = true;
-							sleep(2);
+							await sleep(2);
 							data.showSpinner = false;
 						}
 					}
@@ -262,7 +263,7 @@
 						}
 					}
 					data.showSpinner = true;
-					sleep(2);
+					await sleep(3);
 					data.showSpinner = false;
 					break;
 			}
