@@ -173,10 +173,22 @@
 										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.name ??
 											'loading...'}
 									</div>
-									<div class="status_bp">
-										{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp ??
-											'loading...'}
-									</div>
+									{#if parseInt(data.gameObject.opponent_field_unit_bp_amount_of_change[position]) > 0}
+										<div class="status_bp plus">
+											{parseInt(data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp) +
+												parseInt(data.gameObject.opponent_field_unit_bp_amount_of_change[position])}
+										</div>
+									{:else if parseInt(data.gameObject.opponent_field_unit_bp_amount_of_change[position]) < 0}
+										<div class="status_bp minus">
+											{parseInt(data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp) +
+												parseInt(data.gameObject.opponent_field_unit_bp_amount_of_change[position])}
+										</div>
+									{:else}
+										<div class="status_bp">
+											{data.cardInfo[data.gameObject.opponent_field_unit[position]]?.bp ??
+												'loading...'}
+										</div>
+									{/if}
 									<div class="status_sword">
 										{#if data.gameObject.opponent_field_unit_action[position] == '2'}
 											🗡️
@@ -241,9 +253,21 @@
 									<div class="status_name">
 										{data.cardInfo[data.gameObject.your_field_unit[position]]?.name ?? 'loading...'}
 									</div>
-									<div class="status_bp">
-										{data.cardInfo[data.gameObject.your_field_unit[position]]?.bp ?? 'loading...'}
-									</div>
+									{#if parseInt(data.gameObject.your_field_unit_bp_amount_of_change[position]) > 0}
+										<div class="status_bp plus">
+											{parseInt(data.cardInfo[data.gameObject.your_field_unit[position]]?.bp) +
+												parseInt(data.gameObject.your_field_unit_bp_amount_of_change[position])}
+										</div>
+									{:else if parseInt(data.gameObject.your_field_unit_bp_amount_of_change[position]) < 0}
+										<div class="status_bp minus">
+											{parseInt(data.cardInfo[data.gameObject.your_field_unit[position]]?.bp) +
+												parseInt(data.gameObject.your_field_unit_bp_amount_of_change[position])}
+										</div>
+									{:else}
+										<div class="status_bp">
+											{data.cardInfo[data.gameObject.your_field_unit[position]]?.bp ?? 'loading...'}
+										</div>
+									{/if}
 									<div class="status_sword">
 										{#if data.gameObject.your_field_unit_action[position] == '2'}
 											🗡️
