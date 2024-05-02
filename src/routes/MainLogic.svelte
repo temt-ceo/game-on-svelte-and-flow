@@ -130,9 +130,12 @@
 	/** GraphQL Subscribition part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
+			let msg = {};
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
-			const msg = JSON.parse(retSubscription.message.split(',TransactionID:')[0]);
 			console.log(retSubscription);
+			try {
+				msg = JSON.parse(retSubscription.message.split(',TransactionID:')[0]);
+			} catch (e) {}
 			switch (retSubscription.type) {
 				case 'player_matching':
 					if (data.player.playerId == retSubscription.playerId) {
@@ -186,7 +189,7 @@
 						data.attackerUsedInterceptCardPositions = msg['arg4'];
 						data.attackerUsedCardIds = msg['usedCardIds'];
 
-						if (msg.canBlock) {
+						if (msg['canBlock']) {
 							data.waitPlayerChoice = true;
 							showToast(`Opponent attacked!`, 'Take an action!!', 'error');
 							sleep(7);

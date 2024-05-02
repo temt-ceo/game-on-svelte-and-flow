@@ -2,15 +2,7 @@
 	import { scale, slide } from 'svelte/transition';
 	import { Clock, Jumper } from 'svelte-loading-spinners';
 	import { ToastContainer, FlatToast } from 'svelte-toasts';
-	import {
-		ActedUp,
-		CanBlock,
-		CanAttack,
-		CardNeedsSelectTarget,
-		CardNeedsSelectActedTarget,
-		CardTriggerWhenPutOnField,
-		CardTriggerWhenAttack
-	} from '$lib/const';
+	import { ActedUp, CardNeedsSelectTarget, CardNeedsSelectActedTarget } from '$lib/const';
 
 	export let data;
 </script>

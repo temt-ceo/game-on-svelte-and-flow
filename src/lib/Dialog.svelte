@@ -32,8 +32,10 @@
 		margin-bottom: 10px;
 	}
 
-	button {
-		margin: 7px;
+	dialog > :global(button) {
+		width: 100px;
+		height: 30px;
+		margin: 3px;
 	}
 
 	.note {

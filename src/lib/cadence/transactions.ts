@@ -27,3 +27,32 @@ export const createPlayer = async function (fcl, playerName) {
 	});
 	console.log('TransactionId: ' + transactionId);
 };
+
+export const purchaseCyberEN = async (fcl) => {
+	const transactionId = await fcl.mutate({
+		cadence: `
+      import FlowToken from 0x1654653399040a61
+      import FungibleToken from 0xf233dcee88fe0abe
+      import CodeOfFlow from 0x24466f7fc36e3388
+
+      transaction() {
+        prepare(signer: AuthAccount) {
+          let payment <- signer.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)!.withdraw(amount: 1.0) as! @FlowToken.Vault
+
+          let player = signer.borrow<&CodeOfFlow.Player>(from: CodeOfFlow.PlayerStoragePath)
+              ?? panic("Could not borrow reference to the Owner's Player Resource.")
+          player.buy_en(payment: <- payment)
+        }
+        execute {
+          log("success")
+        }
+      }
+    `,
+		args: (arg, t) => [],
+		proposer: fcl.authz,
+		payer: fcl.authz,
+		authorizations: [fcl.authz],
+		limit: 999
+	});
+	console.log(`TransactionId: ${transactionId}`);
+};

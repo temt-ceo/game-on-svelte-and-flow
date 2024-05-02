@@ -20,3 +20,11 @@ export const showToast = (title, message, style) => {
 		onRemove: () => {}
 	});
 };
+
+export const checkCyberENBalance = (data) => {
+	if (parseInt(data.yourInfo['cyber_energy']) >= 30) {
+		return 0;
+	} else {
+		return 1;
+	}
+};
