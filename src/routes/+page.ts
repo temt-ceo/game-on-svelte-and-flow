@@ -3,6 +3,7 @@ export function load() {
 		client: null,
 		walletUser: null,
 		showSpinner: false,
+		funcPurchaseEN: null,
 		funcPlayerMatching: null,
 		funcSignInWallet: null,
 		funcSignOutWallet: null,

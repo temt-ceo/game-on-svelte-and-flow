@@ -8,14 +8,14 @@
 		getBalance,
 		getMariganCards
 	} from '$lib/cadence/scripts';
-	import { createPlayer } from '$lib/cadence/transactions';
+	import { createPlayer, purchaseCyberEN } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
 	import Dialog from '$lib/Dialog.svelte';
 	import MainLogic from './MainLogic.svelte';
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
 	import config from '../config.json';
-	import { sleep, showToast } from '$lib/common';
+	import { sleep, showToast, checkCyberENBalance } from '$lib/common';
 	import {
 		ActedUp,
 		CardNotNeedSelectTarget,
@@ -26,6 +26,7 @@
 		CardTriggerWhenBattling,
 		Valkyrie
 	} from '$lib/const';
+
 	Amplify.configure(config);
 
 	fcl.config({
@@ -40,6 +41,7 @@
 
 	let dialog;
 	let modal;
+	let enModal;
 	let title = '';
 	let playerName = '';
 	let modalDisabled = false;
@@ -276,8 +278,7 @@
 		}
 	}, 1000);
 
-	/** GraphQL createGameServerProcess part */
-	// GraphQL CreatePlayer Server Process
+	// CreatePlayer Process by User wallet
 	data.funcCreatePlayer = async () => {
 		data.showSpinner = true;
 		showToast(
@@ -297,8 +298,29 @@
 		}, 3000);
 	};
 
+	// purchaseCyberEN Process by User wallet
+	data.funcPurchaseEN = async () => {
+		data.showSpinner = true;
+		showToast(
+			'Execute EN purchase process.',
+			'Press the Approval button on the Wallet popup.',
+			'info'
+		);
+		setTimeout(() => {
+			enModal.close();
+		}, 3000);
+		var ret = await purchaseCyberEN(fcl);
+		data.showSpinner = false;
+	};
+
+	/** GraphQL createGameServerProcess part */
 	// GraphQL PlayerMatching Server Process
 	data.funcPlayerMatching = async () => {
+		if (checkCyberENBalance(data) > 0) {
+			title = `EN is missing. Would you like to purchase?`;
+			enModal.showModal();
+			return;
+		}
 		if (data.showSpinner) return;
 		data.showSpinner = true;
 		// Call GraphQL method.
@@ -668,6 +690,15 @@
 		on:click={() => {
 			modal.close();
 		}}>Got it</button
+	>
+</Dialog>
+
+<Dialog bind:dialog={enModal} bind:title>
+	<button on:click={data.funcPurchaseEN}>Yes</button>
+	<button
+		on:click={() => {
+			enModal.close();
+		}}>No</button
 	>
 </Dialog>
 
