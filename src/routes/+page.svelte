@@ -626,9 +626,7 @@
 
 <MainLogic {data} />
 
-{#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == ''}
-	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
-{:else if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
+{#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == '' || data.gameStarted === false || (data.gameObject && data.gameObject['game_started'] == false)}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {/if}
 {#if animationOnFlag}
