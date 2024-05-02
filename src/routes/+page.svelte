@@ -665,7 +665,7 @@
 
 <MainLogic {data} />
 
-{#if !data.gameStarted && !data.canMarigan && (!data.walletUser || !data.walletUser.addr || data.walletUser.addr == '' || (data.gameObject && data.gameObject['game_started'] == false))}
+{#if !data.gameStarted && !data.canMarigan}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {/if}
 {#if animationOnFlag}
