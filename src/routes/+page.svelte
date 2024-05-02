@@ -10,7 +10,7 @@
 	} from '$lib/cadence/scripts';
 	import { createPlayer } from '$lib/cadence/transactions';
 	import * as fcl from '@onflow/fcl';
-	import Dialog from '$lib/Dialog.svelte';
+	import { Button, Modal, Label, Input } from 'flowbite-svelte';
 	import MainLogic from './MainLogic.svelte';
 	import { Amplify } from 'aws-amplify';
 	import { generateClient } from 'aws-amplify/api';
@@ -25,7 +25,6 @@
 		CardTriggerWhenTurnEnd,
 		CardTriggerWhenBattling
 	} from '$lib/const';
-
 	Amplify.configure(config);
 
 	fcl.config({
@@ -38,7 +37,7 @@
 	export let data;
 	data.client = generateClient();
 
-	let dialog;
+	let dialog = false;
 	let playerName = 'Test Player';
 	let modalDisabled = false;
 	let intervalRet;
@@ -93,7 +92,7 @@
 				data.userDeck = data.userDeck.map((data) => parseInt(data));
 				clearInterval(intervalRet);
 			} else {
-				dialog.showModal();
+				dialog = true;
 			}
 		}
 	};
@@ -137,7 +136,7 @@
 							data.gameObject.yourLife < data.gameObject.opponentLife)
 					) {
 						showToast('You Lose...', 'Try Again!', 'warning');
-						dialog.showModal();
+						dialog = true;
 					} else if (
 						data.gameObject!.turn == 10 &&
 						data.gameObject!.isFirstTurn == true &&
@@ -264,7 +263,7 @@
 		);
 		modalDisabled = true;
 		setTimeout(() => {
-			dialog.close();
+			dialog = false;
 		}, 3000);
 		var ret = await createPlayer(fcl, playerName);
 		console.log(ret);
@@ -622,9 +621,20 @@
 
 <MainLogic {data} />
 
-<Dialog bind:dialog bind:playerName>
-	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
-</Dialog>
+<Modal bind:open={dialog} size="xs" autoclose={false} class="w-full">
+	<form class="flex flex-col space-y-6" action="#">
+		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+			Please enter your player name.
+		</h3>
+		<Label class="space-y-2">
+			<span>Your name</span>
+			<Input type="text" name="text" placeholder="Test Player" required />
+		</Label>
+		<Button disabled={modalDisabled} on:click={data.funcCreatePlayer} type="submit" class="w-full1"
+			>登録</Button
+		>
+	</form>
+</Modal>
 
 {#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == ''}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
