@@ -40,6 +40,7 @@ export function load() {
 		attackerUsedInterceptCardPositions: [],
 		attackerUsedCardIds: [],
 		originalOpponentLife: 7,
+		originalYourLife: 7,
 		usedTriggers: [],
 		skillMessage: ''
 	};

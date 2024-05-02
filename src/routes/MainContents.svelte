@@ -111,7 +111,11 @@
 				</div>
 				<div class="your_info">
 					<div>
-						<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
+						{#if parseInt(data.originalYourLife) > parseInt(data.gameObject.your_life)}
+							<div class="parameter1 damaged">LIFE: {data.gameObject.your_life}</div>
+						{:else}
+							<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
+						{/if}
 						{#if parseInt(data.gameObject.your_cp) > parseInt(data.yourCp)}
 							<div class="parameter1 used">CP: {('0' + data.yourCp).slice(-2)}</div>
 						{:else}

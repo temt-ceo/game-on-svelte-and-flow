@@ -23,7 +23,8 @@
 		CardNeedsSelectActedTarget,
 		CardTriggerWhenPutOnField,
 		CardTriggerWhenTurnEnd,
-		CardTriggerWhenBattling
+		CardTriggerWhenBattling,
+		Valkyrie
 	} from '$lib/const';
 	Amplify.configure(config);
 
@@ -42,6 +43,7 @@
 	let title = '';
 	let playerName = '';
 	let modalDisabled = false;
+	let cyberEnergy;
 	let intervalRet;
 	let animationOnFlag = false;
 
@@ -67,6 +69,7 @@
 		fcl.unauthenticate();
 		data.player = null;
 		data.walletUser = null;
+		cyberEnergy = null;
 	};
 
 	// Get card info from smart contract.
@@ -94,6 +97,7 @@
 				data.userDeck = data.userDeck.map((data) => parseInt(data));
 				clearInterval(intervalRet);
 			} else {
+				title = '';
 				dialog.showModal();
 			}
 		}
@@ -103,7 +107,7 @@
 	const getBalances = async () => {
 		if (data.walletUser.addr != '') {
 			let balance = parseFloat(data.yourInfo['balance']);
-			let cyberEnergy = parseInt(data.yourInfo['cyber_energy']);
+			cyberEnergy = parseInt(data.yourInfo['cyber_energy']);
 
 			const ret = await getBalance(fcl, data.walletUser.addr, data.player?.playerId ?? null);
 			data.yourInfo = ret[0];
@@ -134,18 +138,18 @@
 				if (data.gameObject != null) {
 					// If turn exceeds 10 turn so there is no battle data..
 					if (
-						(data.gameObject.turn == 10 &&
-							data.gameObject.yourLife < data.gameObject.opponentLife) ||
-						(data.gameObject.yourLife == 1 &&
-							data.gameObject.yourLife < data.gameObject.opponentLife)
+						(parseInt(data.gameObject.turn) == 10 &&
+							parseInt(data.gameObject.yourLife) < parseInt(data.gameObject.opponentLife)) ||
+						(parseInt(data.gameObject.yourLife) == 1 &&
+							parseInt(data.gameObject.yourLife) < parseInt(data.gameObject.opponentLife))
 					) {
 						title = 'You Lose... Try Again!';
 						modal.showModal();
 					} else if (
-						data.gameObject!.turn == 10 &&
+						parseInt(data.gameObject!.turn) == 10 &&
 						data.gameObject!.isFirstTurn == true &&
 						data.gameObject!.isFirst == true &&
-						data.gameObject!.yourLife <= data.gameObject!.opponentLife
+						parseInt(data.gameObject!.yourLife) <= parseInt(data.gameObject!.opponentLife)
 					) {
 						title = 'You Lose... Try Again!';
 						modal.showModal();
@@ -155,7 +159,7 @@
 				data.gameStarted = false;
 				data.gameObject = null;
 			} else {
-				console.log(data.gameObject, data.yourInfo, data.opponentInfo);
+				console.log(data.gameObject);
 				// Setting the intro data.
 				if (bcObj['game_started'] == false && data.gameStarted == false) {
 					data.gameStarted = true;
@@ -230,9 +234,14 @@
 						data.triggerCards = bcObj.your_trigger_cards;
 						data.fieldCards = bcObj.your_field_unit;
 						data.yourCp = parseInt(bcObj.your_cp);
+						data.originalYourLife = bcObj.your_life;
 						data.originalOpponentLife = bcObj.opponent_life;
 						if (bcObj.is_first_turn == bcObj.is_first) {
 							showToast(`Your Turn!`, '', 'info');
+							if (parseInt(data.gameObject.turn) == 10) {
+								title = `Final Turn! Let's defeat within this turn!!`;
+								modal.showModal();
+							}
 						}
 					} else {
 						if (bcObj['your_attacking_card']) {
@@ -325,7 +334,7 @@
 		setTimeout(() => {
 			data.showSpinner = false;
 			data.usedTriggers = [];
-		}, 5000);
+		}, 7000);
 	};
 
 	// GraphQL TurnEnd Server Process
@@ -381,7 +390,7 @@
 			arg3: data.triggerCards, // trigger cards
 			arg4: data.usedTriggers, // used trigger/intercept card position
 			usedCardIds: usedTriggerCardIDs,
-			canBlock: true,
+			canBlock: data.fieldCards[fieldPosition] == Valkyrie ? false : true,
 			skillMessage: data.skillMessage
 		};
 
@@ -402,7 +411,14 @@
 
 		setTimeout(() => {
 			data.showSpinner = false;
-		}, 5000);
+		}, 7000);
+
+		// Valkyrie is not blocked.
+		if (data.fieldCards[fieldPosition] == Valkyrie) {
+			setTimeout(() => {
+				data.funcDefenceAction(null, [], []);
+			}, 1000);
+		}
 	};
 
 	data.funcBattleReaction = async () => {
