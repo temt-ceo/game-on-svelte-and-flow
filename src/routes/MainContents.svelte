@@ -235,7 +235,7 @@
 											src="/image/button/attack.png"
 										/>
 									{/if}
-									{#if data.waitPlayerChoiceForDefence && data.gameObject['is_first'] != data.gameObject['is_first_turn'] && (data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2')}
+									{#if data.waitPlayerChoiceForDefence == true && data.gameObject['is_first'] != data.gameObject['is_first_turn'] && (data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2')}
 										<img
 											in:slide
 											on:click={data.selectDefendUnit(position)}

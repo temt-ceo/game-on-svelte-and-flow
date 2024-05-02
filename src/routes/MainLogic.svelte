@@ -130,6 +130,7 @@
 	/** GraphQL Subscribition part */
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
+			if (data.showSpinner) return;
 			let msg = {};
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
 			console.log(retSubscription);
@@ -202,12 +203,11 @@
 						data.attackerUsedCardIds = msg['usedCardIds'];
 
 						if (msg['canBlock']) {
-							data.waitPlayerChoiceForDefence = true;
 							if (!data.showSpinner) {
+								data.waitPlayerChoiceForDefence = true;
 								showToast(`Opponent attacked!`, 'Take an action!!', 'error');
 							}
 							sleep(7);
-							data.waitPlayerChoiceForDefence = false;
 							data.funcBattleReaction();
 						} else {
 							if (!data.showSpinner) {
@@ -262,8 +262,9 @@
 						}
 					}
 					data.showSpinner = true;
-					sleep(2);
+					sleep(3);
 					data.showSpinner = false;
+					data.waitPlayerChoiceForDefence = false;
 					break;
 			}
 		}

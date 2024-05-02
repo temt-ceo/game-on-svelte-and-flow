@@ -17,7 +17,7 @@ export function load() {
 		player: null,
 		cardInfo: {},
 		userDeck: [],
-		yourCp: 0,
+		yourCp: 2,
 		handCards: [],
 		fieldCards: {},
 		triggerCards: {},
@@ -45,6 +45,7 @@ export function load() {
 		originalYourLife: 7,
 		usedTriggers: [],
 		skillMessage: '',
-		timeLimitCalcFlag: false
+		timeLimitCalcFlag: false,
+		defenceResultCalledFlg: false
 	};
 }

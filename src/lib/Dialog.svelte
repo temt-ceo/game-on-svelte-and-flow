@@ -11,9 +11,9 @@
 
 <dialog bind:this={dialog} on:close>
 	{#if title}
-		<div>{title}</div>
+		<div class="title">{title}</div>
 	{:else}
-		<div>プレイヤーネームを入力してください。</div>
+		<div class="title">プレイヤーネームを入力してください。</div>
 		<label for={id}>{label}</label>
 		<input bind:value={playerName} {id} {name} {placeholder} type="text" />
 	{/if}
@@ -29,13 +29,21 @@
 	}
 
 	dialog > div {
-		margin-bottom: 10px;
+		margin-bottom: 15px;
+	}
+
+	dialog > div.title {
+		text-align: center;
 	}
 
 	dialog > :global(button) {
 		width: 100px;
 		height: 30px;
 		margin: 3px;
+	}
+
+	input {
+		padding: 5px;
 	}
 
 	.note {
