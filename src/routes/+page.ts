@@ -36,7 +36,6 @@ export function load() {
 		isDraggingOverTriggerZone: false,
 		isDraggingNGOverTriggerZone: false,
 		waitPlayerChoice: false,
-		waitPlayerChoiceForDefence: false,
 		selectTargetType: null,
 		defendUnitPosition: null,
 		attackerUsedInterceptCardPositions: [],

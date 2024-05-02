@@ -20,11 +20,13 @@
 <div class="wrapper">
 	Hello,
 	{#if data.player?.playerName}
-		{data.player?.playerName}. You can choose to edit your deck first or play the game directly.
+		{#if data.gameObject}
+			if something doesn't work, hit the reload button on your browser.
+		{:else}
+			{data.player?.playerName}. You can choose to edit your deck first or play the game directly.
+		{/if}
 	{:else if data.walletUser?.addr}
 		your wallet address is {data.walletUser?.addr}.
-	{:else if data.gameObject}
-		If something doesn't work, hit the reload button on your browser.
 	{:else}
 		do you wanna play a blockchain game, COF Ninja? If so, let's press the activate button!
 	{/if}
@@ -235,7 +237,7 @@
 											src="/image/button/attack.png"
 										/>
 									{/if}
-									{#if data.waitPlayerChoiceForDefence == true && data.gameObject['is_first'] != data.gameObject['is_first_turn'] && (data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2')}
+									{#if data.waitPlayerChoice && data.gameObject['is_first'] != data.gameObject['is_first_turn'] && (data.gameObject.your_field_unit_action[position] == '1' || data.gameObject.your_field_unit_action[position] == '2')}
 										<img
 											in:slide
 											on:click={data.selectDefendUnit(position)}

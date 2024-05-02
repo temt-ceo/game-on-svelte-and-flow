@@ -239,7 +239,6 @@
 						data.originalYourLife = bcObj.your_life;
 						data.originalOpponentLife = bcObj.opponent_life;
 						data.timeLimitCalcFlag = true;
-						data.waitPlayerChoiceForDefence = false;
 						if (bcObj.is_first_turn == bcObj.is_first) {
 							showToast(`Your Turn!`, '', 'info');
 							if (parseInt(data.gameObject?.turn) == 10) {
@@ -451,6 +450,7 @@
 		data.showSpinner = false;
 	};
 
+	// GraphQL BattleReaction Server Process
 	data.funcBattleReaction = async () => {
 		if (data.showSpinner) return;
 
@@ -492,6 +492,7 @@
 		data.showSpinner = false;
 	};
 
+	// GraphQL DefenceAction Server Process
 	data.funcDefenceAction = async (
 		defendUnitPosition,
 		attackerUsedCardPositions,
