@@ -38,7 +38,9 @@
 	data.client = generateClient();
 
 	let dialog;
-	let playerName = 'Test Player';
+	let modal;
+	let title = '';
+	let playerName = '';
 	let modalDisabled = false;
 	let intervalRet;
 	let animationOnFlag = false;
@@ -111,10 +113,12 @@
 				balance + 0.499 <= parseFloat(data.yourInfo['balance']) &&
 				balance + 0.501 >= parseFloat(data.yourInfo['balance'])
 			) {
-				showToast('Congrats!', 'You won 0.5FLOW!', 'success');
+				title = 'Congrats!! You won 0.5FLOW!';
+				modal.showModal();
 			}
 			if (cyberEnergy != null && cyberEnergy! < parseInt(data.yourInfo['cyber_energy'])) {
-				showToast('Success', 'EN is successfully charged.', 'success');
+				title = 'EN is successfully charged.';
+				modal.showModal();
 			}
 		}
 	};
@@ -135,15 +139,16 @@
 						(data.gameObject.yourLife == 1 &&
 							data.gameObject.yourLife < data.gameObject.opponentLife)
 					) {
-						showToast('You Lose...', 'Try Again!', 'warning');
-						dialog.showModal();
+						title = 'You Lose... Try Again!';
+						modal.showModal();
 					} else if (
 						data.gameObject!.turn == 10 &&
 						data.gameObject!.isFirstTurn == true &&
 						data.gameObject!.isFirst == true &&
 						data.gameObject!.yourLife <= data.gameObject!.opponentLife
 					) {
-						showToast('You Lose...', 'Try Again!', 'warning');
+						title = 'You Lose... Try Again!';
+						modal.showModal();
 					}
 				}
 				// Initialize game object.
@@ -621,10 +626,6 @@
 
 <MainLogic {data} />
 
-<Dialog bind:dialog bind:playerName>
-	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
-</Dialog>
-
 {#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == ''}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {:else if data.gameStarted === false && data.gameObject && data.gameObject['game_started'] == false}
@@ -633,6 +634,18 @@
 {#if animationOnFlag}
 	<img class="not-started" src="/image/battleStart.png" alt="Let's start the game!" />
 {/if}
+
+<Dialog bind:dialog bind:playerName>
+	<button disabled={modalDisabled} on:click={data.funcCreatePlayer}>登録</button>
+</Dialog>
+
+<Dialog bind:dialog={modal} bind:title>
+	<button
+		on:click={() => {
+			modal.close();
+		}}>Got it</button
+	>
+</Dialog>
 
 <style lang="scss">
 	@import '../style/dialog.scss';
