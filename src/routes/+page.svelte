@@ -242,7 +242,7 @@
 						if (bcObj.is_first_turn == bcObj.is_first) {
 							showToast(`Your Turn!`, '', 'info');
 							if (parseInt(data.gameObject?.turn) == 10) {
-								title = `Final Turn! Let's defeat within this turn!!`;
+								title = "Final Turn! Let's defeat within this turn!!";
 								modal.showModal();
 							}
 						}
@@ -317,7 +317,7 @@
 	// GraphQL PlayerMatching Server Process
 	data.funcPlayerMatching = async () => {
 		if (checkCyberENBalance(data) > 0) {
-			title = `EN is missing. Would you like to purchase?`;
+			title = 'EN is missing. Would you like to purchase?';
 			enModal.showModal();
 			return;
 		}
@@ -330,9 +330,8 @@
 				input: { type: 'player_matching', message: '', playerId: data.player?.playerId }
 			}
 		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
+		sleep(3);
+		data.showSpinner = false;
 	};
 
 	// GraphQL PutCardOnTheField Server Process
@@ -363,10 +362,9 @@
 		data.usedTriggers.forEach((pos) => {
 			delete data.triggerCards[pos];
 		});
-		setTimeout(() => {
-			data.showSpinner = false;
-			data.usedTriggers = [];
-		}, 7000);
+		sleep(3);
+		data.showSpinner = false;
+		data.usedTriggers = [];
 	};
 
 	// GraphQL TurnEnd Server Process
@@ -395,9 +393,8 @@
 				}
 			}
 		});
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
+		sleep(3);
+		data.showSpinner = false;
 	};
 
 	// GraphQL TurnEnd Server Process
@@ -441,24 +438,20 @@
 		data.selectTargetType = null;
 		data.waitPlayerChoice = false;
 
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 7000);
-
 		// Valkyrie is not blocked.
 		if (data.fieldCards[fieldPosition] == Valkyrie) {
 			setTimeout(() => {
 				data.funcDefenceAction(null, [], []);
 			}, 1000);
 		}
+
+		sleep(3);
+		data.showSpinner = false;
 	};
 
 	data.funcBattleReaction = async () => {
 		if (data.showSpinner) return;
 
-		if (data.defendUnitPosition) {
-			await sleep(5);
-		}
 		// Check Field Unit And Trigger Card Ability
 		await checkTriggerZoneAbilityWhenBattle();
 		const usedTriggerCardIDs = [];
@@ -493,9 +486,8 @@
 		data.attackerUsedInterceptCardPositions = [];
 		data.attackerUsedCardIds = [];
 
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
+		sleep(3);
+		data.showSpinner = false;
 	};
 
 	data.funcDefenceAction = async (
@@ -532,9 +524,8 @@
 		data.attackerUsedInterceptCardPositions = [];
 		data.attackerUsedCardIds = [];
 
-		setTimeout(() => {
-			data.showSpinner = false;
-		}, 5000);
+		sleep(3);
+		data.showSpinner = false;
 	};
 
 	const checkFieldUnitAbilityWhenTurnChange = () => {
@@ -674,7 +665,7 @@
 
 <MainLogic {data} />
 
-{#if !data.walletUser || !data.walletUser.addr || data.walletUser.addr == '' || data.gameStarted === false || (data.gameObject && data.gameObject['game_started'] == false)}
+{#if !data.gameStarted && !data.canMarigan && (!data.walletUser || !data.walletUser.addr || data.walletUser.addr == '' || (data.gameObject && data.gameObject['game_started'] == false))}
 	<img class="not-started" src="/image/battleStart2.png" alt="Let's start the game!" />
 {/if}
 {#if animationOnFlag}

@@ -138,48 +138,60 @@
 			} catch (e) {}
 			switch (retSubscription.type) {
 				case 'player_matching':
-					if (data.player.playerId == retSubscription.playerId) {
-						data.countdown = true;
-						setTimeout(() => {
-							data.countdown = false;
-						}, 66000);
-						showToast(
-							'Success!',
-							`You successfully entered in Alcana. Now matching is started.`,
-							'success'
-						);
-					} else {
-						showToast(
-							'Warning!!',
-							`No. ${retSubscription.playerId} has entered in Alcana.`,
-							'warning'
-						);
+					if (!data.showSpinner) {
+						if (data.player.playerId == retSubscription.playerId) {
+							data.countdown = true;
+							setTimeout(() => {
+								data.countdown = false;
+							}, 66000);
+							showToast(
+								'Success!',
+								`You successfully entered in Alcana. Now matching is started.`,
+								'success'
+							);
+						} else {
+							showToast(
+								'Warning!!',
+								`No. ${retSubscription.playerId} has entered in Alcana.`,
+								'warning'
+							);
+						}
 					}
+					data.showSpinner = true;
+					sleep(5);
+					data.showSpinner = false;
 					break;
 				case 'game_start':
-					if (data.player.playerId == data.player?.playerId) {
+					if (!data.showSpinner && data.player.playerId == data.player?.playerId) {
 						showToast(
 							'Your first cards are sent to blockchain. Please wait.',
 							'Please wait a moment while loading the data.',
 							'success'
 						);
-					} else if (data.player.playerId == data.gameObject.opponent) {
+					} else if (!data.showSpinner && data.player.playerId == data.gameObject.opponent) {
 						showToast(
 							`Opponent's first cards are sent to blockchain. Please wait.`,
 							'Please wait a moment while loading the data.',
 							'info'
 						);
 					}
+					data.showSpinner = true;
+					sleep(7);
+					data.showSpinner = false;
 					break;
 				case 'put_card_on_the_field':
+					if (!data.showSpinner) {
+						showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
+					}
 					data.showSpinner = true;
-					showToast('The card drive transaction Called!', msg['skillMessage'] ?? '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'turn_change':
+					if (!data.showSpinner) {
+						showToast('Turn Change transaction Called!', '', 'info');
+					}
 					data.showSpinner = true;
-					showToast('Turn Change transaction Called!', '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
@@ -191,17 +203,24 @@
 
 						if (msg['canBlock']) {
 							data.waitPlayerChoice = true;
-							showToast(`Opponent attacked!`, 'Take an action!!', 'error');
+							if (!data.showSpinner) {
+								showToast(`Opponent attacked!`, 'Take an action!!', 'error');
+							}
 							sleep(7);
 							data.funcBattleReaction();
 						} else {
 							console.log(msg, msg['canBlock'], 777);
-							// Valkyrie
-							showToast(
-								`Opponent's attack!`,
-								`Valkyrie's ability is activated! Cannot Block!`,
-								'warning'
-							);
+							if (!data.showSpinner) {
+								// Valkyrie
+								showToast(
+									`Opponent's attack!`,
+									`Valkyrie's ability is activated! Cannot Block!`,
+									'warning'
+								);
+							}
+							data.showSpinner = true;
+							sleep(2);
+							data.showSpinner = false;
 						}
 					}
 					break;
@@ -209,28 +228,36 @@
 					const onDefendPosition = msg['arg1'];
 					if (data.gameObject?.opponent == retSubscription.playerId) {
 						// rival's attack
-						if (onDefendPosition) {
+						if (!data.showSpinner && onDefendPosition) {
 							showToast(`Opponent blocked!`, `Battle!`, 'success');
+							data.showSpinner = true;
+							sleep(2);
+							data.showSpinner = false;
 						}
 					}
 					break;
 				case 'defence_action':
-					if (data.gameObject?.opponent == retSubscription.playerId) {
-						// rival's attack
-						const onDefendPosition = msg['arg1'];
-						if (onDefendPosition) {
-							showToast(`The block wes implemented!!`, `Battle!`, 'success');
+					if (!data.showSpinner) {
+						if (data.gameObject?.opponent == retSubscription.playerId) {
+							// rival's attack
+							const onDefendPosition = msg['arg1'];
+							if (onDefendPosition) {
+								showToast(`The block wes implemented!!`, `Battle!`, 'success');
+							} else {
+								showToast(`Geez1`, 'You took 1 damage!!', 'error');
+							}
 						} else {
-							showToast(`Geez1`, 'You took 1 damage!!', 'error');
-						}
-					} else {
-						const onDefendPosition = msg['arg1'];
-						if (onDefendPosition) {
-							showToast(`Opponent blocked!`, `Battle!`, 'success');
-						} else {
-							showToast(`Opponent doesn't block!`, 'Damage opponent 1 life!', 'success');
+							const onDefendPosition = msg['arg1'];
+							if (onDefendPosition) {
+								showToast(`Opponent blocked!`, `Battle!`, 'success');
+							} else {
+								showToast(`Opponent doesn't block!`, 'Damage opponent 1 life!', 'success');
+							}
 						}
 					}
+					data.showSpinner = true;
+					sleep(2);
+					data.showSpinner = false;
 					break;
 			}
 		}
