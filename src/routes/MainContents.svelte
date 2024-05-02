@@ -39,9 +39,15 @@
 			Balance: {data.yourInfo['balance']?.substring(0, 5) ?? '--'}
 			<span class="unit">Digital Currency</span>
 		</div>
-		<div>
-			Cyber EN: {data.yourInfo['cyber_energy']}
-		</div>
+		{#if parseInt(data.yourInfo['cyber_energy']) < 30}
+			<div class="orange">
+				Cyber EN: {data.yourInfo['cyber_energy'] ?? '--'}
+			</div>
+		{:else}
+			<div>
+				Cyber EN: {data.yourInfo['cyber_energy'] ?? '--'}
+			</div>
+		{/if}
 		{#if data.gameObject == null}
 			<div>
 				Score: {data.yourInfo['score']?.length ?? '--'} games {data.yourInfo['win_count'] ?? '--'} win
@@ -111,7 +117,11 @@
 				</div>
 				<div class="your_info">
 					<div>
-						<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
+						{#if parseInt(data.originalYourLife) > parseInt(data.gameObject.your_life)}
+							<div class="parameter1 damaged">LIFE: {data.gameObject.your_life}</div>
+						{:else}
+							<div class="parameter1">LIFE: {data.gameObject.your_life}</div>
+						{/if}
 						{#if parseInt(data.gameObject.your_cp) > parseInt(data.yourCp)}
 							<div class="parameter1 used">CP: {('0' + data.yourCp).slice(-2)}</div>
 						{:else}

@@ -30,6 +30,12 @@
 		{#if data.walletUser?.addr}
 			<img
 				class="menu-button"
+				on:click={data.funcResetUserDeck}
+				src="/image/button/reset.png"
+				alt="activate"
+			/>
+			<img
+				class="menu-button"
 				on:click={data.sortUserDeck}
 				src="/image/button/sort.png"
 				alt="activate"
@@ -124,31 +130,4 @@
 
 <style lang="scss">
 	@import '../../style/common.scss';
-
-	#own_cards,
-	#deck_field {
-		margin: 8px 20px;
-		border: 2px dashed #fff;
-	}
-
-	#own_cards {
-		width: 76%;
-		height: 130px;
-		padding: 15px 10px;
-
-		&.ring {
-			border: 2px dashed rgb(58, 19, 231);
-		}
-	}
-
-	#deck_field {
-		width: 900px;
-		height: 390px;
-		margin-left: auto;
-		margin-right: 5%;
-
-		&.ring {
-			border: 2px dashed rgb(58, 19, 231);
-		}
-	}
 </style>

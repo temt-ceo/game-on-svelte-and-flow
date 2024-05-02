@@ -11,3 +11,5 @@ export const CardTriggerWhenBattling = '5';
 export const CardNotNeedSelectTarget = '0';
 export const CardNeedsSelectTarget = '1';
 export const CardNeedsSelectActedTarget = '2';
+
+export const Valkyrie = '6';

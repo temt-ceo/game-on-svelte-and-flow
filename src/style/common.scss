@@ -194,6 +194,7 @@
 		flex-direction: row;
 		align-items: center;
 		font-size: 24px;
+		color: aquamarine;
 
 		.unit {
 			font-size: 14px;
@@ -211,6 +212,11 @@
 			margin-right: 15px;
 		}
 
+		.orange {
+			color: orange;
+		}
+
+		button,
 		img {
 			width: 100px;
 			cursor: pointer;
@@ -310,7 +316,7 @@
 
 				div {
 					position: absolute;
-					width: 80px;
+					width: 90px;
 					height: 22px;
 					background-color: black;
 					top: 0;
@@ -412,4 +418,27 @@
 
 .spinner {
 	position: absolute;
+}
+
+#own_cards {
+	width: 76%;
+	height: 130px;
+	padding: 9px 10px;
+	margin: 5px 20px;
+	border: 2px dashed #fff;
+
+	&.ring {
+		border: 2px dashed rgb(58, 19, 231);
+	}
+}
+
+#deck_field {
+	width: 900px;
+	height: 390px;
+	margin-left: 253px;
+	border: 2px dashed #fff;
+
+	&.ring {
+		border: 2px dashed rgb(58, 19, 231);
+	}
 }

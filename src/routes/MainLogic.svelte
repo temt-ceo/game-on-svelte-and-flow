@@ -131,7 +131,7 @@
 	data.client.graphql({ query: onCreateGameServerProcess }).subscribe({
 		next: (gameProcess) => {
 			const retSubscription = gameProcess.data?.onCreateGameServerProcess;
-			const msg = retSubscription.message.split(',TransactionID:')[0];
+			const msg = JSON.parse(retSubscription.message.split(',TransactionID:')[0]);
 			console.log(retSubscription);
 			switch (retSubscription.type) {
 				case 'player_matching':
@@ -176,76 +176,57 @@
 					break;
 				case 'turn_change':
 					data.showSpinner = true;
-					if (data.player.playerId != data.gameObject.opponent) {
-						showToast(
-							'Turn Change transaction Called!',
-							'Please wait until opponent start the turn.',
-							'info'
-						);
-					} else if (data.player.playerId == data.gameObject.opponent) {
-						showToast(
-							'Turn Change transaction Called!',
-							'Please wait until coming your Turn!',
-							'info'
-						);
-					}
+					showToast('Turn Change transaction Called!', '', 'info');
 					sleep(7);
 					data.showSpinner = false;
 					break;
 				case 'attack':
 					// rival's attack
-					if (data.gameObject.opponent == retSubscription.playerId) {
-						const onBattlePosition = msg['arg1'];
+					if (data.gameObject?.opponent == retSubscription.playerId) {
 						data.attackerUsedInterceptCardPositions = msg['arg4'];
 						data.attackerUsedCardIds = msg['usedCardIds'];
 
 						if (msg.canBlock) {
 							data.waitPlayerChoice = true;
+							showToast(`Opponent attacked!`, 'Take an action!!', 'error');
 							sleep(7);
 							data.funcBattleReaction();
 						} else {
-							if (data.gameObject.opponent_field_unit[onBattlePosition] == '6') {
-								// Valkyrie
-								showToast(
-									`Opponent's attack!`,
-									`Valkyrie's ability is activated! Cannot Block!`,
-									'warning'
-								);
-							}
+							console.log(msg, msg['canBlock'], 777);
+							// Valkyrie
+							showToast(
+								`Opponent's attack!`,
+								`Valkyrie's ability is activated! Cannot Block!`,
+								'warning'
+							);
 						}
 					}
 					break;
 				case 'battle_reaction':
-					// rival's attack
-					if (data.gameObject.opponent == retSubscription.playerId) {
-						const onDefendPosition = msg['arg1'];
+					const onDefendPosition = msg['arg1'];
+					if (data.gameObject?.opponent == retSubscription.playerId) {
+						// rival's attack
 						if (onDefendPosition) {
-							showToast(
-								`Opponent blocked!`,
-								`Valkyrie's ability is activated! Cannot Block!`,
-								'warning'
-							);
+							showToast(`Opponent blocked!`, `Battle!`, 'success');
 						}
 					}
 					break;
 				case 'defence_action':
-					if (data.gameObject.opponent == retSubscription.playerId) {
+					if (data.gameObject?.opponent == retSubscription.playerId) {
+						// rival's attack
 						const onDefendPosition = msg['arg1'];
 						if (onDefendPosition) {
-							showToast(
-								`Opponent blocked!`,
-								`Valkyrie's ability is activated! Cannot Block!`,
-								'warning'
-							);
+							showToast(`The block wes implemented!!`, `Battle!`, 'success');
+						} else {
+							showToast(`Geez1`, 'You took 1 damage!!', 'error');
+						}
+					} else {
+						const onDefendPosition = msg['arg1'];
+						if (onDefendPosition) {
+							showToast(`Opponent blocked!`, `Battle!`, 'success');
 						} else {
 							showToast(`Opponent doesn't block!`, 'Damage opponent 1 life!', 'success');
 						}
-					} else {
-						showToast(
-							`Opponent's attack!`,
-							`Valkyrie's ability is activated! Cannot Block!`,
-							'warning'
-						);
 					}
 					break;
 			}
@@ -337,7 +318,7 @@
 							skillMessage += `${data.cardInfo[data.triggerCards[pos]]?.name} Trigger Card Activated!!/`;
 							showToast(
 								`${data.cardInfo[data.triggerCards[pos]]?.name} is Activated! 【SELECT ONE TARGET (which is already acted up)!】`,
-								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}. SELECT ONE TARGET!`,
+								`=> ${data.cardInfo[data.triggerCards[pos]]?.skill.description}.`,
 								'success'
 							);
 							data.selectTargetType = CardNeedsSelectActedTarget;

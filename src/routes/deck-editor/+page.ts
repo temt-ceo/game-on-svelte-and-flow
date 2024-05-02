@@ -10,6 +10,7 @@ export function load() {
 		funcSignOutWallet: null,
 		funcCreatePlayer: null,
 		funcSaveDeck: null,
+		funcResetUserDeck: null,
 		player: null,
 		cardInfo: {},
 		reserveCardData: [],
