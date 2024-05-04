@@ -32,19 +32,19 @@
 				class="menu-button"
 				on:click={data.funcResetUserDeck}
 				src="/image/button/reset.png"
-				alt="activate"
+				alt="reset"
 			/>
 			<img
 				class="menu-button"
 				on:click={data.sortUserDeck}
 				src="/image/button/sort.png"
-				alt="activate"
+				alt="sort"
 			/>
 			<img
 				on:click={data.funcSaveDeck}
 				class="menu-button"
 				src="/image/button/save.png"
-				alt="activate"
+				alt="save deck"
 			/>
 		{/if}
 		{#if !data.walletUser?.addr}
@@ -75,7 +75,7 @@
 						id={card_id.toString()}
 						class="card-thumb"
 						src="/image/card_{card_id}.jpeg"
-						alt="drink thuumb"
+						alt="card thumb"
 						draggable="true"
 					/>
 				{/each}
