@@ -1,4 +1,4 @@
-# How to develop a bc game using GraphQL and Svelte
+# How to develop a blockchain game using GraphQL and Svelte
 
 1. Install @onflow/fcl and @onflow/types.
 
@@ -29,9 +29,9 @@ npm install --save @onflow/fcl @onflow/types
 <button on:click={handleOnClick}>SignIn to Wallet</button>
 ```
 
-<img width="1218" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/24f42cbf-41fd-406c-ad06-a64d0d016d44">
-
 #### That's it! Super simple and you can see the below when you pushed the button
+
+<img width="1218" alt="flow_wallet" src="https://github.com/temt-ceo/game-on-svelte-and-flow/assets/58613670/24f42cbf-41fd-406c-ad06-a64d0d016d44">
 
 ## Creating a project
 
