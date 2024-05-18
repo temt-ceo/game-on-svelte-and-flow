@@ -360,7 +360,7 @@
 					class="turn-end-btn"
 					on:click={data.funcTurnEnd}
 					src="/image/button/turnChangeEn.png"
-					alt="Redo"
+					alt="Turn End"
 				/>
 			</div>
 		{/if}

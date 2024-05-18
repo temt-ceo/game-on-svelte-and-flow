@@ -247,7 +247,7 @@
 						const onDefendPosition = msg['arg1'];
 						if (!data.showSpinner) {
 							if (onDefendPosition) {
-								showToast(`The block wes implemented!!`, `Battle!`, 'success');
+								showToast(`The block was implemented!!`, `Battle!`, 'success');
 							} else {
 								showToast(`Geez1`, 'You took 1 damage!!', 'error');
 							}
@@ -384,7 +384,7 @@
 
 {#if data.countdown}
 	<div class="clock">
-		<Clock size="160" color="#4C7D8E" unit="px" duration="240s" pause={false} />
+		<Clock size="160" color="blue" unit="px" duration="240s" pause={false} />
 	</div>
 {/if}
 
