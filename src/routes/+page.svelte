@@ -398,7 +398,7 @@
 		data.showSpinner = false;
 	};
 
-	// GraphQL TurnEnd Server Process
+	// GraphQL Attack Server Process
 	data.funcAttack = async (fieldPosition) => {
 		if (data.showSpinner) return;
 

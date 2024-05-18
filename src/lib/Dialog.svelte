@@ -2,18 +2,18 @@
 	export let dialog;
 	export let playerName = '';
 	export let title = '';
-	let label = 'あなたのお名前';
+	let label = 'Your Name';
 
 	const id = 'textInput';
 	const name = 'text';
-	const placeholder = '名前を入力して下さい';
+	const placeholder = 'Enter your name';
 </script>
 
 <dialog bind:this={dialog} on:close>
 	{#if title}
 		<div class="title">{title}</div>
 	{:else}
-		<div class="title">プレイヤーネームを入力してください。</div>
+		<div class="title">Please enter a player name.</div>
 		<label for={id}>{label}</label>
 		<input bind:value={playerName} {id} {name} {placeholder} type="text" />
 	{/if}

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const fcl = require('@onflow/fcl');
-const t = require('@onflow/types');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 const { SHA3 } = require('sha3');
 
